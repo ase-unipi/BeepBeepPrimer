@@ -109,3 +109,5 @@ venv.bak/
 # personal
 ,/monolith/beepbeep.db
 variables.sh
+.vscode/settings.json
+monolith/key.sh
