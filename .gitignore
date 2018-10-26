@@ -112,7 +112,9 @@ variables.sh
 
 
 ## ADDEDD BY US
+beepbeep.db
 
-# IntelliJ IDEA
+# IntelliJ IDEA (Aldo)
 .idea
 *.iml
+venv.sh
