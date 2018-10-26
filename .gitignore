@@ -109,3 +109,10 @@ venv.bak/
 # personal
 ,/monolith/beepbeep.db
 variables.sh
+
+
+## ADDEDD BY US
+
+# IntelliJ IDEA
+.idea
+*.iml
