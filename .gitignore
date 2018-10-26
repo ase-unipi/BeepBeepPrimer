@@ -116,3 +116,6 @@ variables.sh
 # IntelliJ IDEA
 .idea
 *.iml
+
+# VS Code
+.vscode
