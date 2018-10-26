@@ -107,14 +107,16 @@ venv.bak/
 .mypy_cache/
 
 # personal
-,/monolith/beepbeep.db
+monolith/beepbeep.db
 variables.sh
 
 
 ## ADDEDD BY US
-beepbeep.db
 
 # IntelliJ IDEA (Aldo)
 .idea
 *.iml
 venv.sh
+
+# VS Code
+.vscode
