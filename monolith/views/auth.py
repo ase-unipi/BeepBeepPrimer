@@ -32,8 +32,8 @@ def login():
         email, password = form.data['email'], form.data['password']
         q = db.session.query(User).filter(User.email == email)
         user = q.first()
-        print(user is None)
-        print(user.authenticate(password))
+        # print(user is None)
+        # print(user.authenticate(password))
         if user is not None and user.authenticate(password):
             login_user(user)
             return redirect('/')
