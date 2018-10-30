@@ -109,11 +109,13 @@ venv.bak/
 # personal
 monolith/beepbeep.db
 variables.sh
-venv.sh
 dump.rdb
 
 
 ## ADDEDD BY US
+
+# venv
+*-venv.sh
 
 # IntelliJ IDEA
 .idea
@@ -121,3 +123,6 @@ dump.rdb
 
 # VS Code
 .vscode
+
+# Mix
+STRUCTURE.md
