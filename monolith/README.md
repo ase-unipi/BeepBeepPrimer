@@ -1,6 +1,9 @@
 # monolith
 Define a set of files on the base of the application
 
+:open_file_folder: templates: contains the HTML of the views.  
+    At the moments includes only pages related to the login and the home page.
+
 - [app.py](app.py) contains the main and the `create_app` function that initialize the database, the environment and the Flask app.
 - [auth.py](auth.py) contains:
     - `admin_required(func)`
@@ -14,4 +17,3 @@ Define a set of files on the base of the application
     - User
     - Run
 - [forms.py](forms.py) defines the LoginForm and the UserForm
-    
