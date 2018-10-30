@@ -7,32 +7,13 @@
     <a href="{{strava_auth_url}}">Authorize Strava Access</a>
   {% else %}
     <h2>Your last 10 runs</h2>
-    <table style="width:100%">
-      <tr>
-        <th>Name</th>
-        <th>Start date</th>
-        <th>Distance</th>
-        <th>Elapsed time</th>
-        <th>Avg. speed</th>
-        <th>Avg. heartrate</th>
-        <th>Elevation gain</th>
-      </tr>
     {% for run in runs %}
-      <tr>
-        <td>{{run.name}}</td>
-        <td>{{run.start_date}}</td>
-        <td>{{run.distance}}</td>
-        <td>{{run.elapsed_time}}</td>
-        <td>{{run.average_speed}}</td>
-        <td>{{run.average_heartrate}}</td>
-        <td>{{run.total_elevation_gain}}</td>
-      </tr>
+      <div>{{run.name}}</div>
     {% endfor %}
-    </table>
     Average speed: {{total_average_speed}}<br>
     <a href="/fetch">Fetch</a>
   {% endif %}
 
 {% else %}
-  Hi Anonymous, <a href="/login">Log in</a>or <a href="/create_user">Sign up</a>
+  Hi Anonymous, <a href="/login">Log in</a> or <a href="/create_user">Sign up</a>
 {% endif %}

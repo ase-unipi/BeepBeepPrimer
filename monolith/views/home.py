@@ -24,8 +24,10 @@ def index():
         total_average_speed = 0
         for run in runs:
             total_average_speed += run.average_speed
+        total_average_speed /= runs.count()
     else:
         runs = None
+        total_average_speed = 0
     strava_auth_url = _strava_auth_url(home.app.config)
     return render_template("index.html", runs=runs,
                            strava_auth_url=strava_auth_url, total_average_speed=total_average_speed)
