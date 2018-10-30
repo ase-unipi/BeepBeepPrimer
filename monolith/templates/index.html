@@ -1,19 +1,19 @@
 <h1>Runnerly</h1>
 
 {% if current_user.is_authenticated %}
-  Hi {{ current_user.email }}! <a href="/logout">Log out</a>
+  Hi {{ current_user.email }}! <a href="/logout">Log out</a> / <a href="/delete_user">Delete user</a>
 
   {% if not current_user.strava_token %}
     <a href="{{strava_auth_url}}">Authorize Strava Access</a>
   {% else %}
     <h2>Your last 10 runs</h2>
-    {% for run in runs%}
-      <div>
-      {{run.name}}
-      </div>
+    {% for run in runs %}
+      <div>{{run.name}}</div>
     {% endfor %}
+    Average speed: {{total_average_speed}}<br>
+    <a href="/fetch">Fetch</a>
   {% endif %}
 
 {% else %}
-  Hi Anonymous, <a href="/login">Log in</a>
+  Hi Anonymous, <a href="/login">Log in</a> or <a href="/create_user">Sign up</a>
 {% endif %}
