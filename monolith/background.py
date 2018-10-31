@@ -1,5 +1,5 @@
 from celery import Celery
-from stravalib import Client, unithelper
+from stravalib import Client
 from monolith.database import db, User, Run
 
 BACKEND = BROKER = 'redis://localhost:6379'
@@ -51,25 +51,16 @@ def activity2run(user, activity):
 def fetch_runs(user):
     client = Client(access_token=user.strava_token)
     runs = 0
-    totspeed = 0.
-    tottime = 0.
 
     for activity in client.get_activities(limit=10):
-        if activity.type != 'Walk':
+        if activity.type != 'Run':
             continue
-        totspeed += float(unithelper.meters_per_second(activity.average_speed))
-        tottime += float(unithelper.second(unithelper.timedelta_to_seconds(activity.moving_time)))
         q = db.session.query(Run).filter(Run.strava_id == activity.id)
         run = q.first()
 
         if run is None:
             db.session.add(activity2run(user, activity))
             runs += 1
-    u = User.query.filter_by(id=user.id).first()
-    print(u)
-    print(str(totspeed)+" "+str(tottime))
-    print(str(totspeed/tottime))
-    u.average_speed = totspeed/tottime
 
     db.session.commit()
     return runs
