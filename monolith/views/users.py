@@ -1,7 +1,9 @@
 from flask import Blueprint, redirect, render_template, request
-from monolith.database import db, User
-from monolith.auth import admin_required
 from monolith.forms import UserForm, RemoveUserForm
+from monolith.database import db, User, Run
+from monolith.auth import current_user
+from monolith.forms import UserForm
+from monolith.views.auth import strava_deauth
 
 
 users = Blueprint('users', __name__)
@@ -45,3 +47,15 @@ def remove_user():
                                 return redirect('/users')
 
         return render_template('remove_user.html', form=form)
+
+
+@users.route('/remove_user', methods=['GET', 'POST'])
+def delete_user():
+
+    if request.method == 'POST':
+        if current_user is not None and hasattr(current_user, 'id'):
+            db.session.delete(current_user)
+            db.session.commit()
+            strava_deauth()
+            return redirect('/')
+
