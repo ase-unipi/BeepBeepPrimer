@@ -107,5 +107,6 @@ venv.bak/
 .mypy_cache/
 
 # personal
-./monolith/beepbeep.db
+*.db
+*.rdb
 variables.sh
