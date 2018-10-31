@@ -19,15 +19,10 @@ def _strava_auth_url(config):
 
 @home.route('/')
 def index():
-    total_average_speed = None
     if current_user is not None and hasattr(current_user, 'id'):
         runs = db.session.query(Run).filter(Run.runner_id == current_user.id)
-        if runs.count():
-            total_average_speed = sum(run.average_speed for run in runs) / runs.count()
-
     else:
         runs = None
     strava_auth_url = _strava_auth_url(home.app.config)
     return render_template("index.html", runs=runs,
-                           strava_auth_url=strava_auth_url,
-                           total_average_speed=total_average_speed)
+                           strava_auth_url=strava_auth_url)
