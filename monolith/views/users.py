@@ -27,3 +27,21 @@ def create_user():
             return redirect('/users')
 
     return render_template('create_user.html', form=form)
+
+
+@users.route('/remove_user', methods=['GET', 'POST'])
+def remove_user():
+        form = RemoveUserForm()
+        if request.method == 'POST':
+                if form.validate_on_submit():
+                        email, password = form.data['email'], form.data['password']
+                        q = db.session.query(User).filter(User.email == email)
+                        user = q.first()
+                        print(user is None)
+                        print(user.authenticate(password))
+                        if user is not None and user.authenticate(password):
+                                db.session.delete(user)
+                                db.session.commit()
+                                return redirect('/users')
+
+        return render_template('remove_user.html', form=form)
