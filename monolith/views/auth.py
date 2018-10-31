@@ -45,6 +45,7 @@ def logout():
     logout_user()
     return redirect('/')
 
+
 def strava_deauth():
     client = Client(current_user.strava_token)
     client.deauthorize()

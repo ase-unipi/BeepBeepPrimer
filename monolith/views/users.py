@@ -44,18 +44,11 @@ def remove_user():
                         if user is not None and user.authenticate(password):
                                 db.session.delete(user)
                                 db.session.commit()
-                                return redirect('/users')
+                                strava_deauth()
+                                return redirect('/')
 
         return render_template('remove_user.html', form=form)
 
 
-@users.route('/remove_user', methods=['GET', 'POST'])
-def delete_user():
 
-    if request.method == 'POST':
-        if current_user is not None and hasattr(current_user, 'id'):
-            db.session.delete(current_user)
-            db.session.commit()
-            strava_deauth()
-            return redirect('/')
 
