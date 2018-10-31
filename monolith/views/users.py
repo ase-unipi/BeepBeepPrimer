@@ -1,8 +1,8 @@
-from flask import Blueprint, redirect, render_template, request
+from flask import Blueprint, redirect, render_template, request, flash
 from flask_login import login_required, current_user, logout_user
 from monolith.database import db, User, Run
 from monolith.auth import admin_required
-from monolith.forms import UserForm
+from monolith.forms import UserForm, DeleteForm
 
 
 users = Blueprint('users', __name__)
@@ -30,15 +30,25 @@ def create_user():
     return render_template('create_user.html', form=form)
 
 
-@users.route('/delete_user')
+@users.route('/delete_user', methods=['GET', 'POST'])
 @login_required
 def delete_user():
-    runs = db.session.query(Run).filter(Run.runner_id == current_user.id)
+    form = DeleteForm()
 
-    for run in runs.all():
-        db.session.delete(run)
+    if request.method == 'POST':
+        if form.validate_on_submit():
+            if current_user.authenticate(form.password.data):
+                runs = db.session.query(Run).filter(Run.runner_id == current_user.id)
 
-    db.session.delete(current_user)
-    db.session.commit()
-    logout_user()
-    return redirect('/')
+                for run in runs.all():
+                    db.session.delete(run)
+
+                db.session.delete(current_user)
+                db.session.commit()
+                logout_user()
+                return redirect('/')
+            else:
+                flash("Incorrect password", category='error')
+
+    return render_template("delete_user.html", form=form)
+
