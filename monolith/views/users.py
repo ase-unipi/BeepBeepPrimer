@@ -1,7 +1,7 @@
 from flask import Blueprint, redirect, render_template, request
 from monolith.database import db, User
 from monolith.auth import admin_required
-from monolith.forms import UserForm
+from monolith.forms import UserForm, RemoveUserForm
 
 
 users = Blueprint('users', __name__)
