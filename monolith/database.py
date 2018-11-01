@@ -62,12 +62,11 @@ class Run(db.Model):
     runner = relationship('User', foreign_keys='Run.runner_id')
 
 
-class Training_Set(db.Model):
-    __tablename__ = 'training_set'
+class Training_Objective(db.Model):
+    __tablename__ = 'training_objective'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     start_date = db.Column(db.DateTime)
     end_date = db.Column(db.DateTime)
     kilometers_to_run = db.Column(db.Integer)
     runner_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    
-    runner = relationship('User', foreign_keys='Training_Set.runner_id')
+    runner = relationship('User', foreign_keys='Training_Objective.runner_id')
