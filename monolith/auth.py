@@ -1,6 +1,7 @@
 import functools
 from flask_login import current_user, LoginManager
 from monolith.database import User
+from flask import redirect
 
 
 login_manager = LoginManager()
@@ -22,3 +23,12 @@ def load_user(user_id):
     if user is not None:
         user._authenticated = True
     return user
+
+
+def login_required(func):
+    @functools.wraps(func)
+    def _login_required(*args, **kw):
+        if current_user is not None and current_user.is_authenticated:
+            return func(*args, **kw)
+        return redirect('/')
+    return _login_required
