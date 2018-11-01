@@ -1,21 +1,26 @@
 <html>
  <body>
-  <h1>Insert your credentials and click on Remove to remove your account</h1>
-  <form action="" method="POST">
-    {{ form.hidden_tag() }}
-    <dl>
-     {% for field in form.display %}
-     <dt>{{ form[field].label }}</dt>
-     <dd>{{ form[field]() }}</dd>
-       {% if form[field].errors %}
-          {% for e in form[field].errors %}
-           <p class="help-block">{{ e }}</p>
-          {% endfor %}
-       {% endif %}
-     {% endfor %}
-    </dl>
-    <p>
-    <input type=submit value="Remove">
-  </form>
+  {% if current_user.is_authenticated %}
+    Hi {{ current_user.email }}! Click on Remove to remove your account
+  {% else %}
+    <h1>Insert your credentials and click on Remove to remove your account</h1>
+  {% endif %}
+    <form action="" method="POST">
+        {{ form.hidden_tag() }}
+        <dl>
+        {% for field in form.display %}
+          <dt>{{ form[field].label }}</dt>
+          <dd>{{ form[field]() }}</dd>
+          {% if form[field].errors %}
+              {% for e in form[field].errors %}
+                <p class="help-block">{{ e }}</p>
+              {% endfor %}
+          {% endif %}
+        {% endfor %}
+        </dl>
+
+        <input type=submit value="Remove">
+    </form>
+  
  </body>
 </html>
