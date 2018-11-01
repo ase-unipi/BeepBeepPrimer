@@ -67,6 +67,7 @@ class Training_Set(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     start_date = db.Column(db.DateTime)
     end_date = db.Column(db.DateTime)
-    n_kilomt = db.Column(db.Integer)
+    kilometers_to_run = db.Column(db.Integer)
     runner_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    
     runner = relationship('User', foreign_keys='Training_Set.runner_id')
