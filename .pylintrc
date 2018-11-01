@@ -1,9 +1,0 @@
-[MESSAGES CONTROL]
-disable=E1101,
-        W0212,
-        W0603,
-        W0611,
-        W0621,
-        C0103,
-        C0111,
-        C0411,

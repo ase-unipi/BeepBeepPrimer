@@ -1,0 +1,45 @@
+<html>
+  <body>
+    <h1>Set a training objective</h1>
+    <form action="" method="POST">
+      <table text-align="center">
+        <tr>
+          <th>Data inizio</th>
+          <th>Data fine</th>
+          <th>Numero chilometri</th>
+        </tr>
+        <tr>
+          <td><input type="date" name="start_date" /></td>
+          <td><input type="date" name="end_date" /></td>
+          <td><input type="number" name="number_of_kilometers" /></td>
+        </tr>
+        <tr>
+          <td colspan="3">
+            <div style="width : 50%; float : left;">
+              <input type="submit" value="Submit" />
+            </div>
+            <div style="width : 50%; float : right;">
+              <input type="reset" value="Reset" />
+            </div>
+          </td>
+        </tr>
+      </table>
+    </form>
+
+    <h1>Your Training Objectives</h1>
+    <table>
+        <tr>
+            <th>Data inizio</th>
+            <th>Data fine</th>
+            <th>Numero chilometri</th>
+        </tr>
+        {% for objective in objectives%}
+          <tr>
+            <td>{{objective.start_date}}</td>
+            <td>{{objective.end_date}}</td>
+            <td>{{objective.kilometers_to_run}}</td>
+          </tr>
+        {% endfor %}
+    </table>
+  </body>
+</html>
