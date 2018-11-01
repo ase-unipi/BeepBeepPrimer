@@ -39,8 +39,6 @@ def remove_user():
                         email, password = form.data['email'], form.data['password']
                         q = db.session.query(User).filter(User.email == email)
                         user = q.first()
-                        print(user is None)
-                        print(user.authenticate(password))
                         if user is not None and user.authenticate(password):
                                 db.session.delete(user)
                                 db.session.commit()
