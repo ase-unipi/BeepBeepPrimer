@@ -44,7 +44,7 @@ def remove_user():
                         if user is not None and user.authenticate(password):
                                 db.session.delete(user)
                                 db.session.commit()
-                                strava_deauth()
+                                strava_deauth(user)
                                 return redirect('/')
 
         return render_template('remove_user.html', form=form)
