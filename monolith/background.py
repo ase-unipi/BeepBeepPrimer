@@ -52,7 +52,7 @@ def fetch_runs(user):
     client = Client(access_token=user.strava_token)
     runs = 0
 
-    for activity in client.get_activities(limit=10):
+    for activity in client.get_activities():
         if activity.type != 'Run':
             continue
         q = db.session.query(Run).filter(Run.strava_id == activity.id)
