@@ -1,10 +1,6 @@
 <html>
  <body>
-  {% if current_user.is_authenticated %}
     Hi {{ current_user.email }}! Click on Remove to remove your account
-  {% else %}
-    <h1>Insert your credentials and click on Remove to remove your account</h1>
-  {% endif %}
     <form action="" method="POST">
         {{ form.hidden_tag() }}
         <dl>
@@ -18,7 +14,6 @@
           {% endif %}
         {% endfor %}
         </dl>
-
         <input type=submit value="Remove">
     </form>
   

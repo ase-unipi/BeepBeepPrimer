@@ -1,7 +1,7 @@
 from flask import Blueprint, redirect, render_template, request
 from monolith.forms import UserForm, RemoveUserForm
-from monolith.database import db, User, Run
-from monolith.auth import current_user
+from monolith.database import db, User
+from monolith.auth import current_user, login_required
 from monolith.forms import UserForm
 from monolith.views.auth import strava_deauth
 
@@ -32,12 +32,13 @@ def create_user():
 
 
 @users.route('/remove_user', methods=['GET', 'POST'])
+@login_required
 def remove_user():
         form = RemoveUserForm()
         if request.method == 'POST':
                 if form.validate_on_submit():
-                        email, password = form.data['email'], form.data['password']
-                        q = db.session.query(User).filter(User.email == email)
+                        password = form.data['password']
+                        q = db.session.query(User).filter(User.id == current_user.id)
                         user = q.first()
                         if user is not None and user.authenticate(password):
                                 db.session.delete(user)
