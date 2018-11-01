@@ -34,19 +34,19 @@ def create_user():
 @users.route('/remove_user', methods=['GET', 'POST'])
 @login_required
 def remove_user():
-        form = RemoveUserForm()
-        if request.method == 'POST':
-                if form.validate_on_submit():
-                        password = form.data['password']
-                        q = db.session.query(User).filter(User.id == current_user.id)
-                        user = q.first()
-                        if user is not None and user.authenticate(password):
-                                db.session.delete(user)
-                                db.session.commit()
-                                strava_deauth(user)
-                                return redirect('/')
+    form = RemoveUserForm()
+    if request.method == 'POST':
+        if form.validate_on_submit():
+            password = form.data['password']
+            q = db.session.query(User).filter(User.id == current_user.id)
+            user = q.first()
+            if user is not None and user.authenticate(password):
+                db.session.delete(user)
+                db.session.commit()
+                strava_deauth(user)
+                return redirect('/')
 
-        return render_template('remove_user.html', form=form)
+    return render_template('remove_user.html', form=form)
 
 
 
