@@ -32,3 +32,19 @@ def login_required(func):
             return func(*args, **kw)
         return redirect('/')
     return _login_required
+
+
+def strava_token_required(func):
+    @functools.wraps(func)
+    def _strava_token_required(*args, **kw):
+        try:
+            func(*args, **kw)
+        except exc.AccessUnauthorized:
+            if current_user is not None and hasattr(current_user, 'id'):
+                q = db.session.query(User).filter(User.id == current_user.id)
+                user = q.first()
+                user.strava_token = None
+                db.session.add(user)
+                db.session.commit()
+                return redirect('/')
+    return _strava_token_required
