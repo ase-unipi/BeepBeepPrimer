@@ -60,3 +60,13 @@ class Run(db.Model):
     total_elevation_gain = db.Column(db.Float)
     runner_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     runner = relationship('User', foreign_keys='Run.runner_id')
+
+
+class Training_Set(db.Model):
+    __tablename__ = 'training_set'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    start_date = db.Column(db.DateTime)
+    end_date = db.Column(db.DateTime)
+    n_kilomt = db.Column(db.Integer)
+    runner_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    runner = relationship('User', foreign_keys='Training_Set.runner_id')
