@@ -1,10 +1,15 @@
 <h1>Runnerly</h1>
 
 {% if current_user.is_authenticated %}
+<<<<<<< HEAD
   Hi {{ current_user.email }}! <a href="/logout">Log out</a> 
   <div>
     <a href="/training_objectives">Set a training objective</a>
   </div>
+=======
+    Hi {{ current_user.email }}! <a href="/logout">Log out</a> <a href="/remove_user">Delete Account</a>
+
+>>>>>>> 9e5e3ff69367288ff41593097b5d1e21709a967b
   {% if not current_user.strava_token %}
     <a href="{{strava_auth_url}}">Authorize Strava Access</a>
   {% else %}

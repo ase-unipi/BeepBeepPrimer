@@ -1,7 +1,8 @@
 import functools
 from flask_login import current_user, LoginManager
-from monolith.database import User
+from monolith.database import User, db
 from flask import redirect
+from stravalib import exc
 
 
 login_manager = LoginManager()
@@ -32,3 +33,19 @@ def login_required(func):
             return func(*args, **kw)
         return redirect('/')
     return _login_required
+
+
+def strava_token_required(func):
+    @functools.wraps(func)
+    def _strava_token_required(*args, **kw):
+        try:
+            return func(*args, **kw)
+        except exc.AccessUnauthorized:
+            if current_user is not None and hasattr(current_user, 'id'):
+                q = db.session.query(User).filter(User.id == current_user.id)
+                user = q.first()
+                user.strava_token = None
+                db.session.add(user)
+                db.session.commit()
+            return redirect('/')
+    return _strava_token_required

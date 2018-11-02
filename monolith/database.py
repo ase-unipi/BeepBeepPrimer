@@ -7,6 +7,7 @@ from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
 
+
 class User(db.Model):
     __tablename__ = 'user'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -22,6 +23,8 @@ class User(db.Model):
     vo2max = db.Column(db.Numeric(4, 2))
     is_active = db.Column(db.Boolean, default=True)
     is_admin = db.Column(db.Boolean, default=False)
+
+    run = relationship('Run', cascade='delete')
 
     is_anonymous = False
 
