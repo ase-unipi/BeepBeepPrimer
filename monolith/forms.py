@@ -83,7 +83,7 @@ class TrainingObjectiveForm(FlaskForm):
                              widget=f.widgets.Input(input_type="date"))
     end_date = f.DateField('End date',
                            validators=[DataRequired(message='Not a valid date format'),
-                                       NotLessThan('start_date')],
+                                       NotLessThan('start_date', message='End date must not be less than Start date')],
                            widget=f.widgets.Input(input_type="date"))
     kilometers_to_run = f.FloatField('Kilometers to run',
                                      validators=[DataRequired('You need at least a meter to run'),
