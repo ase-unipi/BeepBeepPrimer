@@ -39,7 +39,7 @@ def strava_token_required(func):
     @functools.wraps(func)
     def _strava_token_required(*args, **kw):
         try:
-            func(*args, **kw)
+            return func(*args, **kw)
         except exc.AccessUnauthorized:
             if current_user is not None and hasattr(current_user, 'id'):
                 q = db.session.query(User).filter(User.id == current_user.id)
