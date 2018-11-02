@@ -31,3 +31,6 @@ def index():
     return render_template("index.html", runs=runs,
                            strava_auth_url=strava_auth_url,
                            total_average_speed=total_average_speed)
+
+def page_not_found(e):
+    return render_template("404.html"), 404

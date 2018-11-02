@@ -3,10 +3,11 @@ from flask import Flask
 from monolith.database import db, User
 from monolith.views import blueprints
 from monolith.auth import login_manager
-
+from monolith.views.home import page_not_found
 
 def create_app():
     app = Flask(__name__)
+    app.register_error_handler(404,page_not_found)
     app.config['WTF_CSRF_SECRET_KEY'] = 'A SECRET KEY'
     app.config['SECRET_KEY'] = 'ANOTHER ONE'
     app.config['STRAVA_CLIENT_ID'] = os.environ['STRAVA_CLIENT_ID']
