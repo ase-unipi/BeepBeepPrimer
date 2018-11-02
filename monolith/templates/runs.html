@@ -1,25 +1,6 @@
 <html>
   <head>
-    <style>
-      table, th, td {
-          border: 1px solid black;
-          border-collapse: collapse;
-      }
-
-      td, tr {
-        padding: 10px;
-        text-align: center;
-      }
-
-      thead {
-        background-color: #dddddd;
-      }
-      
-      td img {
-        width: 32px;
-        height: 32px;
-      }
-    </style>
+    <link rel="stylesheet" href="{{url_for('static', filename='style.css')}}">
   </head>
 
   <body>
@@ -31,13 +12,15 @@
     <h3>Date: {{ date }}</h3>
     <table>
       <thead>
-        {% for header in headers %} <td>{{header}}</td> {% endfor %}
-        <td>Actions</td>
+        <tr>
+          {% for header in headers %} <th>{{header}}</th> {% endfor %}
+          <th>Actions</th>
+        </tr>
       </thead>
       <tbody>
         <tr>
-          {% for val in values %} <td>{{val}}</td> {% endfor %}
-          <td> <a> <img class="icon" src="{{url_for('static', filename='challenge.png')}}"/> </a> </td>
+          {% for val in values %} <td class="text-center">{{val}}</td> {% endfor %}
+          <td class="text-center"> <a> <img class="icon" src="{{url_for('static', filename='challenge.png')}}"/> </a> </td>
         </tr>
       </tbody>
     </table>

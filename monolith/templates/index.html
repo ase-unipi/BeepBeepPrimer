@@ -1,37 +1,6 @@
 <html>
   <head>
-    <style>
-      table, th, td {
-          border: 1px solid black;
-          border-collapse: collapse;
-      }
-
-      td, tr {
-        padding: 10px;
-      }
-
-      thead tr td {
-        text-align: center;
-      }
-
-      thead {
-        background-color: #dddddd;
-      }
-
-      tr:nth-child(even) {
-        background-color: #dddddd;
-      }
-
-      td a {
-        width: 100%;
-        display: block;
-      }
-
-      td img {
-        width: 32px;
-        height: 32px;
-      }
-    </style>
+    <link rel="stylesheet" href="{{url_for('static', filename='style.css')}}">
   </head>
 
   <body>
@@ -52,16 +21,16 @@
         <table>
           <thead>
             <tr>
-              <td>Run name</td>
-              <td colspan="2">Actions</td>
+              <th>Run name</th>
+              <th colspan="2">Actions</th>
             </tr>
           </thead>
           <tbody>
             {% for run in runs%}
             <tr>
               <td> {{run.name}} </td>
-              <td> <a href="{{url_for('runs.run', id=run.id)}}""> <img class="icon" src="{{url_for('static', filename='view.png')}}"/> </a> </td>
-              <td> <a> <img class="icon" src="{{url_for('static', filename='challenge.png')}}"/> </a> </td>
+              <td class="text-center"> <a href="{{url_for('runs.run', id=run.id)}}""> <img class="icon" src="{{url_for('static', filename='view.png')}}"/> </a> </td>
+              <td class="text-center"> <a> <img class="icon" src="{{url_for('static', filename='challenge.png')}}"/> </a> </td>
             </tr>
             {% endfor %}
           </tbody>
