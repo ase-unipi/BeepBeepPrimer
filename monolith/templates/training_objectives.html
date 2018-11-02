@@ -39,9 +39,9 @@
     <h1>Your Training Objectives</h1>
     <table>
         <tr>
-            <th>Data inizio</th>
-            <th>Data fine</th>
-            <th>Numero chilometri</th>
+          {% for field in form.display %}
+            <th>{{ form[field].label }}</th>
+          {% endfor %}
         </tr>
         {% for objective in objectives%}
           <tr>
