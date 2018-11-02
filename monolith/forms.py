@@ -9,6 +9,13 @@ class LoginForm(FlaskForm):
     display = ['email', 'password']
 
 
+class RemoveUserForm(FlaskForm):
+    # email = f.StringField('email', validators=[DataRequired()])
+    password = f.PasswordField('password', validators=[DataRequired()])
+    # display = ['email', 'password']
+    display = ['password']
+
+
 class UserForm(FlaskForm):
     email = f.StringField('email', validators=[DataRequired()])
     firstname = f.StringField('firstname')
