@@ -68,8 +68,8 @@ class Run(db.Model):
 class Training_Objective(db.Model):
     __tablename__ = 'training_objective'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    start_date = db.Column(db.DateTime)
-    end_date = db.Column(db.DateTime)
+    start_date = db.Column(db.Date)
+    end_date = db.Column(db.Date)
     kilometers_to_run = db.Column(db.Float)
     runner_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     runner = relationship('User', foreign_keys='Training_Objective.runner_id')
