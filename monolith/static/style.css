@@ -1,0 +1,26 @@
+table, th, td {
+    border: 1px solid black;
+    border-collapse: collapse;
+}
+
+thead {
+  background-color: #dddddd;
+}
+
+td {
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+th {
+  padding: 10px;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.icon {
+  width: 32px;
+  height: 32px;
+}
