@@ -4,7 +4,6 @@ from stravalib import Client
 from monolith.database import db, Run
 from monolith.auth import current_user
 
-
 home = Blueprint('home', __name__)
 
 
@@ -32,5 +31,8 @@ def index():
                            strava_auth_url=strava_auth_url,
                            total_average_speed=total_average_speed)
 
+
 def page_not_found(e):
-    return render_template("404.html"), 404
+    return render_template("error.html", error_name='Page Not Found',
+                           error_message='Sorry we can\'t find what you are looking for',
+                           redirection='/', redirection_message='run somewhere nice'), 404
