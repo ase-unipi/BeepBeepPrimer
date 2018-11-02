@@ -1,8 +1,8 @@
 from flask_wtf import FlaskForm
 import wtforms as f
 import wtforms.widgets.core as wtcore
-from wtforms.validators import DataRequired, NumberRange
-
+from wtforms.validators import DataRequired, NumberRange, ValidationError
+from wtforms_components import DateRange
 
 class LoginForm(FlaskForm):
     email = f.StringField('email', validators=[DataRequired()])
@@ -32,16 +32,10 @@ class UserForm(FlaskForm):
                'age', 'weight', 'max_hr', 'rest_hr', 'vo2max']
 
 
-class DateField(f.DateField):
-    """
-    A custom data field witch uses a date as type in an input tag.
-    """
-    widget = f.widgets.Input(input_type="date")
-
-    def __init__(self, label=None, validators=None, **kwargs):
-        super(DateField, self).__init__(label, validators, **kwargs)
-        self.format = '%Y-%d-%m'
-
+class MyValidator():
+    def validity_check(self, field, limit):
+        if len(field.data) < limit:
+            raise ValidationError('Date must be at least : ' + limit)
 
 
 class FloatInput(wtcore.Input):
@@ -52,22 +46,17 @@ class FloatInput(wtcore.Input):
         return wtcore.HTMLString('<input %s>' % self.html_params(name=field.name, id=field.id, type="number", step="0.1", min="0", value="1"))
 
 
-class FloatField(f.FloatField):
-    """
-    A custom data field witch uses FloatInput as widget.
-    """
-    widget = FloatInput()
-
-    def __init__(self, label=None, validators=None, **kwargs):
-        super(FloatField, self).__init__(label, validators, **kwargs)
-        self.format = format
-
-
 class TrainingObjectiveForm(FlaskForm):
-    start_date = DateField('Start date', validators=[DataRequired(message='Not a valid date format')])
-    end_date = DateField('End date', validators=[DataRequired(message='Not a valid date format')])
-    kilometers_to_run = FloatField('Kilometers to run', validators=[
-        DataRequired(),
-        NumberRange(min=0.001, message='You need at least a meter to run')])
+    start_date = f.DateField('Start date',
+                             validators=[DataRequired(message='Not a valid date format')],
+                             widget = f.widgets.Input(input_type="date"))
+    end_date = f.DateField('End date',
+                           validators=[DataRequired(message='Not a valid date format')],
+                           widget = f.widgets.Input(input_type="date"))
+    kilometers_to_run = f.FloatField('Kilometers to run',
+                                     validators=[
+                                        DataRequired(),
+                                        NumberRange(min=0.001, message='You need at least a meter to run')],
+                                     widget=FloatInput())
 
     display = ['start_date', 'end_date', 'kilometers_to_run']
