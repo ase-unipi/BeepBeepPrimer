@@ -72,7 +72,7 @@ class FloatInput(wtcore.Input):
             name=field.name,
             id=field.id,
             type="number",
-            step="0.1",
+            step="any",
             min="0",
             value="1"))
 
@@ -86,7 +86,7 @@ class TrainingObjectiveForm(FlaskForm):
                                        NotLessThan('start_date')],
                            widget=f.widgets.Input(input_type="date"))
     kilometers_to_run = f.FloatField('Kilometers to run',
-                                     validators=[DataRequired(),
+                                     validators=[DataRequired('You need at least a meter to run'),
                                                  NumberRange(min=0.001, message='You need at least a meter to run')],
                                      widget=FloatInput())
 
