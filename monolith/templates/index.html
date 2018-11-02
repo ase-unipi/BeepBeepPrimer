@@ -13,9 +13,9 @@
 
     <h2>Your last 10 runs</h2>
     {% for run in runs%}
-      <div>
+      <a href={{url_for('runs.run', id=run.id)}}>
       {{run.name}}
-      </div>
+      </a>
     {% endfor %}
   {% endif %}
 
