@@ -2,7 +2,6 @@ from flask_wtf import FlaskForm
 import wtforms as f
 import wtforms.widgets.core as wtcore
 from wtforms.validators import DataRequired, NumberRange, ValidationError
-from wtforms_components import DateRange
 
 class LoginForm(FlaskForm):
     email = f.StringField('email', validators=[DataRequired()])
