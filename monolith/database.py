@@ -70,6 +70,6 @@ class Training_Objective(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     start_date = db.Column(db.DateTime)
     end_date = db.Column(db.DateTime)
-    kilometers_to_run = db.Column(db.Integer)
+    kilometers_to_run = db.Column(db.Float)
     runner_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     runner = relationship('User', foreign_keys='Training_Objective.runner_id')

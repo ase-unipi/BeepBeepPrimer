@@ -26,6 +26,41 @@
       </table>
     </form>
 
+    <form action="" method="POST">
+      <table>
+        {{ form.hidden_tag() }}
+
+        <tr>
+          {% for field in form.display %}
+              <th>{{ form[field].label }}</th>
+          {% endfor %}
+        </tr>
+
+        <tr>
+          {% for field in form.display %}
+            <td>
+              {{ form[field]() }}
+            </td>
+          {% endfor %}
+        </tr>
+        <tr>
+          {% for field in form.display %}
+            <td>
+              {% if form[field].errors %}
+                {% for e in form[field].errors %}
+                  <p class="help-block">{{ e }}</p>
+                {% endfor %}
+              {% endif %}
+            </td>
+          {% endfor %}
+        </tr>
+        </table>
+      <p>
+          <input type=submit value="Publish">
+          <input type=reset value="Reset">
+      </p>
+    </form>
+
     <h1>Your Training Objectives</h1>
     <table>
         <tr>
