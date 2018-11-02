@@ -45,9 +45,9 @@
         </tr>
         {% for objective in objectives%}
           <tr>
-            <td>{{objective.start_date}}</td>
-            <td>{{objective.end_date}}</td>
-            <td>{{objective.kilometers_to_run}}</td>
+          {% for field in form.display %}
+            <td>{{ objective[field] }}</td>
+          {% endfor %}
           </tr>
         {% endfor %}
     </table>

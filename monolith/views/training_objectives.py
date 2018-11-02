@@ -23,6 +23,6 @@ def _training_objectives():
             db.session.commit()
 
     if current_user is not None and hasattr(current_user, 'id'):
-      objectives = db.session.query(Training_Objective).filter(Training_Objective.runner_id == current_user.id)
-    
+        objectives = db.session.query(Training_Objective).filter(Training_Objective.runner_id == current_user.id)
+
     return render_template("training_objectives.html", objectives=objectives, form=form)
