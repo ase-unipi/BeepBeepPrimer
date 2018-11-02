@@ -1,38 +1,46 @@
 <html>
-<head>
-  <style>
-    table, th, td {
-        border: 1px solid black;
-        border-collapse: collapse;
-    }
-    td, tr {
-      padding: 10px;
-      text-align: center;
-    }
+  <head>
+    <style>
+      table, th, td {
+          border: 1px solid black;
+          border-collapse: collapse;
+      }
 
-    thead {
-      background-color: #dddddd;
-    }
+      td, tr {
+        padding: 10px;
+        text-align: center;
+      }
 
-  </style>
-</head>
- <body>
-  {% if not name %}
-  <h1>Resource requested is unavailable!</h1>
-  {% else %}
-  <h1>Run</h1>
-  <h3>Name: {{ name }}</h3>
-  <h3>Date: {{ date }}</h3>
-  <table>
-    <thead>
-      {% for header in headers %} <td>{{header}}</td> {% endfor %}
-    </thead>
-    <tbody>
-      <tr>
-        {% for val in values %} <td>{{val}}</td> {% endfor %}
-      </tr>
-    </tbody>
-  </table>
-  {% endif %}
- </body>
+      thead {
+        background-color: #dddddd;
+      }
+      
+      td img {
+        width: 32px;
+        height: 32px;
+      }
+    </style>
+  </head>
+
+  <body>
+    {% if not name %}
+    <h1>Resource requested is unavailable!</h1>
+    {% else %}
+    <h1>Run</h1>
+    <h3>Name: {{ name }}</h3>
+    <h3>Date: {{ date }}</h3>
+    <table>
+      <thead>
+        {% for header in headers %} <td>{{header}}</td> {% endfor %}
+        <td>Actions</td>
+      </thead>
+      <tbody>
+        <tr>
+          {% for val in values %} <td>{{val}}</td> {% endfor %}
+          <td> <a> <img class="icon" src="{{url_for('static', filename='challenge.png')}}"/> </a> </td>
+        </tr>
+      </tbody>
+    </table>
+    {% endif %}
+  </body>
 </html>
