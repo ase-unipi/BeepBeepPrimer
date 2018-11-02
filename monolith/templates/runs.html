@@ -1,5 +1,38 @@
 <html>
+<head>
+  <style>
+    table, th, td {
+        border: 1px solid black;
+        border-collapse: collapse;
+    }
+    td, tr {
+      padding: 10px;
+      text-align: center;
+    }
+
+    thead {
+      background-color: #dddddd;
+    }
+
+  </style>
+</head>
  <body>
+  {% if not name %}
+  <h1>Resource requested is unavailable!</h1>
+  {% else %}
   <h1>Run</h1>
+  <h3>Name: {{ name }}</h3>
+  <h3>Date: {{ date }}</h3>
+  <table>
+    <thead>
+      {% for header in headers %} <td>{{header}}</td> {% endfor %}
+    </thead>
+    <tbody>
+      <tr>
+        {% for val in values %} <td>{{val}}</td> {% endfor %}
+      </tr>
+    </tbody>
+  </table>
+  {% endif %}
  </body>
 </html>
