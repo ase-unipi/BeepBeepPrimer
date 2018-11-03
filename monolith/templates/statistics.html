@@ -1,0 +1,76 @@
+<html>
+  <head>
+    <!-- <link rel="stylesheet" href="{{url_for('static', filename='style.css')}}"> !-->
+  </head>
+
+  <body>
+
+
+   {% if current_user.is_authenticated %}
+        <h1> {{ current_user.email }}'s Statistics of the last 10 runs</h1>
+
+       <br>
+       <hr>
+
+        <!-- If the user hasn't performed any run yet-->
+        {% if not runs%}
+            <h1>Resources requested are not available! Try again when you have actually registered a run!</h1>
+        {% else %}
+             <!-- User successfully logged in and does have runs !-->
+            <h3> Distance over Time </h3>
+
+             {% if distance_plot_filename %}
+                 <img src="{{url_for(plots_directory, filename=distance_plot_filename)}}"/>
+             {% endif %}
+
+            <br>
+            <hr>
+
+            <h3> Average Speed over Time </h3>
+
+             {% if avg_speed_plot_filename %}
+                <img src="{{url_for(plots_directory, filename=avg_speed_plot_filename)}}"/>
+             {% endif %}
+
+            <br>
+            <hr>
+
+            <h3> Average Heartrates over Time</h3>
+
+             {% if avg_heartrate_plot_filename %}
+                <img src="{{url_for(plots_directory, filename=avg_heartrate_plot_filename)}}"/>
+             {% else %}
+                 <p> No data available for Heart Rates!</p>
+             {% endif %}
+
+            <br>
+            <hr>
+
+            <h3> Runs' Duration </h3>
+
+             {% if elapsed_times_plot_filename %}
+                <img src="{{url_for(plots_directory, filename=elapsed_times_plot_filename)}}"/>
+             {% endif %}
+
+            <br>
+            <hr>
+
+              <h3> Total Elevation Gain </h3>
+
+             {% if elevation_gain_filename %}
+                <img src="{{url_for(plots_directory, filename=elevation_gain_filename)}}"/>
+             {% endif %}
+
+
+
+
+
+        {% endif %}
+
+    {% else %}
+       <h1> You need to be logged in to view your Statistics!</h1>
+
+    {% endif %}
+
+  </body>
+</html>
