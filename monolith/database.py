@@ -25,6 +25,7 @@ class User(db.Model):
     is_admin = db.Column(db.Boolean, default=False)
 
     run = relationship('Run', cascade='delete')
+    objective = relationship('Training_Objective', cascade='delete')
 
     is_anonymous = False
 
