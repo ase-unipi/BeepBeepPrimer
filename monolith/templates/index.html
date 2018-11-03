@@ -1,24 +1,45 @@
-<h1>Runnerly</h1>
+<html>
+  <head>
+    <link rel="stylesheet" href="{{url_for('static', filename='style.css')}}">
+  </head>
 
-{% if current_user.is_authenticated %}
-    Hi {{ current_user.email }}! <a href="/logout">Log out</a> <a href="/remove_user">Delete Account</a>
+  <body>
+    <h1>Runnerly</h1>
 
-  {% if not current_user.strava_token %}
-    <a href="{{strava_auth_url}}">Authorize Strava Access</a>
-  {% else %}
-    {% if total_average_speed %}
-      <h2>Average speed of all your run</h2>
-      <p>{{total_average_speed}} m/s</p>
+    {% if current_user.is_authenticated %}
+        Hi {{ current_user.email }}! <a href="/logout">Log out</a> <a href="/remove_user">Delete Account</a>
+
+      {% if not current_user.strava_token %}
+        <a href="{{strava_auth_url}}">Authorize Strava Access</a>
+      {% else %}
+        {% if total_average_speed %}
+          <h2>Average speed of all your run</h2>
+          <p>{{total_average_speed}} m/s</p>
+        {% endif %}
+
+        <h2>Your last 10 runs</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Run name</th>
+              <th colspan="2">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for run in runs%}
+            <tr>
+              <td> {{run.name}} </td>
+              <td class="text-center"> <a href="{{url_for('runs.run', id=run.id)}}""> <img class="icon" src="{{url_for('static', filename='view.png')}}"/> </a> </td>
+              <td class="text-center"> <a> <img class="icon" src="{{url_for('static', filename='challenge.png')}}"/> </a> </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        
+      {% endif %}
+
+    {% else %}
+      Hi Anonymous, <a href="/login">Log in</a> <a href="/create_user">Create user</a>
     {% endif %}
-
-    <h2>Your last 10 runs</h2>
-    {% for run in runs%}
-      <div>
-      {{run.name}}
-      </div>
-    {% endfor %}
-  {% endif %}
-
-{% else %}
-  Hi Anonymous, <a href="/login">Log in</a> <a href="/create_user">Create user</a>
-{% endif %}
+  </body>
+</html>
