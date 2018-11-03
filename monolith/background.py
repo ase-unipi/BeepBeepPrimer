@@ -1,5 +1,5 @@
 from celery import Celery
-from stravalib import Client
+from stravalib import client as c # Need to expose the ApiV3 import from stravalib.client (don't ask...)
 from monolith.database import db, User, Run
 
 BACKEND = BROKER = 'redis://localhost:6379'
@@ -12,6 +12,7 @@ _APP = None
 def fetch_all_runs():
     global _APP
     # lazy init
+    print(_APP)
     if _APP is None:
         from monolith.app import create_app
         app = create_app()
@@ -49,10 +50,12 @@ def activity2run(user, activity):
 
 
 def fetch_runs(user):
-    client = Client(access_token=user.strava_token)
+    client = c.Client(access_token=user.strava_token)
+    print(client.protocol)
     runs = 0
 
     for activity in client.get_activities(limit=10):
+        print(activity)
         if activity.type != 'Run':
             continue
         q = db.session.query(Run).filter(Run.strava_id == activity.id)
