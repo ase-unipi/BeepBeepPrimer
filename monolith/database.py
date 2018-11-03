@@ -63,3 +63,15 @@ class Run(db.Model):
     total_elevation_gain = db.Column(db.Float)
     runner_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     runner = relationship('User', foreign_keys='Run.runner_id')
+
+class Challenge(db.Model):
+    __tablename__ = 'challenge'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    run_challenged_id = db.Column(db.Integer, db.ForeignKey('run.id'))
+    challenged = relationship('Run', foreign_keys='Challenge.run_challenged_id')
+    run_challenger_id = db.Column(db.Integer, db.ForeignKey('run.id'))
+    challenger = relationship('Run', foreign_keys='Challenge.run_challenger_id')
+    runner_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    runner = relationship('User', foreign_keys='Challenge.runner_id') 
+    start_date = db.Column(db.DateTime)
+    result = db.Column(db.Boolean, default=False)

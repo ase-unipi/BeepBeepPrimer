@@ -1,0 +1,101 @@
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <style>
+    table, th, td {
+        border: 1px solid black;
+        border-collapse: collapse;
+    }
+    td, tr {
+        padding: 10px;
+        text-align: center;
+    }
+
+    thead {
+        background-color: #dddddd;
+    }
+    td img {
+        width: 32px;
+        height: 32px;
+    }
+  </style>
+</head>
+ <body>
+  <h1>Challenge yourself!</h1>
+  {% if challenge_id==0 %}
+    <div>
+      <h2>Choose the Run you want to challenge</h2>
+      <table>
+        <thead>
+          <td> Select </td>
+          <td> Title </td>
+          <td> Date </td>
+          <td> Distance </td>
+          <td> Time </td>
+        </thead>
+        <tbody>
+          {% for run in runs %}
+          <tr>
+            <td> <a href="{{url_for('user_challenge.create_challenge', id=run.id)}}""> <img class="icon" src="{{url_for('static', filename='challenge.png')}}"/> </a> </td>
+            <td>{{ run.name }}</td>
+            <td>{{ run.start_date }}</td>
+            <td>{{ run.distance }}</td>
+            <td>{{ run.elapsed_time }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <h2> The challenge has begun! </h2>
+    <h3> Exceed yourself </h3>
+    <table>
+        <thead>
+          <td> Title </td>
+          <td> Distance </td>
+          <td> Time </td>
+        </thead>
+        <tbody>
+          <tr>
+            <td>{{ run_choice.name }}</td>
+            <td>{{ run_choice.distance }}</td>
+            <td>{{ run_choice.elapsed_time }}</td>
+          </tr>
+        </tbody>
+      </table>
+      <p> <a href="/fetch">FETCH</a> your latest results and choice which one that could win the challenge </p>
+
+     <h2>Choice yout best run!</h2>
+      <div>
+        <table>
+        <thead>
+          <td> Select </td>
+          <td> Title </td>
+          <td> Date </td>
+          <td> Distance </td>
+          <td> Time </td>
+        </thead>
+        <tbody>
+          {% for run in runs %}
+          <tr>
+            <td> <a href="{{url_for('user_challenge.terminate_challenge', id_challenge=challenge_id,id_challenged=run_choice.id, id_challenger=run.id)}}"> <img class="icon" src="{{url_for('static', filename='challenge.png')}}"/></a> 
+            </td>
+            <td>{{ run.name }}</td>
+            <td>{{ run.start_date }}</td>
+            <td>{{ run.distance }}</td>
+            <td>{{ run.elapsed_time }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      </div>
+  {% endif %}
+
+ </body>
+</html>
+
+

@@ -30,11 +30,13 @@
             <tr>
               <td> {{run.name}} </td>
               <td class="text-center"> <a href="{{url_for('runs.run', id=run.id)}}""> <img class="icon" src="{{url_for('static', filename='view.png')}}"/> </a> </td>
-              <td class="text-center"> <a> <img class="icon" src="{{url_for('static', filename='challenge.png')}}"/> </a> </td>
+              <td class="text-center"> <a href="{{url_for('user_challenge.create_challenge', id=run.id)}}""> <img class="icon" src="{{url_for('static', filename='challenge.png')}}"/> </a> </td>
             </tr>
             {% endfor %}
           </tbody>
         </table>
+        
+        <h2> <a href="/challenges"> Check your challenges </a></h2> 
         
       {% endif %}
 
