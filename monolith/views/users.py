@@ -1,4 +1,4 @@
-from flask import Blueprint, redirect, render_template, request, flash
+from flask import Blueprint, redirect, render_template, request, flash, make_response
 from flask_login import login_required, current_user, logout_user
 from monolith.database import db, User, Run
 from monolith.auth import admin_required
@@ -22,7 +22,7 @@ def create_user():
         if form.validate_on_submit():
             new_user = User()
             form.populate_obj(new_user)
-            new_user.set_password(form.password.data) #pw should be hashed with some salt
+            new_user.set_password(form.password.data)  # pw should be hashed with some salt
             db.session.add(new_user)
             db.session.commit()
             return redirect('/users')
@@ -49,6 +49,6 @@ def delete_user():
                 return redirect('/')
             else:
                 flash("Incorrect password", category='error')
+                return make_response(render_template("delete_user.html", form=form), 401)
 
     return render_template("delete_user.html", form=form)
-
