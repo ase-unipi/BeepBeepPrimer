@@ -44,6 +44,7 @@ class TrainingObjectiveForm(FlaskForm):
     kilometers_to_run = f.FloatField('Kilometers to run',
                                      validators=[DataRequired('You need at least a meter to run'),
                                                  NumberRange(min=0.001, message='You need at least a meter to run')],
-                                     widget=fc.FloatInput())
+                                     widget=fc.FloatInput(),
+                                     filters=[lambda value: float('%.3f' % float(value)) if value is not None else value])
 
     display = ['start_date', 'end_date', 'kilometers_to_run']
