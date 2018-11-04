@@ -1,14 +1,15 @@
-from flask import Blueprint, jsonify
-from monolith.background import fetch_all_runs
-from monolith.auth import strava_token_required
-
+from flask import Blueprint, request, redirect
+from monolith.background import fetch_runs
+from monolith.auth import strava_token_required, login_required
+from flask_login import current_user
 
 strava = Blueprint('strava', __name__)
 
 
 @strava.route('/fetch')
 @strava_token_required
-def fetch_runs():
-    res = fetch_all_runs.delay()
+@login_required
+def fetch():
+    res = fetch_runs.delay(current_user.id)
     res.wait()
-    return jsonify(res.result)
+    return request.referrer or redirect('/')
