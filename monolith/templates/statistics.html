@@ -25,7 +25,8 @@
              {% if not distance_plot_filename %}
                 <p> Distance plot could not be generated!</p>
                 {% else %}
-                <img src="{{url_for(plots_directory, filename=distance_plot_filename)}}"/>
+
+                 <img src="{{url_for(plots_html_directory, filename=distance_plot_filename)}}" />
              {% endif %}
 
             <br>
@@ -36,7 +37,7 @@
              {% if not avg_speed_plot_filename %}
                   <p> Average speed plot could not be generated!</p>
                 {% else %}
-                    <img src="{{url_for(plots_directory, filename=avg_speed_plot_filename)}}"/>
+                    <img src="{{url_for(plots_html_directory, filename=avg_speed_plot_filename)}}"/>
              {% endif %}
 
             <br>
@@ -47,7 +48,7 @@
              {% if not avg_heartrate_plot_filename %}
                   <p> Average heartrates' plot could not be generated!</p>
             {% else %}
-                <img src="{{url_for(plots_directory, filename=avg_heartrate_plot_filename)}}"/>
+                <img src="{{url_for(plots_html_directory, filename=avg_heartrate_plot_filename)}}"/>
              {% endif %}
 
             <br>
@@ -58,7 +59,7 @@
              {% if not elapsed_times_plot_filename %}
                   <p> Runs' duration plot could not be generated!</p>
                 {% else %}
-                <img src="{{url_for(plots_directory, filename=elapsed_times_plot_filename)}}"/>
+                <img src="{{url_for(plots_html_directory, filename=elapsed_times_plot_filename)}}"/>
              {% endif %}
 
             <br>
@@ -69,7 +70,7 @@
             {% if not elevation_gain_filename %}
                   <p> Elevation gain plot could not be generated!</p>
             {% else %}
-                <img src="{{url_for(plots_directory, filename=elevation_gain_filename)}}"/>
+                <img src="{{url_for(plots_html_directory, filename=elevation_gain_filename)}}"/>
             {% endif %}
 
 

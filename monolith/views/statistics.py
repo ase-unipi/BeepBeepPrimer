@@ -14,7 +14,8 @@ import matplotlib.pyplot as plt
 
 statistics = Blueprint('statistics', __name__)
 
-PLOTS_DIRECTORY = "static"
+PLOTS_DIRECTORY = "monolith/static"
+PLOTS_HTML_DIRECTORY = "static"
 PLOTS_FORMAT = ".png"
 
 
@@ -55,11 +56,14 @@ def stats():
                 #saving into lists completed, now let's get plotting!
                 #need to save plots on disk before actually showing them in the page!
 
+                #now let's just reverse the order before plotting so as to have the most recent on the right-hand side
+                #reverse acts in place, no need to assign to a new variable!
+
                 x_label = "Run Name"
                 distance_plot_filename = create_plot(runner_id, run_names, distances, x_label, "Distance (m)", "Distance of your last 10 runs", 'distance', 'blue', 1)
                 avg_speed_plot_filename = create_plot(runner_id, run_names, average_speeds, x_label, "Average Speed (Km/h)", "Average speed of your last 10 runs", 'average_speed', 'g', 2)
                 avg_heartrate_plot_filename = create_plot(runner_id, run_names, average_heartrates, x_label, "Heartrate (hrpm)", "Average Heartrate of your last 10 runs", 'average_heartrate', 'orange', 2)
-                elapsed_times_plot_filename = create_plot(runner_id, run_names, elapsed_times, x_label, "Elapsed time (s)", "Duration time of your last 10 runss", 'elapsed_time', 'red', 2)
+                elapsed_times_plot_filename = create_plot(runner_id, run_names, elapsed_times, x_label, "Elapsed time (s)", "Duration time of your last 10 runs", 'elapsed_time', 'red', 2)
                 elevation_gain_filename = create_plot(runner_id, run_names, total_elevation_gains, x_label, "Total Elevation Gain (m)", "Total elevation gain of your last 10 runs", 'elevation_gain', 'brown', 2)
 
         else:
@@ -72,7 +76,9 @@ def stats():
             elapsed_times_plot_filename = None
             elevation_gain_filename = None
 
-    return render_template("statistics.html", runs=runs, plots_directory=PLOTS_DIRECTORY, distance_plot_filename=distance_plot_filename,
+
+
+    return render_template("statistics.html", runs=runs, plots_html_directory=PLOTS_HTML_DIRECTORY, distance_plot_filename=distance_plot_filename,
         avg_speed_plot_filename=avg_speed_plot_filename, avg_heartrate_plot_filename=avg_heartrate_plot_filename,
         elapsed_times_plot_filename=elapsed_times_plot_filename, elevation_gain_filename=elevation_gain_filename,
         runner_id=runner_id)
@@ -84,7 +90,7 @@ def stats():
 def create_plot(runner_id, x_values, y_values, xlabel, ylabel, title, filename, color, plot_type):
     filename_output = None
 
-    if len(y_values) > 0:
+    if  len(y_values) > 0:
         if plot_type == 1:
             plt.plot(x_values, y_values, color=color)
         elif plot_type == 2:
