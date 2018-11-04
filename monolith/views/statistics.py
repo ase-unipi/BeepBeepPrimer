@@ -34,7 +34,7 @@ def stats():
     average_heartrates = []
     total_elevation_gains = []
     elapsed_times = []
-
+    run_ids = []
 
     runner_id = current_user.id
 
@@ -51,6 +51,12 @@ def stats():
                 total_elevation_gains.append(run.total_elevation_gain)
                 elapsed_times.append(run.elapsed_time)
                 run_names.append(run.name)
+                run_ids.append(run.id)
+
+
+                run_names_concatenated = concatenate_run_name_id(run_names, run_ids)
+
+
                 if(run.average_heartrate != None):
                     average_heartrates.append(run.average_heartrate)
                 #saving into lists completed, now let's get plotting!
@@ -60,11 +66,11 @@ def stats():
                 #reverse acts in place, no need to assign to a new variable!
 
                 x_label = "Run Name"
-                distance_plot_filename = create_plot(runner_id, run_names, distances, x_label, "Distance (m)", "Distance of your last 10 runs", 'distance', 'blue', 1)
-                avg_speed_plot_filename = create_plot(runner_id, run_names, average_speeds, x_label, "Average Speed (Km/h)", "Average speed of your last 10 runs", 'average_speed', 'g', 2)
-                avg_heartrate_plot_filename = create_plot(runner_id, run_names, average_heartrates, x_label, "Heartrate (hrpm)", "Average Heartrate of your last 10 runs", 'average_heartrate', 'orange', 2)
-                elapsed_times_plot_filename = create_plot(runner_id, run_names, elapsed_times, x_label, "Elapsed time (s)", "Duration time of your last 10 runs", 'elapsed_time', 'red', 2)
-                elevation_gain_filename = create_plot(runner_id, run_names, total_elevation_gains, x_label, "Total Elevation Gain (m)", "Total elevation gain of your last 10 runs", 'elevation_gain', 'brown', 2)
+                distance_plot_filename = create_plot(runner_id, run_names_concatenated, distances, x_label, "Distance (m)", "Distance of your last 10 runs", 'distance', 'blue', 1)
+                avg_speed_plot_filename = create_plot(runner_id, run_names_concatenated, average_speeds, x_label, "Average Speed (Km/h)", "Average speed of your last 10 runs", 'average_speed', 'g', 2)
+                avg_heartrate_plot_filename = create_plot(runner_id, run_names_concatenated, average_heartrates, x_label, "Heartrate (hrpm)", "Average Heartrate of your last 10 runs", 'average_heartrate', 'orange', 2)
+                elapsed_times_plot_filename = create_plot(runner_id, run_names_concatenated, elapsed_times, x_label, "Elapsed time (s)", "Duration time of your last 10 runs", 'elapsed_time', 'red', 2)
+                elevation_gain_filename = create_plot(runner_id, run_names_concatenated, total_elevation_gains, x_label, "Total Elevation Gain (m)", "Total elevation gain of your last 10 runs", 'elevation_gain', 'brown', 2)
 
         else:
             #user doesn't have any runs or has not connected the Strava account
@@ -106,3 +112,9 @@ def create_plot(runner_id, x_values, y_values, xlabel, ylabel, title, filename, 
     return filename_output
 
 
+#Used to distinguish runs with the same name
+def concatenate_run_name_id(run_names, run_ids):
+    run_names_concatenated = []
+    for run_id, run_name in zip(run_ids, run_names):
+        run_names_concatenated.append(str(run_id) + "_" + run_name)
+    return run_names_concatenated
