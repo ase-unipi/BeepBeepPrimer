@@ -29,3 +29,4 @@ class UserForm(FlaskForm):
 
     display = ['email', 'firstname', 'lastname', 'password',
                'age', 'weight', 'max_hr', 'rest_hr', 'vo2max']
+

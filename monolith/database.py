@@ -75,3 +75,4 @@ class Challenge(db.Model):
     runner = relationship('User', foreign_keys='Challenge.runner_id') 
     start_date = db.Column(db.DateTime)
     result = db.Column(db.Boolean, default=False)
+

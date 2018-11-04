@@ -1,28 +1,6 @@
 <html>
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-  <style>
-    table, th, td {
-        border: 1px solid black;
-        border-collapse: collapse;
-    }
-    td, tr {
-        padding: 10px;
-        text-align: center;
-    }
-
-    thead {
-        background-color: #dddddd;
-    }
-    td img {
-        width: 32px;
-        height: 32px;
-    }
-  </style>
+      <link rel="stylesheet" href="{{url_for('static', filename='style.css')}}">
 </head>
  <body>
   <h1>Your challenges</h1>
@@ -43,6 +21,7 @@
                     <td> Title </td>
                     <td> Date </td>
                     <td> Distance </td>
+                    <td> AVG Speed </td>
                     <td> Time </td>
                   </tr>
                 </thead>
@@ -51,6 +30,7 @@
                       <td> {{ results[result][0].name }} </td>
                       <td> {{ results[result][0].start_date }}</td>
                       <td> {{ results[result][0].distance }}</td>
+                      <td> {{ results[result][0].average_speed }}
                       <td> {{ results[result][0].elapsed_time }}</td>
                     </tr>
                 </tbody>
@@ -63,6 +43,7 @@
                     <td> Title </td>
                     <td> Date </td>
                     <td> Distance </td>
+                    <td> AVG Speed </td>
                     <td> Time </td>
                   </tr>
                 </thead>
@@ -72,6 +53,7 @@
                       <td> {{ results[result][1].name }}</td>
                       <td> {{ results[result][1].start_date }}</td>
                       <td> {{ results[result][1].distance }}</td>
+                      <td> {{ results[result][1].average_speed }}</td>
                       <td> {{ results[result][1].elapsed_time }}</td>
                       {% endif %}
                     </tr>
@@ -81,6 +63,7 @@
           </tr>
         </th>
       </table>
+      <form action="{{ url_for('user_challenge.complete_challenge') }}" method="post">
       {% if results[result][1] is not none %}
         Result: 
           {% if result.result %}
@@ -89,8 +72,10 @@
             <p> You Lost! </p>
           {% endif %}
       {% else %}
-        <a href="{{url_for('user_challenge.complete_challenge', id_challenge=result.id, id_run=results[result][0].id)}}""> Complete the challenge </a>
+           <input type="hidden" name="id_challenge" value={{result.id}} />
+            <a href="#" onclick="document.forms[{{result.id}}-1].submit()">  Complete the challenge </a>
       {% endif %}
+      </form>
     <h1></h1>
     </div>
     {% endfor %}

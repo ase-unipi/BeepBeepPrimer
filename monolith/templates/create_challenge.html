@@ -1,28 +1,6 @@
 <html>
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-  <style>
-    table, th, td {
-        border: 1px solid black;
-        border-collapse: collapse;
-    }
-    td, tr {
-        padding: 10px;
-        text-align: center;
-    }
-
-    thead {
-        background-color: #dddddd;
-    }
-    td img {
-        width: 32px;
-        height: 32px;
-    }
-  </style>
+      <link rel="stylesheet" href="{{url_for('static', filename='style.css')}}">
 </head>
  <body>
   <h1>Challenge yourself!</h1>
@@ -35,15 +13,21 @@
           <td> Title </td>
           <td> Date </td>
           <td> Distance </td>
+          <td> AVG Speed </td>
           <td> Time </td>
         </thead>
         <tbody>
           {% for run in runs %}
           <tr>
-            <td> <a href="{{url_for('user_challenge.create_challenge', id=run.id)}}""> <img class="icon" src="{{url_for('static', filename='challenge.png')}}"/> </a> </td>
+            <td> 
+              <form action="{{ url_for('user_challenge.create_challenge') }}" method="post">
+               <input type="hidden" name="id_run" value={{run.id}} />
+                <a href="#" onclick="document.forms[{{run.id}}-1].submit()"> 
+                <img class="icon" src="{{url_for('static', filename='challenge.png')}}"/> </a> </form> </td>
             <td>{{ run.name }}</td>
             <td>{{ run.start_date }}</td>
             <td>{{ run.distance }}</td>
+            <td>{{ run.average_speed }}</td>
             <td>{{ run.elapsed_time }}</td>
           </tr>
           {% endfor %}
@@ -57,12 +41,14 @@
         <thead>
           <td> Title </td>
           <td> Distance </td>
+          <td> AVG Speed </td>
           <td> Time </td>
         </thead>
         <tbody>
           <tr>
-            <td>{{ run_choice.name }}</td>
-            <td>{{ run_choice.distance }}</td>
+            <td>{{  run_choice.name }}</td>
+            <td>{{  run_choice.distance }}</td>
+            <td>{{  run_choice.average_speed }}
             <td>{{ run_choice.elapsed_time }}</td>
           </tr>
         </tbody>
@@ -77,16 +63,23 @@
           <td> Title </td>
           <td> Date </td>
           <td> Distance </td>
+          <td> AVG Speed </td>
           <td> Time </td>
         </thead>
         <tbody>
           {% for run in runs %}
           <tr>
-            <td> <a href="{{url_for('user_challenge.terminate_challenge', id_challenge=challenge_id,id_challenged=run_choice.id, id_challenger=run.id)}}"> <img class="icon" src="{{url_for('static', filename='challenge.png')}}"/></a> 
-            </td>
-            <td>{{ run.name }}</td>
-            <td>{{ run.start_date }}</td>
-            <td>{{ run.distance }}</td>
+            <td> 
+              <form action="{{ url_for('user_challenge.terminate_challenge') }}" method="post">
+                <input type="hidden" name="id_challenger" value={{run.id}} />
+                <input type="hidden" name="id_challenge" value={{challenge_id}} />
+                  <a href="#" onclick="document.forms[{{loop.index}}-1].submit()"> 
+                  <img class="icon" src="{{url_for('static', filename='challenge.png')}}"/></a> </form> </td>
+              
+            <td>{{  run.name }}</td>
+            <td>{{  run.start_date }}</td>
+            <td>{{  run.distance }}</td>
+            <td>{{  run.average_speed }}
             <td>{{ run.elapsed_time }}</td>
           </tr>
           {% endfor %}
