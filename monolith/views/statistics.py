@@ -1,6 +1,6 @@
-from flask import Blueprint, render_template, request
+from flask import Blueprint, render_template, request, g
 from monolith.database import db, Run
-from monolith.auth import current_user, login_required, nocache
+from monolith.auth import current_user, login_required
 from enum import Enum
 
 
@@ -24,7 +24,6 @@ PLOTS_FORMAT = ".png"
 
 @statistics.route('/statistics', methods=['GET'])
 @login_required
-@nocache
 def stats():
     #plotted on the x axis
     starting_dates = []
@@ -54,25 +53,25 @@ def stats():
                 elapsed_times.append(run.elapsed_time)
                 run_names.append(run.name)
                 run_ids.append(run.id)
-
-
-                run_names_concatenated = concatenate_run_name_id(run_names, run_ids)
-
-
-                if(run.average_heartrate != None):
+                if (run.average_heartrate != None):
                     average_heartrates.append(run.average_heartrate)
-                #saving into lists completed, now let's get plotting!
-                #need to save plots on disk before actually showing them in the page!
 
-                #now let's just reverse the order before plotting so as to have the most recent on the right-hand side
-                #reverse acts in place, no need to assign to a new variable!
+            #saving into lists completed, now let's get plotting!
+            #need to save plots on disk before actually showing them in the page!
+            #now let's just reverse the order so as to have the most recent on the right-hand side
+            #reverse acts in place, no need to assign to a new variable!
 
-                x_label = "Run Name"
-                distance_plot_filename = create_plot(runner_id, run_names_concatenated, distances, x_label, "Distance (m)", "Distance of your last 10 runs", 'distance', 'blue', 1)
-                avg_speed_plot_filename = create_plot(runner_id, run_names_concatenated, average_speeds, x_label, "Average Speed (Km/h)", "Average speed of your last 10 runs", 'average_speed', 'g', 2)
-                avg_heartrate_plot_filename = create_plot(runner_id, run_names_concatenated, average_heartrates, x_label, "Heartrate (hrpm)", "Average Heartrate of your last 10 runs", 'average_heartrate', 'orange', 2)
-                elapsed_times_plot_filename = create_plot(runner_id, run_names_concatenated, elapsed_times, x_label, "Elapsed time (s)", "Duration time of your last 10 runs", 'elapsed_time', 'red', 2)
-                elevation_gain_filename = create_plot(runner_id, run_names_concatenated, total_elevation_gains, x_label, "Total Elevation Gain (m)", "Total elevation gain of your last 10 runs", 'elevation_gain', 'brown', 2)
+            run_names_concatenated = concatenate_run_name_id(run_names, run_ids)
+            run_names_concatenated.reverse()
+
+            x_label = "Run Name"
+            distance_plot_filename = create_plot(runner_id, run_names_concatenated, distances, x_label, "Distance (m)", "Distance of your last 10 runs", 'distance', 'blue', 1)
+            avg_speed_plot_filename = create_plot(runner_id, run_names_concatenated, average_speeds, x_label, "Average Speed (Km/h)", "Average speed of your last 10 runs", 'average_speed', 'g', 2)
+            avg_heartrate_plot_filename = create_plot(runner_id, run_names_concatenated, average_heartrates, x_label, "Heartrate (hrpm)", "Average Heartrate of your last 10 runs", 'average_heartrate', 'orange', 2)
+            elapsed_times_plot_filename = create_plot(runner_id, run_names_concatenated, elapsed_times, x_label, "Elapsed time (s)", "Duration time of your last 10 runs", 'elapsed_time', 'red', 2)
+            elevation_gain_filename = create_plot(runner_id, run_names_concatenated, total_elevation_gains, x_label, "Total Elevation Gain (m)", "Total elevation gain of your last 10 runs", 'elevation_gain', 'brown', 2)
+
+
 
         else:
             #user doesn't have any runs or has not connected the Strava account
@@ -93,12 +92,16 @@ def stats():
 
 
 
+
+
 #plot_type = 1 --> line plot
 #          = 2 --> bar plot
 def create_plot(runner_id, x_values, y_values, xlabel, ylabel, title, filename, color, plot_type):
     filename_output = None
 
     if  len(y_values) > 0:
+        #reverse here as well!
+        y_values.reverse()
         if plot_type == 1:
             plt.plot(x_values, y_values, color=color)
         elif plot_type == 2:
@@ -121,5 +124,17 @@ def concatenate_run_name_id(run_names, run_ids):
         run_names_concatenated.append(str(run_id) + "_" + run_name)
     return run_names_concatenated
 
+
+@stats.after_request
+def add_header(r):
+    """
+    Add headers to both force latest IE rendering engine or Chrome Frame,
+    and also to cache the rendered page for 10 minutes.
+    """
+    r.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+    r.headers["Pragma"] = "no-cache"
+    r.headers["Expires"] = "0"
+    r.headers['Cache-Control'] = 'public, max-age=0'
+    return r
 
 
