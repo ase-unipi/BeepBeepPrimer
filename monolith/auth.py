@@ -1,7 +1,7 @@
 import functools
 from flask_login import current_user, LoginManager
 from monolith.database import User, db
-from flask import redirect
+from flask import redirect, g
 from stravalib import exc
 
 login_manager = LoginManager()
@@ -48,3 +48,9 @@ def strava_token_required(func):
                 db.session.commit()
             return redirect('/')
     return _strava_token_required
+
+def after_this_request(func):
+    if not hasattr(g, 'call_after_request'):
+        g.call_after_request = []
+    g.call_after_request.append(func)
+    return func

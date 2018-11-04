@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, g
+from flask import Blueprint, render_template, request, after_this_request, g
 from monolith.database import db, Run
 from monolith.auth import current_user, login_required
 from enum import Enum
@@ -71,8 +71,6 @@ def stats():
             elapsed_times_plot_filename = create_plot(runner_id, run_names_concatenated, elapsed_times, x_label, "Elapsed time (s)", "Duration time of your last 10 runs", 'elapsed_time', 'red', 2)
             elevation_gain_filename = create_plot(runner_id, run_names_concatenated, total_elevation_gains, x_label, "Total Elevation Gain (m)", "Total elevation gain of your last 10 runs", 'elevation_gain', 'brown', 2)
 
-
-
         else:
             #user doesn't have any runs or has not connected the Strava account
             runs = None
@@ -123,4 +121,25 @@ def concatenate_run_name_id(run_names, run_ids):
     for run_id, run_name in zip(run_ids, run_names):
         run_names_concatenated.append(str(run_id) + "_" + run_name)
     return run_names_concatenated
+
+
+@statistics.after_request
+def per_request_callbacks(response):
+    for func in getattr(g, 'call_after_request', ()):
+        response = func(response)
+    return response
+
+
+def invalidate_cache():
+    @statistics.after_request
+    def add_header(response):
+        """
+        Add headers to both force latest IE rendering engine or Chrome Frame,
+        and also to cache the rendered page for 10 minutes.
+        """
+        response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+        response.headers["Pragma"] = "no-cache"
+        response.headers["Expires"] = "0"
+        response.headers['Cache-Control'] = 'public, max-age=0'
+        return response
 
