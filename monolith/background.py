@@ -17,8 +17,8 @@ _APP = None
 
 @celery.on_after_configure.connect
 def set_up_tasks(sender, **kwargs):
-    sender.add_periodic_task(3600.00, fetch_all_runs, name='fetch_all_the_runs every hour')
-    # sender.add_periodic_task(10.00, fetch_all_runs.s(), name='fetch_all_the_runs every hour')
+    # sender.add_periodic_task(3600.00, fetch_all_runs, name='fetch_all_the_runs every hour')
+    sender.add_periodic_task(10.00, fetch_all_runs.s(), name='fetch_all_the_runs every hour')
     # use this to test the function
 
 
@@ -47,7 +47,7 @@ def fetch_all_runs():
             if user.strava_token is None:
                 continue
             print('Fetching Strava for %s' % user.email)
-            runs_fetched[user.id] = fetch_runs(user.id)
+            runs_fetched[user.id] = fetch_runs_alternative(user)
 
 
 def activity2run(user, activity):
@@ -64,6 +64,24 @@ def activity2run(user, activity):
     run.total_elevation_gain = activity.total_elevation_gain
     run.start_date = activity.start_date
     return run
+
+
+def fetch_runs_alternative(user):
+    # q = db.session.query(User).filter(User.id == user.id)
+    # user = q.first()
+    client = Client(access_token=user.strava_token)
+    runs = 0
+    for activity in client.get_activities(limit=10):
+        if activity.type != 'Run':
+            continue
+        q = db.session.query(Run).filter(Run.strava_id == activity.id)
+        run = q.first()
+        if run is None:
+            db.session.add(activity2run(user, activity))
+            runs += 1
+
+    db.session.commit()
+    return runs
 
 
 @celery.task
