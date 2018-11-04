@@ -4,6 +4,11 @@ from monolith.auth import current_user, login_required
 from enum import Enum
 
 #daniele: new dependencies added!
+
+
+import matplotlib
+#avoid usage of tkinter that led to severe compatibility issues in python3.7
+matplotlib.use('agg')
 import matplotlib.pyplot as plt
 
 
