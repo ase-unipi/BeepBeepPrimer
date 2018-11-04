@@ -124,17 +124,3 @@ def concatenate_run_name_id(run_names, run_ids):
         run_names_concatenated.append(str(run_id) + "_" + run_name)
     return run_names_concatenated
 
-
-@stats.after_request
-def add_header(r):
-    """
-    Add headers to both force latest IE rendering engine or Chrome Frame,
-    and also to cache the rendered page for 10 minutes.
-    """
-    r.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
-    r.headers["Pragma"] = "no-cache"
-    r.headers["Expires"] = "0"
-    r.headers['Cache-Control'] = 'public, max-age=0'
-    return r
-
-
