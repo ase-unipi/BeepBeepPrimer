@@ -14,13 +14,15 @@
 
         <!-- If the user hasn't performed any run yet-->
         {% if not runs%}
-            <h1>Resources requested are not available! Try again when you have actually registered a run!</h1>
+            <h1>Resources requested are not available! </h1>
+
+            <p> Try again when you have actually registered a run or have linked your Strava account ! </p>
         {% else %}
              <!-- User successfully logged in and does have runs !-->
             <h3> Distance over Time </h3>
 
              {% if distance_plot_filename %}
-                 <img src="{{url_for(plots_directory, filename=distance_plot_filename)}}"/>
+                <img src="{{url_for(plots_directory, filename=distance_plot_filename)}}"/>
              {% endif %}
 
             <br>
