@@ -1,7 +1,8 @@
 from flask import Blueprint, render_template, request
 from monolith.database import db, Run
-from monolith.auth import current_user, login_required
+from monolith.auth import current_user, login_required, nocache
 from enum import Enum
+
 
 #daniele: new dependencies added!
 
@@ -23,6 +24,7 @@ PLOTS_FORMAT = ".png"
 
 @statistics.route('/statistics', methods=['GET'])
 @login_required
+@nocache
 def stats():
     #plotted on the x axis
     starting_dates = []
@@ -118,3 +120,6 @@ def concatenate_run_name_id(run_names, run_ids):
     for run_id, run_name in zip(run_ids, run_names):
         run_names_concatenated.append(str(run_id) + "_" + run_name)
     return run_names_concatenated
+
+
+

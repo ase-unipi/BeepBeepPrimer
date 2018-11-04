@@ -3,7 +3,10 @@ from flask_login import current_user, LoginManager
 from monolith.database import User, db
 from flask import redirect
 from stravalib import exc
-
+#packages below are used for caching purposes
+from flask import make_response
+from functools import wraps, update_wrapper
+from datetime import datetime
 
 login_manager = LoginManager()
 
@@ -33,6 +36,19 @@ def login_required(func):
             return func(*args, **kw)
         return redirect('/')
     return _login_required
+
+#decorator used to avoid caching a page content (i.e: as in the case of plots for statistics)
+def nocache(view):
+    @wraps(view)
+    def no_cache(*args, **kwargs):
+        response = make_response(view(*args, **kwargs))
+        response.headers['Last-Modified'] = datetime.now()
+        response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, post-check=0, pre-check=0, max-age=0'
+        response.headers['Pragma'] = 'no-cache'
+        response.headers['Expires'] = '-1'
+        return response
+
+    return update_wrapper(no_cache, view)
 
 
 def strava_token_required(func):
