@@ -4,5 +4,6 @@ from .users import users
 from .strava import strava
 from .runs import runs
 from .training_objectives import training_objectives
+from .test import test
 
-blueprints = [home, auth, users, strava, runs, training_objectives]
+blueprints = [home, auth, users, strava, runs, training_objectives, test]
