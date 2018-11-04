@@ -58,11 +58,20 @@ class FloatInput(wtcore.Input):
     """
     A custon input tag for float numbers.
     """
+    input_type = 'number'
+
+    def __init__(self, step=None, min_=None, max_=None):
+        super(FloatInput, self).__init__()
+        self.step = step
+        self.min_ = min_
+        self.max_ = max_
+
     def __call__(self, field, **kwargs):
-        return wtcore.HTMLString('<input %s>' % self.html_params(
-            name=field.name,
-            id=field.id,
-            type="number",
-            step="any",
-            min="0",
-            value="1"))
+        if self.step:
+            kwargs['step'] = self.step
+        if self.min_:
+            kwargs['min'] = self.min_
+        if self.max_:
+            kwargs['max'] = self.max_
+
+        return super(FloatInput, self).__call__(field, **kwargs)
