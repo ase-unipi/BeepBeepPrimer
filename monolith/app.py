@@ -3,12 +3,11 @@ from flask import Flask, url_for
 from monolith.database import db, User
 from monolith.views import blueprints
 from monolith.auth import login_manager
-from monolith.views.home import page_not_found
+from monolith.views.errors import page_not_found
 
 
 def create_app():
     app = Flask(__name__)
-    app.register_error_handler(404,page_not_found)
     app.config['WTF_CSRF_SECRET_KEY'] = 'A SECRET KEY'
     app.config['SECRET_KEY'] = 'ANOTHER ONE'
     app.config['STRAVA_CLIENT_ID'] = os.environ['STRAVA_CLIENT_ID']
@@ -39,5 +38,7 @@ def create_app():
 
 if __name__ == '__main__':
     app = create_app()
+    app.register_error_handler(404,page_not_found)
     app.run()
     app.add_url_rule('/favicon.ico', redirect_to=url_for('static', filename='favicon.ico'))
+    
