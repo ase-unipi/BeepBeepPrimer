@@ -1,5 +1,5 @@
 import os
-from flask import Flask
+from flask import Flask, url_for
 from monolith.database import db, User
 from monolith.views import blueprints
 from monolith.auth import login_manager
@@ -38,3 +38,4 @@ def create_app():
 if __name__ == '__main__':
     app = create_app()
     app.run()
+    app.add_url_rule('/favicon.ico', redirect_to=url_for('static', filename='favicon.ico'))
