@@ -1,10 +1,10 @@
 <html>
     <body>
+    {% for errmess in get_flashed_messages(False,['error']) %}
+                {{ errmess }}
+    {% endfor%}
         <form action="" method="POST">
             {{ form.hidden_tag() }}
-            {% for errmess in get_flashed_messages(False,['error']) %}
-                {{ errmess }}
-            {% endfor%}
             <dl>
             {% for field in form.display %}
             <dt>{{ form[field].label }}</dt>

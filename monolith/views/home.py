@@ -17,6 +17,10 @@ def _strava_auth_url(config):
     return url
 
 
+def strava_auth_url(config):
+    return _strava_auth_url(config)
+
+
 @home.route('/')
 def index():
     if current_user is not None and hasattr(current_user, 'id'):
