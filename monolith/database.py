@@ -60,3 +60,11 @@ class Run(db.Model):
     total_elevation_gain = db.Column(db.Float)
     runner_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     runner = relationship('User', foreign_keys='Run.runner_id')
+
+
+def _delete_user(user):
+    user_id = user.get_id()
+    q = db.session.query(Run).filter(Run.runner_id == user_id)
+    q.delete(synchronize_session=False)
+    db.session.delete(user)
+    db.session.commit()

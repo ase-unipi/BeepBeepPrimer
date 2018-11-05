@@ -6,7 +6,6 @@ from stravalib import Client
 from monolith.database import db, User
 from monolith.forms import LoginForm
 
-
 auth = Blueprint('auth', __name__)
 
 
@@ -33,7 +32,8 @@ def login():
         q = db.session.query(User).filter(User.email == email)
         user = q.first()
         print(user is None)
-        print(user.authenticate(password))
+        if user is not None:
+            print(user.authenticate(password))
         if user is not None and user.authenticate(password):
             login_user(user)
             return redirect('/')

@@ -111,4 +111,4 @@ beepbeep.db
 dump.rdb
 variables.sh
 /.vscode/settings.json
-monolith/key.sh
+key.sh
