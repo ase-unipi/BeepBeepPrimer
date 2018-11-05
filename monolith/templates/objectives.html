@@ -1,0 +1,18 @@
+<html>
+
+<body>
+    <h1>Objectives</h1>
+    <ul>
+        {% for objective in objectives: %}
+        <li>
+            <div>{{objective.name}}</div>
+            <div>Start Date: {{objective.start_date}}</div>
+            <div>End Date: {{objective.end_date}}</div>
+            <div>Target Distance: {{objective.target_distance}}</div>
+            <div>runner: {{objective.runner}}</div>
+        </li>
+        {% endfor %}
+    </ul>
+</body>
+
+</html>

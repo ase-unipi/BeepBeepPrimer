@@ -27,3 +27,11 @@ class UserForm(FlaskForm):
 class DeleteForm(FlaskForm):
     password = f.PasswordField('password', validators=[DataRequired()])
     display = ['password']
+
+class ObjectiveForm(FlaskForm):
+    name = f.StringField('Name', validators=[DataRequired()])
+    start_date = f.DateField('Start date', validators=[DataRequired()])
+    end_date = f.DateField('End Date', validators=[DataRequired()])
+    target_distance = f.FloatField('Target Distance', validators=[DataRequired()])
+
+    display = ['name', 'start_date', 'end_date', 'target_distance']
