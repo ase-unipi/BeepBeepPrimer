@@ -1,5 +1,8 @@
 <html>
  <body>
+ {% for errmess in get_flashed_messages(False,['error']) %}
+                {{ errmess }}
+ {% endfor%}
   <form action="" method="POST">
     {{ form.hidden_tag() }}
     <dl>

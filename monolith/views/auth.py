@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, redirect, request
+from flask import Blueprint, render_template, redirect, request, flash, make_response
 from flask_login import (current_user, login_user, logout_user,
                          login_required)
 from stravalib import Client
@@ -37,6 +37,9 @@ def login():
         if user is not None and user.authenticate(password):
             login_user(user)
             return redirect('/')
+        else:
+            flash('Wrong email or password', category='error')
+            return make_response(render_template('login.html', form=form), 401)
     return render_template('login.html', form=form)
 
 

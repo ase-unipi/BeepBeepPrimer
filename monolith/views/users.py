@@ -1,14 +1,16 @@
 from flask import Blueprint, redirect, render_template, request, flash, make_response
-from flask_login import login_required, current_user, logout_user
+from flask_login import login_required, current_user, logout_user, login_user
 from monolith.database import db, User, Run
 from monolith.auth import admin_required
 from monolith.forms import UserForm, DeleteForm
+from monolith.views.home import home, strava_auth_url
 
 
 users = Blueprint('users', __name__)
 
 
 @users.route('/users')
+@admin_required
 def _users():
     users = db.session.query(User)
     return render_template("users.html", users=users)
@@ -22,10 +24,16 @@ def create_user():
         if form.validate_on_submit():
             new_user = User()
             form.populate_obj(new_user)
-            new_user.set_password(form.password.data)  # pw should be hashed with some salt
-            db.session.add(new_user)
-            db.session.commit()
-            return redirect('/users')
+            c = db.session.query(User).filter(new_user.email == User.email)
+            if c.first() is None:
+                new_user.set_password(form.password.data)  # pw should be hashed with some salt
+                db.session.add(new_user)
+                db.session.commit()
+                login_user(new_user)
+                return redirect(strava_auth_url(home.app.config))
+            else:
+                flash('Already existing user')
+                return make_response(render_template('create_user.html', form=form), 409)
 
     return render_template('create_user.html', form=form)
 
