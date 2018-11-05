@@ -56,10 +56,6 @@ Then, open another shell and run::
 This will run a celery microservice that can fetch runs.
 To invoke it, visit http://127.0.0.1:5000/fetch.
 
-    $ celery -A monolith.background worker -B
-
-This will run celery microservice with a periodic task to fetch runs.
-
 Once the runs are retrieved, you should see your last ten runs
 on http://127.0.0.1:5000
 
