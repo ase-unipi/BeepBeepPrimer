@@ -52,6 +52,6 @@ def new_user(client, email='marco@prova.it', firstname='marco', lastname='mario'
                                                  max_hr=max_hr,
                                                  rest_hr=rest_hr,
                                                  vo2max=vo2max),
-                       follow_redirects=True)
+                       follow_redirects=False)
 
 
