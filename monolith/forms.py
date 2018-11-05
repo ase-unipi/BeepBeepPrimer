@@ -17,15 +17,22 @@ class RemoveUserForm(FlaskForm):
 
 
 class UserForm(FlaskForm):
-    email = f.StringField('email', validators=[DataRequired()])
-    firstname = f.StringField('firstname')
-    lastname = f.StringField('lastname')
-    password = f.PasswordField('password')
-    age = f.IntegerField('age')
-    weight = f.FloatField('weight')
-    max_hr = f.IntegerField('max_hr')
-    rest_hr = f.IntegerField('rest_hr')
-    vo2max = f.FloatField('vo2max')
+    email     = f.StringField('Email', validators=[DataRequired()])
+    firstname = f.StringField('Firstname')
+    lastname  = f.StringField('Lastname')
+    password  = f.PasswordField('Password')
+    age       = f.IntegerField('Age')
+    weight    = f.FloatField('Weight')
+    max_hr    = f.IntegerField('Max Heartrate')
+    rest_hr   = f.IntegerField('Rest Heartrate')
+    vo2max    = f.FloatField('VO2 Max')
 
-    display = ['email', 'firstname', 'lastname', 'password',
-               'age', 'weight', 'max_hr', 'rest_hr', 'vo2max']
+    display = ['email',
+               'firstname',
+               'lastname',
+               'password',
+               'age',
+               'weight',
+               'max_hr',
+               'rest_hr',
+               'vo2max']
