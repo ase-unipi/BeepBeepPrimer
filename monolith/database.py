@@ -70,3 +70,4 @@ class Objective(db.Model):
     start_date = db.Column(db.DateTime)
     end_date = db.Column(db.DateTime)
     runner_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    runner = relationship('User', foreign_keys='Objective.runner_id')
