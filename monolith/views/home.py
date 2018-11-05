@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template
+from flask import Blueprint, render_template, request
 from stravalib import Client
 
 from monolith.database import db, Run
@@ -19,6 +19,11 @@ def _strava_auth_url(config):
 
 @home.route('/')
 def index():
+    if request.args.get('comparisonError') is None:
+        comparisonError = ""
+    else:
+        comparisonError = request.args.get('comparisonError')
+
     avgSpeed = 0
     if current_user is not None and hasattr(current_user, 'id'):
         runs = db.session.query(Run).filter(Run.runner_id == current_user.id)
@@ -29,6 +34,10 @@ def index():
     else:
         runs = None
     strava_auth_url = _strava_auth_url(home.app.config)
-    return render_template("index.html", runs=runs,
-                           strava_auth_url=strava_auth_url,
-                           avgSpeed=avgSpeed)
+    
+    return render_template(
+        "index.html", runs=runs,
+        strava_auth_url=strava_auth_url,
+        avgSpeed=avgSpeed,
+        comparisonError=comparisonError
+    )

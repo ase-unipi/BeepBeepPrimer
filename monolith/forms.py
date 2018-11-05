@@ -26,3 +26,6 @@ class UserForm(FlaskForm):
 class DeleteForm(FlaskForm):
     password = f.PasswordField('password', validators=[DataRequired()])
     display = ['password']
+
+class ComparisonsForm(FlaskForm):
+    runs = f.SelectMultipleField('runs')
