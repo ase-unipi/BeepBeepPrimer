@@ -90,6 +90,8 @@ def create_user():
     db.session.add(user)
     db.session.commit()
 
+def new_objective(client, ...)
+    return client.post('create_objective, data')
 
 def create_run(user, name, distance, elapsed_time, average_speed, average_heartrate, total_elevation_gain, start_date):
     run = Run()
