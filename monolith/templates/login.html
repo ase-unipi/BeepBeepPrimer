@@ -11,7 +11,7 @@
 </head>
 <body>
   
-  <form class="form-signin" action="" method="POST">
+  <form class="form-app" action="" method="POST">
     {{ form.hidden_tag() }}
     <div class="text-center mb-4">
       <img class="mb-4" src="" alt="" width="72" height="72">
@@ -33,7 +33,7 @@
     <p class="error">
     {% for errmess in get_flashed_messages(False,['error']) %}
                 <br>{{ errmess }}
- 	{% endfor%}</p>
+ 	  {% endfor%}</p>
   </form>
  </body>
 </html>
