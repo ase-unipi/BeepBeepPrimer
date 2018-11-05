@@ -12,4 +12,7 @@ strava = Blueprint('strava', __name__)
 def fetch():
     res = fetch_runs_for_user.delay(current_user.id)
     res.wait()
-    return request.referrer or redirect('/')
+    print(request.referrer)
+    if request.referrer != 'http://127.0.0.1:5000/login' and request.referrer != 'http://localhost:5000/login':
+        return redirect(request.referrer)
+    return redirect('/')

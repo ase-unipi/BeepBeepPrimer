@@ -15,13 +15,6 @@ celery = Celery(__name__, backend=BACKEND, broker=BROKER)
 _APP = None
 
 
-@celery.on_after_configure.connect
-def set_up_tasks(sender, **kwargs):
-    sender.add_periodic_task(3600.00, fetch_all_runs, name='fetch_all_the_runs every hour')
-    # sender.add_periodic_task(10.00, fetch_all_runs.s(), name='fetch_all_the_runs every hour')
-    # use this to test the function
-
-
 def create_context():
     global _APP
     # lazy init
@@ -33,20 +26,6 @@ def create_context():
     else:
         app = _APP
     return app
-
-
-@celery.task
-def fetch_all_runs():
-
-    app = create_context()
-    runs_fetched = {}
-    with app.app_context():
-        q = db.session.query(User)
-        for user in q:
-            if user.strava_token is None:
-                continue
-            print('Fetching Strava for %s' % user.email)
-            runs_fetched[user.id] = fetch_runs(user)
 
 
 @celery.task
