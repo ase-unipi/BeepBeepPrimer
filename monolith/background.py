@@ -2,13 +2,6 @@ from celery import Celery
 from stravalib import Client
 from monolith.database import db, User, Run
 
-"""
-    To have the periodic task running runs celery with
-    
-    celery -A monolith.background worker -B
-
-"""
-
 BACKEND = BROKER = 'redis://localhost:6379'
 celery = Celery(__name__, backend=BACKEND, broker=BROKER)
 
@@ -29,10 +22,10 @@ def create_context():
 
 
 @celery.task
-def fetch_runs_for_user(id):
+def fetch_runs_for_user(id_):
     app = create_context()
     with app.app_context():
-        q = db.session.query(User).filter(User.id == id)
+        q = db.session.query(User).filter(User.id == id_)
         user = q.first()
         return fetch_runs(user)
 
