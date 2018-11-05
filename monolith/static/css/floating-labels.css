@@ -18,12 +18,16 @@ body {
   background-color: #9abfe2;
 }
 
-.error{
+dt{
+  text-align: center;
+}
+
+.error, .help-block{
   text-align: center;
   color: red;
 }
 
-.form-signin {
+.form-app {
   width: 100%;
   max-width: 420px;
   padding: 20px;
