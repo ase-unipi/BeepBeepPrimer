@@ -6,8 +6,8 @@
         {% for objective in objectives: %}
         <li>
             <div>{{objective.name}}</div>
-            <div>Start Date: {{objective.start_date}}</div>
-            <div>End Date: {{objective.end_date}}</div>
+            <div>Start Date: {{objective.start_date.strftime('%Y-%m-%d')}}</div>
+            <div>End Date: {{objective.end_date.strftime('%Y-%m-%d')}}</div>
             <div>Target Distance: {{objective.target_distance}}</div>
             <div>runner: {{objective.runner}}</div>
         </li>
