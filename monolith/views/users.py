@@ -32,7 +32,7 @@ def create_user():
                 login_user(new_user)
                 return redirect(strava_auth_url(home.app.config))
             else:
-                flash('Already existing user')
+                flash('Already existing user', category='error')
                 return make_response(render_template('create_user.html', form=form), 409)
 
     return render_template('create_user.html', form=form)
