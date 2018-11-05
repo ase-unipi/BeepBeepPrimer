@@ -8,7 +8,7 @@
   {% else %}
     <h2>Your last 10 runs</h2>
     {% for run in runs %}
-      <div>{{run.name}}</div>
+      <a href="/run/{{run.id}}">{{run.name}}</a>
     {% endfor %}
     Average speed: {{total_average_speed}}<br>
     <a href="/fetch">Fetch</a>
