@@ -108,8 +108,9 @@ def create_plot(runner_id, x_values, y_values, xlabel, ylabel, title, filename, 
         filename_output = "plots/" + filename + "_" + str(runner_id) + PLOTS_FORMAT
         plt.xlabel(xlabel)
         plt.ylabel(ylabel)
+        plt.xticks(rotation=90)
         plt.title(title)
-        plt.savefig(PLOTS_DIRECTORY + "/" + filename_output)
+        plt.savefig(PLOTS_DIRECTORY + "/" + filename_output, bbox_inches="tight")
         plt.close()
 
     return filename_output
@@ -137,9 +138,9 @@ def invalidate_cache():
         Add headers to both force latest IE rendering engine or Chrome Frame,
         and also to cache the rendered page for 10 minutes.
         """
-        response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+        response.headers["Cache-Control"] = "no-cache, no-store, must-validate"
         response.headers["Pragma"] = "no-cache"
-        response.headers["Expires"] = "0"
+        response.headers["Expires"] = "-1"
         response.headers['Cache-Control'] = 'public, max-age=0'
         return response
 
