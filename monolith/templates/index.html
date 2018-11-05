@@ -23,7 +23,7 @@
     <div class="container">
       <h1 class="firstname">Hi {{ current_user.firstname }}</h1>
       {% if not current_user.strava_token %}
-        <a href="{{strava_auth_url}}">Authorize Strava Access</a>
+        <p><a class="btn btn-primary" href="{{strava_auth_url}}">Authorize Strava Access</a></p>
       {% else %}
         <h3>Your last 10 runs</h3>
         {% for run in runs %}
