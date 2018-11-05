@@ -61,3 +61,12 @@ class Run(db.Model):
     total_elevation_gain = db.Column(db.Float)
     runner_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     runner = relationship('User', foreign_keys='Run.runner_id')
+
+class Objective(db.Model):
+    __tablename__ = 'objective'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    name = db.Column(db.Unicode(128))
+    target_distance = db.Column(db.Float)
+    start_date = db.Column(db.DateTime)
+    end_date = db.Column(db.DateTime)
+    runner_id = db.Column(db.Integer, db.ForeignKey('user.id'))
