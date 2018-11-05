@@ -1,0 +1,35 @@
+
+
+li {
+    text-align: center;
+    border-bottom: 1px solid #555;
+}
+
+li:last-child {
+    border-bottom: none;
+}
+
+h2{
+	text-align: center;
+	color: #ffffff;
+	margin-bottom: 30px;
+}
+
+
+
+ul {
+	
+	border: 1px solid #555;
+    list-style-type: none;
+    width: 25%;
+    margin: 0;
+    padding: 0;
+    background-color: #191d5c;
+    height: 100%; /* Full height */
+    position: fixed; /* Make it stick, even on scroll */
+    overflow: auto; /* Enable scrolling if the sidenav has too much content */
+}
+
+body {
+  background-color: #9abfe2;
+}

@@ -35,7 +35,48 @@ dt{
   background-color: #ffffff;
 }
 
+btn-fetch{
+  background-color: #191d5c;
+}
 
+.container{
+  float: left;
+  margin-left: 90px;
+  background-color: #ffffff;
+  height: 400px;
+}
+
+h3,a,p {
+  text-align: center;
+}
+
+h2{
+  text-align: center;
+  color: #ffffff;
+  margin-bottom: 30px;
+  padding: 20px;
+}
+
+ul {
+    border: 1px solid #555;
+    padding: 0;
+    background-color: #191d5c;
+    height: 100%; /* Full height */
+    width: 150%;
+}
+
+li {
+    text-align: center;
+    border-bottom: 1px solid #555;
+}
+
+li:last-child {
+    border-bottom: none;
+}
+
+.firstname{
+  text-align: center;
+}
 .form-label-group {
   position: relative;
   margin-bottom: 1rem;

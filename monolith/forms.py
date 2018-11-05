@@ -25,5 +25,5 @@ class UserForm(FlaskForm):
 
 
 class DeleteForm(FlaskForm):
-    password = f.PasswordField('password', validators=[DataRequired()])
+    password = f.PasswordField('Password', validators=[DataRequired()])
     display = ['password']

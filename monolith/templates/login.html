@@ -10,13 +10,11 @@
   <link href="{{ url_for('static', filename='css/floating-labels.css') }}" rel="stylesheet">
 </head>
 <body>
-  
   <form class="form-app" action="" method="POST">
     {{ form.hidden_tag() }}
     <div class="text-center mb-4">
-      <h1 class="h3 mb-3 font-weight-normal">Beep Beep</h1>
-      <h4>Hi Anonymous!</h4>
-  </div>
+      <h1 class="h3 mb-3 font-weight-normal">Beep Beep Login</h1>
+    </div>
     <dl>
      {% for field in form.display %}
      <dt>{{ form[field].label }}</dt>
