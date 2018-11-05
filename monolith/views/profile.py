@@ -10,6 +10,7 @@ profile = Blueprint('profile', __name__)
 
 
 @profile.route('/profile', methods=['GET', 'POST'])
+@login_required
 def _profile():
     form = UserForm(obj=current_user)
     form.email.render_kw = {'disabled': 'disabled'}
