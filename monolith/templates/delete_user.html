@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+ <body>
+  <form action="" method="POST">
+    {{ form.hidden_tag() }}
+      <p>Deleting user <b>{{user_email}}</b>. Insert your password to confirm it.</p>
+    <dl>
+     <dt>{{ form['password'].label }}</dt>
+     <dd>{{ form['password']() }}</dd>
+       {% if form['password'].errors %}
+          {% for e in form['password'].errors %}
+           <p class="help-block">{{ e }}</p>
+          {% endfor %}
+       {% endif %}
+    </dl>
+    <p>
+    <input type=submit value="Delete">
+  </form>
+ </body>
+</html>

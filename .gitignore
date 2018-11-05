@@ -112,3 +112,4 @@ dump.rdb
 variables.sh
 /.vscode/settings.json
 ./key.sh
+./monolith/tests/__pycache__/
