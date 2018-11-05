@@ -1,0 +1,16 @@
+
+body {
+  display: flex;
+  display: -ms-flexbox;
+  -ms-flex-align: center;
+  align-items: center;
+  padding-top: 40px;
+  padding-bottom: 40px;
+  background-color: #9abfe2;
+}
+.form-signin {
+  background-color: #ffffff;
+  max-width: 420px;
+  padding: 20px;
+  margin: auto;
+}

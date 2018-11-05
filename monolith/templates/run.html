@@ -21,15 +21,21 @@
         </ul>
     </div>
     <div class="container">
-      <h1>Run {{run.name}}</h1>
-      <ul>
-        <li>Start date: {{run.start_date}}</li>
-        <li>Distance: {{run.distance}}</li>
-        <li>Elapsed time: {{run.elapsed_time}}</li>
-        <li>Avg. speed: {{run.average_speed}}</li>
-        <li>Avg. heartrate: {{run.average_heartrate}}</li>
-        <li>Elevation gain: {{run.total_elevation_gain}}</li>
-      </ul>
+      {% if run is none %}
+        {% for errmess in get_flashed_messages(False,['error']) %}
+          {{ errmess }}
+        {% endfor%}
+      {% else %}
+        <h1>Run {{run.name}}</h1>
+        <ul>
+          <li>Start date: {{run.start_date}}</li>
+          <li>Distance: {{run.distance}} meters </li>
+          <li>Elapsed time: {{run.elapsed_time // 60 }} minutes </li>
+          <li>Avg. speed: {{run.average_speed}} meters/seconds </li>
+          <li>Avg. heartrate: {{run.average_heartrate}} bps </li>
+          <li>Elevation gain: {{run.total_elevation_gain}} meters</li>
+        </ul>
+      {% endif %}
     </div>
   </body>
 </html>
