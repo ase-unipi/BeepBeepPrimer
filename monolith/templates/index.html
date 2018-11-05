@@ -30,10 +30,11 @@
             <tr>
               <td> {{run.name}} </td>
               <td class="text-center"> <a href="{{url_for('runs.run', id=run.id)}}""> <img class="icon" src="{{url_for('static', filename='view.png')}}"/> </a> </td>
-              <td> <form action="{{ url_for('user_challenge.create_challenge') }}" method="post">
+              <form action="{{ url_for('user_challenge.create_challenge') }}" method="post">
+              <td> 
                       <input type="hidden" name="id_run" value={{run.id}} />
                       <a href="#" onclick="document.forms[{{run.id}}-1].submit()"> 
-                      <img class="icon" src="{{url_for('static', filename='challenge.png')}}"/> </a> </form> </td>
+                      <img class="icon" src="{{url_for('static', filename='challenge.png')}}"/> </a> </td> </form> 
             </tr>
             {% endfor %}
           </tbody>

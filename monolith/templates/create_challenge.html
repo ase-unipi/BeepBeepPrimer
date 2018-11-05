@@ -7,7 +7,7 @@
   {% if challenge_id==0 %}
     <div>
       <h2>Choose the Run you want to challenge</h2>
-      <table>
+      <table class="challengeTable">
         <thead>
           <td> Select </td>
           <td> Title </td>
@@ -35,9 +35,8 @@
       </table>
     </div>
   {% else %}
-    <h2> The challenge has begun! </h2>
     <h3> Exceed yourself </h3>
-    <table>
+    <table class="challengeTable">
         <thead>
           <td> Title </td>
           <td> Distance </td>
@@ -46,18 +45,26 @@
         </thead>
         <tbody>
           <tr>
-            <td>{{  run_choice.name }}</td>
-            <td>{{  run_choice.distance }}</td>
-            <td>{{  run_choice.average_speed }}
-            <td>{{ run_choice.elapsed_time }}</td>
+            <td>{{  run_challenged.name }}</td>
+            <td>{{  run_challenged.distance }}</td>
+            <td>{{  run_challenged.average_speed }}
+            <td>{{  run_challenged.elapsed_time }}</td>
           </tr>
+          {% if run_challenger is not none %}
+            <tr>
+              <td>{{  run_challenger.name }}</td>
+              <td>{{  run_challenger.distance }}</td>
+              <td>{{  run_challenger.average_speed }}
+              <td>{{  run_challenger.elapsed_time }}</td>
+            </tr>
+          {% endif %}
         </tbody>
       </table>
       <p> <a href="/fetch">FETCH</a> your latest results and choice which one that could win the challenge </p>
-
+    {% if run_challenger is none %}
      <h2>Choice yout best run!</h2>
       <div>
-        <table>
+        <table class="challengeTable">
         <thead>
           <td> Select </td>
           <td> Title </td>
@@ -69,12 +76,12 @@
         <tbody>
           {% for run in runs %}
           <tr>
+            <form action="{{ url_for('user_challenge.terminate_challenge') }}" method="post">
             <td> 
-              <form action="{{ url_for('user_challenge.terminate_challenge') }}" method="post">
                 <input type="hidden" name="id_challenger" value={{run.id}} />
                 <input type="hidden" name="id_challenge" value={{challenge_id}} />
                   <a href="#" onclick="document.forms[{{loop.index}}-1].submit()"> 
-                  <img class="icon" src="{{url_for('static', filename='challenge.png')}}"/></a> </form> </td>
+                  <img class="icon" src="{{url_for('static', filename='challenge.png')}}"/></a> </td> </form>
               
             <td>{{  run.name }}</td>
             <td>{{  run.start_date }}</td>
@@ -86,6 +93,7 @@
         </tbody>
       </table>
       </div>
+      {%endif%}
   {% endif %}
 
  </body>
