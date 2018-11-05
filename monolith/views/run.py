@@ -9,5 +9,5 @@ run = Blueprint('run', __name__)
 @run.route('/run/<id>', methods=['GET'])
 @login_required
 def get_run(id):
-    run = db.session.query(Run).filter(Run.id == id)
-    return render_template("run.html", run=run)
+    the_run = db.session.query(Run).filter(Run.id == id).first()
+    return render_template("run.html", run=the_run)
