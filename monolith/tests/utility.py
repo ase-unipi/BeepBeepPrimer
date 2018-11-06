@@ -87,21 +87,3 @@ def new_run(user):
     run.start_date = datetime.now()
     db.session.add(run)
     db.session.commit()
-
-
-# TODO: delete this
-'''
-def create_run(user, name, distance, elapsed_time, average_speed, average_heartrate, total_elevation_gain, start_date):
-    run = Run()
-    run.runner = user
-    run.strava_id = 1
-    run.name = name
-    run.distance = distance
-    run.elapsed_time = elapsed_time
-    run.average_speed = average_speed
-    run.average_heartrate = average_heartrate
-    run.total_elevation_gain = total_elevation_gain
-    run.start_date = start_date
-    db.session.add(run)
-    db.session.commit()
-'''
