@@ -32,7 +32,7 @@ def create_user():
                 login_user(new_user)
                 return redirect(strava_auth_url(home.app.config))
             else:
-                flash('Already existing user')
+                flash('Already existing user', category='error')
                 return make_response(render_template('create_user.html', form=form), 409)
 
     return render_template('create_user.html', form=form)
@@ -45,7 +45,7 @@ def delete_user():
 
     if request.method == 'POST':
         if form.validate_on_submit():
-            if current_user.authenticate(form.password.data):
+            if current_user.authenticate(form.password.data) and hasattr(current_user, 'id'):
                 runs = db.session.query(Run).filter(Run.runner_id == current_user.id)
 
                 for run in runs.all():
