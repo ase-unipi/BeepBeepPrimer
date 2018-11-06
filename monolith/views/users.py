@@ -1,5 +1,6 @@
 from flask import Blueprint, redirect, render_template, request, flash, make_response, url_for
 from flask_login import login_required, current_user, logout_user, login_user
+from flask_login import LoginManager, fresh_login_required, confirm_login
 from monolith.database import db, User, Run
 from monolith.auth import admin_required
 from monolith.forms import UserForm, DeleteForm
@@ -18,6 +19,9 @@ def _users():
 
 @users.route('/create_user', methods=['GET', 'POST'])
 def create_user():
+    if(current_user is not None):  # The connected user cannot create other users
+        return redirect('/')       # They are redirect instantaneously to the main page
+
     form = UserForm()
     if request.method == 'POST':
 
@@ -38,7 +42,7 @@ def create_user():
 
 
 @users.route('/delete_user', methods=['GET', 'POST'])
-@login_required
+@fresh_login_required       ## The fresh login provide the possibility to not have problem with the cookies
 def delete_user():
     form = DeleteForm()
 
