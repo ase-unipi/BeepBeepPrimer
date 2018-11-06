@@ -48,7 +48,7 @@ def create_user():
 
 
 @users.route('/delete_user', methods=['GET', 'POST'])
-@fresh_login_required       ## The fresh login provide the possibility to not have problem with the cookies
+@login_required       ## The fresh login provide the possibility to not have problem with the cookies
 def delete_user():
     form = DeleteForm()
 
