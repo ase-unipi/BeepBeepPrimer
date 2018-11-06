@@ -1,7 +1,7 @@
 from flask_wtf import FlaskForm
 import wtforms as f
 import monolith.form_custom_models as fc
-from wtforms.validators import DataRequired, NumberRange, Length
+from wtforms.validators import DataRequired, NumberRange
 from monolith.form_custom_models import UniqueMailValidator
 
 class LoginForm(FlaskForm):
@@ -20,8 +20,6 @@ class RemoveUserForm(FlaskForm):
 class UserForm(FlaskForm):
     email = f.StringField('email', validators=[
         DataRequired(),
-        Length(max=255),
-        # lambda form, value: print(value)
         UniqueMailValidator()])
     firstname = f.StringField('firstname')
     lastname = f.StringField('lastname')
