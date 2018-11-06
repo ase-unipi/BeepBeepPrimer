@@ -7,42 +7,37 @@
     <h3> Exceed yourself </h3>
     {% if challenge_id is none %}    
       <h2> <a href="{{url_for('home.index')}}"> Create a new challenge </a></h2>
-      {% for result in results %}
         <table class="challengeTable" style="width: 100%">
           <tr>
-            <th style="width:50%">Challenges</th>
-            <th>Title</th>
+            <th style="width:30%">Challenged</th>
+            <th style="width:30%">Challenger</th>
             <th>Date</th>
+            <th>Result</th>
             <th>Action</th>
           </tr>
           <tr>
-            <td> Challenged </td>
+            {% for result in results %}
             <td>{{ results[result][0].name }}</td>
-            <td>{{ results[result][0].start_date }}</td>
-            <td rowspan="3" class="text-center"> <a href="{{url_for('user_challenge.complete_challenge', id_challenge=result.id)}}""> <img class="icon" src="{{url_for('static', filename='view.png')}}"/> </a></td> 
-          </tr>
-          {% if result[1] is not none %}
-            <tr>
-              <td> Challenger </td>
+            {% if result[1] is not none %}
               <td>{{ results[result][1].name }}</td>
-              <td>{{ results[result][1].start_date }}</td>
-            </tr>
-          {%endif%}
-            <tr>
-              <td>Result: </td>
-              {% if results[result][1] is not none %}
-                {% if result.result %}
-                  <td colspan="2">Great job! </td>
+              {% endif %}
+            <td>{{ result.start_date }}</td>
+            <td align="center">
+            {% if results[result][1] is not none %}
+              {% if result.result %}
+               <img class="icon" src="{{url_for('static', filename='check.png')}}" >
                 {% else %}
-                  <td colspan="2">You Lost! </td>
+                  <img class="icon" src="{{url_for('static', filename='cross.png')}}" style="width: 25px; height: 25px; align-self: center;">
                 {% endif %}
               {% else %}
-                <td colspan="2"><a href="{{url_for('user_challenge.complete_challenge', id_challenge=result.id)}}"">Complete the challenge </a></td>
+                <a href="{{url_for('user_challenge.complete_challenge', id_challenge=result.id)}}""><img class="icon" src="{{url_for('static', filename='challenge.png')}}"/></a>
               {% endif %}
-            </tr>
-          </table>      
+            </td>
+            <td class="text-center"> <a href="{{url_for('user_challenge.complete_challenge', id_challenge=result.id)}}""> <img class="icon" src="{{url_for('static', filename='view.png')}}"/> </a></td> 
+          </tr>
+          {% endfor %}
+        </table>      
         <h1></h1>
-      {% endfor %}
     {% else %}
       <h2> <a href="{{url_for('user_challenge.create_challenge')}}"> List Challenges </a></h2>
       {% if run_challenger is none %}
