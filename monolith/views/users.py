@@ -1,10 +1,8 @@
 from flask import Blueprint, redirect, render_template, request, flash, make_response, url_for
-from flask_login import login_required, current_user, logout_user, login_user
-from flask_login import LoginManager, fresh_login_required, confirm_login
+from flask_login import login_required, current_user, logout_user
 from monolith.database import db, User, Run
 from monolith.auth import admin_required
 from monolith.forms import UserForm, DeleteForm
-from monolith.views.home import home, strava_auth_url
 
 
 users = Blueprint('users', __name__)
@@ -19,8 +17,8 @@ def _users():
 
 @users.route('/create_user', methods=['GET', 'POST'])
 def create_user():
-    if current_user is not None and hasattr(current_user,'id'):     ## The connected user cannot create other users
-        return redirect('/')          ## They are redirect instantaneously to the main page
+    if current_user is not None and hasattr(current_user, 'id'):
+        return redirect('/')
 
     form = UserForm()
     if request.method == 'POST':
@@ -33,13 +31,7 @@ def create_user():
                 new_user.set_password(form.password.data)  # pw should be hashed with some salt
                 db.session.add(new_user)
                 db.session.commit()
-                # return redirect(url_for('auth.login'))
-                login_user(new_user)
-                
-                ## This sets the current session as fresh.
-                #  Sessions become stale when they are reloaded from a cookie
-                confirm_login()
-                return redirect(strava_auth_url(home.app.config))
+                return redirect(url_for('auth.login'))
             else:
                 flash('Already existing user', category='error')
                 return make_response(render_template('create_user.html', form=form), 409)
@@ -48,7 +40,7 @@ def create_user():
 
 
 @users.route('/delete_user', methods=['GET', 'POST'])
-@login_required       ## The fresh login provide the possibility to not have problem with the cookies
+@login_required
 def delete_user():
     form = DeleteForm()
 

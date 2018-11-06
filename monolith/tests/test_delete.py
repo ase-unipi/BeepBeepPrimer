@@ -8,6 +8,9 @@ def test_delete(client):
     reply = new_user(tested_app)  # creates a user with 'marco@prova.it' as email, default
     assert reply.status_code == 200
 
+    reply = login(tested_app, 'marco@prova.it', '123456')
+    assert reply.status_code == 200
+
     reply = logout(tested_app)
     assert reply.status_code == 302
     assert reply.location == 'http://localhost/'
