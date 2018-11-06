@@ -1,5 +1,5 @@
 from flask import Blueprint, redirect, render_template, request, flash, make_response, url_for
-from flask_login import fresh_login_required, current_user, logout_user, login_user
+from flask_login import login_required, current_user, logout_user, login_user
 from flask_login import LoginManager, fresh_login_required, confirm_login
 from monolith.database import db, User, Run
 from monolith.auth import admin_required
