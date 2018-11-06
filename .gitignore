@@ -107,9 +107,8 @@ venv.bak/
 .mypy_cache/
 
 # personal
-./monolith/beepbeep.db
+beepbeep.db
 dump.rdb
 variables.sh
 /.vscode/settings.json
-./key.sh
-./monolith/tests/__pycache__/
+key.sh
