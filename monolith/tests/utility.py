@@ -1,8 +1,11 @@
+import pytest
 import os
 import tempfile
+from random import uniform, randint
+from datetime import datetime
+
 from monolith.app import create_app
-from monolith.database import db
-import pytest
+from monolith.database import db, Run
 
 
 # read in SQL for populating test data
@@ -55,3 +58,50 @@ def new_user(client, email='marco@prova.it', firstname='marco', lastname='mario'
                        follow_redirects=False)
 
 
+def new_run(user):
+    run = Run()
+    run.runner = user
+    run.strava_id = randint(100, 100000000)  # a random number 100 - 1.000.000, we hope is unique
+    run.name = "Run " + str(run.strava_id)
+    run.distance = uniform(50.0, 10000.0)  # 50m - 10 km
+    run.elapsed_time = uniform(30.0, 3600.0)  # 30s - 1h
+    run.average_speed = run.distance / run.elapsed_time
+    run.average_heartrate = None
+    run.total_elevation_gain = uniform(0.0, 25.0)  # 0m - 25m
+    run.start_date = datetime.now()
+    db.session.add(run)
+    db.session.commit()
+
+
+# TODO: delete this
+'''
+def create_user():
+    user = User()
+    user.email = 'test@example.com'
+    user.firstname = "A"
+    user.lastname = "Tester"
+    user.strava_token = None
+    user.age = 0
+    user.weight = 0
+    user.max_hr = 0
+    user.rest_hr = 0
+    user.vo2max = 0
+    user.set_password('test')
+    db.session.add(user)
+    db.session.commit()
+
+
+def create_run(user, name, distance, elapsed_time, average_speed, average_heartrate, total_elevation_gain, start_date):
+    run = Run()
+    run.runner = user
+    run.strava_id = 1
+    run.name = name
+    run.distance = distance
+    run.elapsed_time = elapsed_time
+    run.average_speed = average_speed
+    run.average_heartrate = average_heartrate
+    run.total_elevation_gain = total_elevation_gain
+    run.start_date = start_date
+    db.session.add(run)
+    db.session.commit()
+'''
