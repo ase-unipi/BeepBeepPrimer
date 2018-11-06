@@ -1,0 +1,48 @@
+<h1>Comparisons</h1>
+
+{% if current_user.is_authenticated %}
+
+    <h2>Your runs comparisons</h2>
+    <table>
+      <tr>
+        <th>
+          Name
+        </th>
+        <th>
+          Speed (km/h)
+        </th>
+        <th>
+          Time (min)
+        </th>
+      </tr>
+      {% for run in runs%}
+        <tr>
+          <td>
+            {{run.name}}
+          </td>
+          <td>
+              {{run.average_speed}}
+          </td>
+          <td>
+              {{run.elapsed_time}}
+          </td>
+        </tr>
+      {% endfor %}
+
+    </table>
+
+    <br/>
+    <a href="/"><button>Go back</button></a>
+
+{% else %}
+  Hi Anonymous, <a href="/login">Log in</a>
+{% endif %}
+
+<style>
+  table, tr, td, th {
+    border: 1px solid black;
+    text-align: center;
+    border-collapse: collapse;
+    padding: 5px;
+  }
+</style>

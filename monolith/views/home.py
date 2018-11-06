@@ -1,4 +1,5 @@
-from flask import Blueprint, render_template, redirect
+from flask import Blueprint, render_template, request, redirect
+
 from stravalib import Client
 
 from monolith.database import db, Run, User, Objectives
@@ -19,6 +20,11 @@ def _strava_auth_url(config):
 
 @home.route('/')
 def index():
+    if request.args.get('comparisonError') is None:
+        comparisonError = ""
+    else:
+        comparisonError = request.args.get('comparisonError')
+
     avgSpeed = 0
     objective_distance = 0
     tot_distance = 0
@@ -45,10 +51,16 @@ def index():
     else:
         percentage = 100
 
-    return render_template("index.html", runs=runs,
-                           strava_auth_url=strava_auth_url,
-                           avgSpeed=avgSpeed, objective_distance=objective_distance, tot_distance=tot_distance,
-                           progress=progress, percentage=percentage)
+    return render_template(
+        "index.html", runs=runs,
+        strava_auth_url=strava_auth_url,
+        avgSpeed=avgSpeed,
+        comparisonError=comparisonError,
+        objective_distance=objective_distance, 
+        tot_distance=tot_distance,
+        progress=progress, 
+        percentage=percentage
+    )
 
 
 @home.route('/objective', methods=['GET', 'POST'])

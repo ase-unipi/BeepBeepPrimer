@@ -9,11 +9,20 @@
     <a href="{{strava_auth_url}}">Authorize Strava Access</a>
   {% else %}
     <h2>Your last 10 runs</h2>
-    {% for run in runs%}
-      <div>
-      {{run.name}}
-      </div>
-    {% endfor %}
+    <form action="/comparisons" method="post">
+      {% for run in runs%}
+        <div>
+        <input type="checkbox" name="runs" value="{{run.id}}"> {{run.name}}
+        </div>
+      {% endfor %}
+      <br/>
+      {% if comparisonError %}
+        <p style="color: red">
+          {{comparisonError}}
+        </p>
+      {% endif %}
+      <input type="submit" value="Compare"/>
+    </form>
 
     <h2>Stats</h2>
     Total average speed: {{avgSpeed}}
