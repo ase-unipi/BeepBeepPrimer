@@ -45,7 +45,6 @@ def login(client, email, password):
 def logout(client):
     return client.get('/logout')
 
-
 def new_user(client, email='marco@prova.it', firstname='marco', lastname='mario', password='123456', age=18,
              weight=70, max_hr=120, rest_hr=65, vo2max=99):
 
