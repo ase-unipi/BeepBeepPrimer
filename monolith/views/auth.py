@@ -30,14 +30,13 @@ def _strava_auth():
 @auth.route('/login', methods=['GET', 'POST'])
 def login():
 
-    if(current_user is not None):     ## The connected user cannot create other users
+    if current_user is not None and hasattr(current_user, 'id'):     ## The connected user cannot create other users
         return redirect('/')          ## They are redirect instantaneously to the main page
 
     form = LoginForm()
     if form.validate_on_submit():
         email, password = form.data['email'], form.data['password']
 
-        ## Why we don't write instead User.query.filter_by with @login_manager.user_loader
         q = db.session.query(User).filter(User.email == email and User.password == password)
         user = q.first()
         # print(user is None)
