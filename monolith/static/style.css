@@ -81,3 +81,24 @@ ul.navbottom {
     padding: 10px;
 }
 
+.challengeTable table, 
+.challengeTable th, 
+.challengeTable td{
+    border: 1px solid black;
+    border-collapse: collapse;
+}
+
+.challengeTable th{
+    background-color: #4B8DD6;
+    color: white;    
+}
+
+.challengeTable td {
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.challengeTable th{
+    padding: 10px;
+}
+
