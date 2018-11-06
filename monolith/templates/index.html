@@ -3,6 +3,8 @@
 {% if current_user.is_authenticated %}
   Hi {{ current_user.email }}! <a href="/logout">Log out</a> <a href="/delete_user">Delete user</a>
 
+<p> <a href="/objective">Set your objective</a> </p>
+
   {% if not current_user.strava_token %}
     <a href="{{strava_auth_url}}">Authorize Strava Access</a>
   {% else %}
@@ -26,6 +28,15 @@
     <h2>Stats</h2>
     Total average speed: {{avgSpeed}}
   {% endif %}
+
+    <h2>Objective</h2>
+    Distance objective: {{objective_distance}}
+
+    <h2>Progress</h2>
+    Total distance achieved: {{ '%0.2f'| format(tot_distance)}} <br>
+
+    Remaining: {{ '%0.2f'| format(progress)}} <br>
+    Percentage: {{ '%0.2f'| format(percentage)}} <br>
 
 {% else %}
   Hi Anonymous, <a href="/login">Log in</a>

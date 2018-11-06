@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+ <body>
+  <form action="" method="POST">
+    {{ form.hidden_tag() }}
+      <p>Set your objective by typing (meters) it in the box .</p>
+    <dl>
+     <dt>{{ form['distance'].label }}</dt>
+     <dd>{{ form['distance']() }}</dd>
+       {% if form['distance'].errors %}
+          {% for e in form['distance'].errors %}
+           <p class="help-block">{{ e }}</p>
+          {% endfor %}
+       {% endif %}
+    </dl>
+    <p>
+    <input type=submit value="Set objective">
+  </form>
+ </body>
+</html>

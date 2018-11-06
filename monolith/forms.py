@@ -29,3 +29,6 @@ class DeleteForm(FlaskForm):
 
 class ComparisonsForm(FlaskForm):
     runs = f.SelectMultipleField('runs')
+    
+class ObjectiveForm(FlaskForm):
+    distance = f.FloatField('distance')
