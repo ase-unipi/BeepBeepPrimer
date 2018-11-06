@@ -1,5 +1,5 @@
 from flask import Blueprint, redirect, render_template, request, flash, make_response, url_for
-from flask_login import login_required, current_user, logout_user, login_user
+from flask_login import fresh_login_required, current_user, logout_user, login_user
 from flask_login import LoginManager, fresh_login_required, confirm_login
 from monolith.database import db, User, Run
 from monolith.auth import admin_required
@@ -19,8 +19,8 @@ def _users():
 
 @users.route('/create_user', methods=['GET', 'POST'])
 def create_user():
-    if(current_user is not None):  # The connected user cannot create other users
-        return redirect('/')       # They are redirect instantaneously to the main page
+    if(current_user is not None):     ## The connected user cannot create other users
+        return redirect('/')          ## They are redirect instantaneously to the main page
 
     form = UserForm()
     if request.method == 'POST':
@@ -56,7 +56,7 @@ def delete_user():
 
                 db.session.delete(current_user)
                 db.session.commit()
-                logout_user()
+                logout_user()  # This will also clean up the remember me cookie if it exists.
                 return redirect('/')
             else:
                 flash("Incorrect password", category='error')
