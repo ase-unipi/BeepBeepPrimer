@@ -25,6 +25,7 @@ class User(db.Model):
     is_admin = db.Column(db.Boolean, default=False)
 
     run = relationship('Run', cascade='delete')
+    challenge = relationship('Challenge', cascade='delete')
 
     is_anonymous = False
 
