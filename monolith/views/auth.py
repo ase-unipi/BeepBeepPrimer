@@ -9,7 +9,7 @@ auth = Blueprint('auth', __name__)
 
 
 @auth.route('/strava_auth')
-@fresh_login_required
+@login_required
 def _strava_auth():
     code = request.args.get('code')
     client = Client()
@@ -56,7 +56,7 @@ def login():
 
 
 @auth.route("/logout")
-@fresh_login_required         ##The user if is not fresh login can't do the logout
+@login_required         ##The user if is not fresh login can't do the logout
 def logout():
     if current_user.is_authenticated is True:
         logout_user()
