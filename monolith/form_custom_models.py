@@ -2,6 +2,7 @@ import wtforms as f
 import wtforms.widgets.core as wtcore
 from wtforms.validators import ValidationError
 import datetime
+from monolith.database import db, User
 
 class NotLessThan(object):
     """
@@ -30,7 +31,7 @@ class NotLessThan(object):
             }
             message = self.message
             if message is None:
-                message = field.gettext('Field must not be less than %(other_name)s.')
+                message = field.gettext('Field must not be less than %(other_name)s')
 
             raise ValidationError(message % d)
 
@@ -48,10 +49,11 @@ class NotLessThenToday(object):
     def __call__(self, form, field):
         today = datetime.datetime.now().date()
         if field.data < today:
+            message = self.message
             if self.message is None:
-                self.message = field.gettext('Field must not be less than today')
+                message = field.gettext('Field must not be less than today')
 
-            raise ValidationError(self.message)
+            raise ValidationError(message)
 
 
 class FloatInput(wtcore.Input):
@@ -75,3 +77,22 @@ class FloatInput(wtcore.Input):
             kwargs['max'] = self.max_
 
         return super(FloatInput, self).__call__(field, **kwargs)
+
+
+class UniqueMailValidator(object):
+    """
+    Compares the value of the field with today's date.
+
+    :param message:
+        Error message to raise in case of a validation error.
+    """
+    def __init__(self, message=None):
+        self.message = message
+
+    def __call__(self, form, field):
+        if db.session.query(User).filter(User.email == field.data).first() is not None:
+            message = self.message
+            if self.message is None:
+                message = field.gettext('This email has already been used')
+
+            raise ValidationError(message)

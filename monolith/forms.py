@@ -1,7 +1,8 @@
 from flask_wtf import FlaskForm
 import wtforms as f
 import monolith.form_custom_models as fc
-from wtforms.validators import DataRequired, NumberRange
+from wtforms.validators import DataRequired, NumberRange, Length
+from monolith.form_custom_models import UniqueMailValidator
 
 class LoginForm(FlaskForm):
     email = f.StringField('email', validators=[DataRequired()])
@@ -17,10 +18,14 @@ class RemoveUserForm(FlaskForm):
 
 
 class UserForm(FlaskForm):
-    email = f.StringField('email', validators=[DataRequired()])
+    email = f.StringField('email', validators=[
+        DataRequired(),
+        Length(max=255),
+        # lambda form, value: print(value)
+        UniqueMailValidator()])
     firstname = f.StringField('firstname')
     lastname = f.StringField('lastname')
-    password = f.PasswordField('password')
+    password = f.PasswordField('password', validators=[DataRequired()])
     age = f.IntegerField('age')
     weight = f.FloatField('weight')
     max_hr = f.IntegerField('max_hr')
@@ -29,7 +34,8 @@ class UserForm(FlaskForm):
 
     display = ['email', 'firstname', 'lastname', 'password',
                'age', 'weight', 'max_hr', 'rest_hr', 'vo2max']
-    
+
+
 class TrainingObjectiveForm(FlaskForm):
     start_date = f.DateField('Start date',
                              validators=[DataRequired(message='Not a valid date format'), 
