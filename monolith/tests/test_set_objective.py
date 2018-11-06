@@ -1,6 +1,7 @@
 from monolith.tests.utility import client, login, new_user
 from monolith.database import db, User, Objective
 
+
 def test_set_objective(client):
     tested_app, app = client
 
