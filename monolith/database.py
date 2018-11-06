@@ -26,6 +26,7 @@ class User(db.Model):
 
     run = relationship('Run', cascade='delete')
     objective = relationship('Training_Objective', cascade='delete')
+    challenge = relationship('Challenge', cascade='delete')
 
     is_anonymous = False
 
@@ -65,7 +66,6 @@ class Run(db.Model):
     runner_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     runner = relationship('User', foreign_keys='Run.runner_id')
 
-
 class Training_Objective(db.Model):
     __tablename__ = 'training_objective'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -74,3 +74,15 @@ class Training_Objective(db.Model):
     kilometers_to_run = db.Column(db.Float)
     runner_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     runner = relationship('User', foreign_keys='Training_Objective.runner_id')
+    
+class Challenge(db.Model):
+    __tablename__ = 'challenge'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    run_challenged_id = db.Column(db.Integer, db.ForeignKey('run.id'))
+    challenged = relationship('Run', foreign_keys='Challenge.run_challenged_id')
+    run_challenger_id = db.Column(db.Integer, db.ForeignKey('run.id'))
+    challenger = relationship('Run', foreign_keys='Challenge.run_challenger_id')
+    runner_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    runner = relationship('User', foreign_keys='Challenge.runner_id') 
+    start_date = db.Column(db.DateTime)
+    result = db.Column(db.Boolean, default=False)

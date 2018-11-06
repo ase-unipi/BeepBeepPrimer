@@ -29,8 +29,7 @@ class UserForm(FlaskForm):
 
     display = ['email', 'firstname', 'lastname', 'password',
                'age', 'weight', 'max_hr', 'rest_hr', 'vo2max']
-
-
+    
 class TrainingObjectiveForm(FlaskForm):
     start_date = f.DateField('Start date',
                              validators=[DataRequired(message='Not a valid date format'), 
