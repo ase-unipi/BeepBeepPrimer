@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
 import wtforms as f
-import form_custom_models as fc
+import monolith.form_custom_models as fc
 from wtforms.validators import DataRequired, NumberRange
 
 class LoginForm(FlaskForm):
