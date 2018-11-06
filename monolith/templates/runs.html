@@ -1,0 +1,51 @@
+<html>
+  <body>
+    <h1>Info about Run</h1>
+    <table>
+      <tbody>
+        <tr>
+          <td>Name</td><td>{{ run.name }}</td>
+        </tr>
+        <tr>
+          <td>Speed</td><td>{{ run.average_speed }}</td>
+        </tr>
+        <tr>
+          <td>Distance</td><td>{{ run.distance }}</td>
+        </tr>
+      </tbody>
+    </table>
+    {% if run.id > 1 %}
+    <a href="/runs/{{ run.id-1 }}">Previous</a>
+    {% endif %}
+    <a href="/">Go home</a>
+  </body>
+</html>
+<style>
+  table {
+    font-size: 18px;
+    border-spacing: 0px;
+  }
+  table tr td {
+    border: 1px solid #aaa;
+    width: 200px;
+    padding: 5px;
+  }
+  table tr td:first-child {
+    font-weight: bold;
+    width: 100px;
+  }
+  a {
+    text-decoration: none;
+    display: inline-block;
+    padding: 2px 10px;
+    border: 1px solid #666;
+    margin-top: 10px;
+    border-radius: 3px;
+    color: #444;
+  }
+  a:hover {
+    background-color: #666;
+    color: #fff;
+    transition: .3s;
+  }
+</style>

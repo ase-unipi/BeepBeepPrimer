@@ -10,7 +10,8 @@
     <form action="/comparisons" method="post">
       {% for run in runs%}
         <div>
-        <input type="checkbox" name="runs" value="{{run.id}}"> {{run.name}}
+        <input type="checkbox" name="runs" value="{{run.id}}"> 
+        <a href="/runs/{{run.id}}">{{run.name}}</a>
         </div>
       {% endfor %}
       <br/>
