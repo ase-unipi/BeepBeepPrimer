@@ -1,0 +1,58 @@
+<html>
+  <head>
+    <link rel="stylesheet" href="{{url_for('static', filename='style.css')}}">
+  </head>
+  <body>
+    <h1>Set a training objective</h1>
+    <form action="" method="POST">
+      <table>
+        {{ form.hidden_tag() }}
+        <thead>
+          <tr>
+            {% for field in form.display %}
+                <th>{{ form[field].label }}</th>
+            {% endfor %}
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            {% for field in form.display %}
+              <td  class="text-center" style="vertical-align: top;">
+                {{ form[field]() }}
+                {% if form[field].errors %}
+                  {% for e in form[field].errors %}
+                    <p class="help-block">{{ e }}</p>
+                  {% endfor %}
+                {% endif %}
+              </td>
+            {% endfor %}
+          </tr>
+        </tbody>
+      </table>
+      <p>
+          <input type=submit value="Publish">
+          <input type=reset value="Reset">
+      </p>
+    </form>
+
+    <h1>Your Training Objectives</h1>
+    <table>
+      <thead>
+        <tr>
+          {% for field in form.display %}
+            <th>{{ form[field].label }}</th>
+          {% endfor %}
+        </tr>
+      </thead>
+      <tbody>
+        {% for objective in objectives%}
+          <tr>
+          {% for field in form.display %}
+            <td class="text-center">{{ objective[field] }}</td>
+          {% endfor %}
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </body>
+</html>

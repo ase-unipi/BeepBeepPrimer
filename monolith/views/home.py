@@ -4,7 +4,6 @@ from stravalib import Client
 from monolith.database import db, Run
 from monolith.auth import current_user
 
-
 home = Blueprint('home', __name__)
 
 

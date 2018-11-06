@@ -1,0 +1,8 @@
+<link rel="shortcut icon" href="{{url_for('static', filename='favicon.ico')}}">
+{% block body %}
+  <h1>{{ error_name }}</h1>
+    <p>{{ error_message }}</p>
+    {% if redirection is not none  %}
+    <p><a href={{redirection}}>{{ redirection_message }}</a></p>
+    {% endif %}
+{% endblock %}
