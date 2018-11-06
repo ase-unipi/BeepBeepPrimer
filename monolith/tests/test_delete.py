@@ -1,12 +1,29 @@
-from monolith.tests.utility import client, login, new_user
+from monolith.tests.utility import client, login, new_user, logout
 from monolith.database import db, User
 
+
+# def new_user(client, email='marco@prova.it', firstname='marco', lastname='mario', password='123456', age=18,
+#              weight=70, max_hr=120, rest_hr=65, vo2max=99):
+
+#     return client.post('/create_user', data=dict(email=email,
+#                                                  firstname=firstname,
+#                                                  lastname=lastname,
+#                                                  password=password,
+#                                                  age=age,
+#                                                  weight=weight,
+#                                                  max_hr=max_hr,
+#                                                  rest_hr=rest_hr,
+#                                                  vo2max=vo2max))
+                                                 #, follow_redirects=True)
 
 def test_delete(client):
     tested_app, app = client
 
     reply = new_user(tested_app)  # creates a user with 'marco@prova.it' as email, default
-    assert reply.status_code == 200
+    assert reply.status_code == 200 or reply.status_code == 302
+
+    reply = logout(tested_app)
+    assert reply.status_code == 302
 
     # retrieve delete_user page without logging in before
     reply = tested_app.get('/delete_user')
@@ -30,7 +47,6 @@ def test_delete(client):
     with app.app_context():
         users = db.session.query(User).filter(User.email == 'marco@prova.it')
     assert users.first() is None
-
 
 
 
