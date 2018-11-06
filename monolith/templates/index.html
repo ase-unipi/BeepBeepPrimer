@@ -29,7 +29,7 @@
         {% for run in runs %}
           <a href="/run/{{run.id}}">{{run.name}}</a><br>
         {% endfor %}
-        <p>Average speed: {{total_average_speed}}<p><br>
+        <p>Average speed: <span id="total_average_speed">{{total_average_speed}}</span><p><br>
         <a class="btn btn-primary" href="/fetch">Fetch</a>
     </div>
     {% endif %}
