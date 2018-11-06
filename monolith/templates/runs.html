@@ -1,0 +1,33 @@
+<html>
+  <head>
+    <link rel="stylesheet" href="{{url_for('static', filename='style.css')}}">
+  </head>
+
+  <body>
+    {% if not name %}
+    <h1>Resource requested is unavailable!</h1>
+    {% else %}
+    <h1>Run</h1>
+    <h3>Name: {{ name }}</h3>
+    <h3>Date: {{ date }}</h3>
+    <table>
+      <thead>
+        <tr>
+          {% for header in headers %} <th>{{header}}</th> {% endfor %}
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          {% for val in values %} <td class="text-center">{{val}}</td> {% endfor %}
+            <form action="{{ url_for('user_challenge.create_challenge') }}" method="post">
+            <td>
+               <input type="hidden" name="id_run" value={{id}} />
+                <a href="#" onclick="document.forms[0].submit()"> 
+                <img class="icon" src="{{url_for('static', filename='challenge.png')}}"/> </a> </td> </form> 
+        </tr>
+      </tbody>
+    </table>
+    {% endif %}
+  </body>
+</html>

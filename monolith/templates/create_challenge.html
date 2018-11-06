@@ -1,0 +1,157 @@
+<html>
+  <head>
+    <link rel="stylesheet" href="{{url_for('static', filename='style.css')}}">
+  </head>
+  <body>
+    <h1>Challenge yourself!</h1>
+    <h3> Exceed yourself </h3>
+    {% if challenge_id is none %}    
+      <h2> <a href="{{url_for('home.index')}}"> Create a new challenge </a></h2>
+        <table class="challengeTable" style="width: 100%">
+          <tr>
+            <th style="width:30%">Challenged</th>
+            <th style="width:30%">Challenger</th>
+            <th>Date</th>
+            <th>Result</th>
+            <th>Action</th>
+          </tr>
+          <tr>
+            {% for result in results %}
+            <td>{{ results[result][0].name }}</td>
+            {% if result[1] is not none %}
+              <td>{{ results[result][1].name }}</td>
+              {% endif %}
+            <td>{{ result.start_date }}</td>
+            <td align="center">
+            {% if results[result][1] is not none %}
+              {% if result.result %}
+               <img class="icon" src="{{url_for('static', filename='check.png')}}" >
+                {% else %}
+                  <img class="icon" src="{{url_for('static', filename='cross.png')}}" style="width: 25px; height: 25px; align-self: center;">
+                {% endif %}
+              {% else %}
+                <a href="{{url_for('user_challenge.complete_challenge', id_challenge=result.id)}}""><img class="icon" src="{{url_for('static', filename='challenge.png')}}"/></a>
+              {% endif %}
+            </td>
+            <td class="text-center"> <a href="{{url_for('user_challenge.complete_challenge', id_challenge=result.id)}}""> <img class="icon" src="{{url_for('static', filename='view.png')}}"/> </a></td> 
+          </tr>
+          {% endfor %}
+        </table>      
+        <h1></h1>
+    {% else %}
+      <h2> <a href="{{url_for('user_challenge.create_challenge')}}"> List Challenges </a></h2>
+      {% if run_challenger is none %}
+        <h3>Choose your best run!</h3>
+        {% endif %}
+
+      <div>
+      <table class="challengeTable" style="width: 400px; height: 200px; float:left;">
+        <thead>
+          <tr>
+            <td style="width: 36%;">Title</td>
+            <td style="width: 61%;">{{  run_challenged.name }}</td> 
+            <td style="width: 3%; border-right-color: #4B8DD6;">  VS </td>     
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Date</td>
+            <td>{{  run_challenged.start_date }}</td>
+            <td rowspan="4" style="border-color: #ffffff;">&nbsp;</td>
+          </tr>          
+          <tr>
+            <td>Distance</td>
+            <td>{{  run_challenged.distance }}</td>
+          </tr>
+          <tr>
+            <td>AVG Speed</td>
+            <td>{{  run_challenged.average_speed }}
+          </tr>
+          <tr>
+            <td>Time</td>
+            <td>{{  run_challenged.elapsed_time }}</td>
+          </tr>
+        </table>
+
+      {% if run_challenger is not none %}
+        <table class="challengeTable" style="width: 400px; height: 200px;">
+          <thead>
+            <tr>
+              <td style="width: 36%;">Title</td>
+              <td style="width: 61%;">{{  run_challenger.name }}</td>   
+              <td style="width: 3%"> Result </td>      
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Date</td>
+              <td>{{  run_challenged.start_date }}</td>
+              <td> &nbsp; </td>
+            </tr>          
+            <tr>
+              <td>Distance</td>
+              <td>{{  run_challenger.distance }}</td>
+              <td align="center">
+                {%if run_challenger.distance >= run_challenged.distance %}
+                  <img class="icon" src="{{url_for('static', filename='check.png')}}" >
+                  {% else %} <img class="icon" src="{{url_for('static', filename='cross.png')}}"  style="width: 25px; height: 25px;" > 
+                  {% endif %}
+              </td>
+            </tr>
+            <tr>
+              <td>AVG Speed</td>
+              <td>{{  run_challenger.average_speed }}
+              <td align="center">
+                {%if run_challenger.average_speed >= run_challenged.average_speed %}
+                  <img class="icon" src="{{url_for('static', filename='check.png')}}">
+                  {% else %} <img class="icon" src="{{url_for('static', filename='cross.png')}}"  style="width: 25px; height: 25px;" >
+                  {% endif %}
+              </td>
+            </tr>
+            <tr>
+              <td>Time</td>
+              <td>{{  run_challenger.elapsed_time }}</td>
+              <td align="center">
+                {%if run_challenger.elapsed_time <= run_challenged.elapsed_time %}
+                  <img class="icon" src="{{url_for('static', filename='check.png')}}" >
+                  {% else %} <img class="icon" src="{{url_for('static', filename='cross.png')}}" style="width: 25px; height: 25px;"> 
+                  {% endif %}
+              </td>            
+            </tr>
+          </table>
+
+        {% else %}
+            <table class="challengeTable" style="margin-bottom: 200px;">
+              <thead>
+                <td> Select </td>
+                <td> Title </td>
+                <td> Date </td>
+                <td> Distance </td>
+                <td> AVG Speed </td>
+                <td> Time </td>
+              </thead>
+              <tbody>
+                {% for run in runs %}
+                  <tr style="height: 44px;" >
+                    <form action="{{ url_for('user_challenge.terminate_challenge') }}" method="post">
+                    <td> 
+                      <input type="hidden" name="id_challenger" value={{run.id}} />
+                      <input type="hidden" name="id_challenge" value={{challenge_id}} />
+                      <a href="#" onclick="document.forms[{{loop.index}}-1].submit()"> 
+                      <img class="icon" src="{{url_for('static', filename='challenge.png')}}"/></a> </td> </form> 
+                    <td>{{  run.name }}</td>
+                    <td>{{  run.start_date }}</td>
+                    <td>{{  run.distance }}</td>
+                    <td>{{  run.average_speed }}
+                    <td>{{ run.elapsed_time }}</td>
+                  </tr>
+                  {% endfor %}
+              </tbody>
+            </table>
+            {%endif%}
+            {%endif%}
+    </div>
+  </body>
+</html>
+
+

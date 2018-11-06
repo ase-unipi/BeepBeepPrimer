@@ -12,7 +12,7 @@ _APP = None
 def fetch_all_runs():
     global _APP
     # lazy init
-    print(_APP)
+    print(_APP) #for testing shows what kind of app we use
     if _APP is None:
         from monolith.app import create_app
         app = create_app()
@@ -54,7 +54,7 @@ def fetch_runs(user):
     print(client.protocol)
     runs = 0
 
-    for activity in client.get_activities(limit=10):
+    for activity in client.get_activities():
         print(activity)
         if activity.type != 'Run':
             continue

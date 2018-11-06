@@ -1,0 +1,104 @@
+/*
+245 154  83 F59A53 Pumpkin dark
+250 176  99 FAB063 Pumpkin light
+ 76 241 214 4B8DD6 Jeans Dark
+*/
+
+table, th, td {
+    border: 1px solid black;
+    border-collapse: collapse;
+}
+
+thead {
+  background-color: #4B8DD6;
+  color: white;
+}
+
+td {
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+th {
+  padding: 10px;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.icon {
+  width: 32px;
+  height: 32px;
+}
+
+body {margin:0;}
+
+ul.navbar {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #4B8DD6;
+    position: fixed;
+    top: 0;
+    width: 100%;
+}
+
+ul.navbar li {
+    float: left;
+}
+
+ul.navbar li a {
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+    font-family: Helvetica;
+}
+
+ul.navbar li a:hover:not(.active) {
+    background-color: #F59A53;
+    color: white;
+}
+
+ul.navbar .active {
+    background-color: #F59A53;
+}
+
+ul.navbar .float-right {
+    float: right;
+}
+
+ul.navbottom {
+    top: auto;
+    bottom: 0;
+}
+
+.body {
+    margin-top: 20px;
+    padding: 10px;
+}
+
+.challengeTable table, 
+.challengeTable th, 
+.challengeTable td{
+    border: 1px solid black;
+    border-collapse: collapse;
+}
+
+.challengeTable th{
+    background-color: #4B8DD6;
+    color: white;    
+}
+
+.challengeTable td {
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.challengeTable th{
+    padding: 10px;
+}
+
