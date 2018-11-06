@@ -25,6 +25,7 @@ class User(db.Model):
     is_admin = db.Column(db.Boolean, default=False)
 
     run = relationship('Run', cascade='delete')
+    objective = relationship('Training_Objective', cascade='delete')
 
     is_anonymous = False
 
@@ -63,3 +64,13 @@ class Run(db.Model):
     total_elevation_gain = db.Column(db.Float)
     runner_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     runner = relationship('User', foreign_keys='Run.runner_id')
+
+
+class Training_Objective(db.Model):
+    __tablename__ = 'training_objective'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    start_date = db.Column(db.Date)
+    end_date = db.Column(db.Date)
+    kilometers_to_run = db.Column(db.Float)
+    runner_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    runner = relationship('User', foreign_keys='Training_Objective.runner_id')
