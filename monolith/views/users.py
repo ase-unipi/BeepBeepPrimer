@@ -1,4 +1,4 @@
-from flask import Blueprint, redirect, render_template, request, flash, make_response
+from flask import Blueprint, redirect, render_template, request, flash, make_response, url_for
 from flask_login import login_required, current_user, logout_user, login_user
 from monolith.database import db, User, Run
 from monolith.auth import admin_required
@@ -29,8 +29,7 @@ def create_user():
                 new_user.set_password(form.password.data)  # pw should be hashed with some salt
                 db.session.add(new_user)
                 db.session.commit()
-                login_user(new_user)
-                return redirect(strava_auth_url(home.app.config))
+                return redirect(url_for('auth.login'))
             else:
                 flash('Already existing user', category='error')
                 return make_response(render_template('create_user.html', form=form), 409)

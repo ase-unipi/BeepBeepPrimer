@@ -6,10 +6,11 @@ def test_delete(client):
     tested_app, app = client
 
     reply = new_user(tested_app)  # creates a user with 'marco@prova.it' as email, default
-    assert reply.status_code == 200 or reply.status_code == 302
+    assert reply.status_code == 200
 
     reply = logout(tested_app)
     assert reply.status_code == 302
+    assert reply.location == 'http://localhost/'
 
     # retrieve delete_user page without logging in before
     reply = tested_app.get('/delete_user')

@@ -8,14 +8,14 @@ def test_run(client):
 
     # prepare the database creating a new user
     reply = new_user(tested_app)  # creates a user with 'marco@prova.it' as email, default
-    assert reply.status_code == 302
+    assert reply.status_code == 200
 
     # login as new user
     reply = login(tested_app, email='marco@prova.it', password='123456')
     assert reply.status_code == 200
     print("Logged in as marco@prova.it")
 
-    # retrieve the user object and login
+    # retrieve the user object from db
     with app.app_context():
         q = db.session.query(User).filter(User.email == 'marco@prova.it')
         user = q.first()
