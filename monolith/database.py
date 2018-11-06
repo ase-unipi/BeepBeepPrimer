@@ -22,8 +22,8 @@ class User(db.Model):
     vo2max = db.Column(db.Numeric(4, 2))
     is_active = db.Column(db.Boolean, default=True)
     is_admin = db.Column(db.Boolean, default=False)
-
     is_anonymous = False
+
 
     def __init__(self, *args, **kw):
         super(User, self).__init__(*args, **kw)
@@ -62,9 +62,25 @@ class Run(db.Model):
     runner = relationship('User', foreign_keys='Run.runner_id')
 
 
+class Objectives(db.Model):
+    __tablename__ = 'user_objectives'
+    distance = db.Column(db.Float)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
+    user = relationship('User', foreign_keys='Objectives.user_id')
+
+    def get_distance(self):
+        return self.distance
+
+    def set_distance(self, distance):
+        self.distance = distance
+
+
 def _delete_user(user):
     user_id = user.get_id()
+    # delete cascade would be a better solution
     q = db.session.query(Run).filter(Run.runner_id == user_id)
+    q.delete(synchronize_session=False)
+    q = db.session.query(Objectives).filter(Objectives.user_id == user_id)
     q.delete(synchronize_session=False)
     db.session.delete(user)
     db.session.commit()
