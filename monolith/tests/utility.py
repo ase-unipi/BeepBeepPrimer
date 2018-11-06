@@ -54,6 +54,3 @@ def new_user(client, email='marco@prova.it', firstname='marco', lastname='mario'
                                                  vo2max=vo2max),
                        follow_redirects=True)
 
-def new_objective(client, ...)
-    return client.post('create_objective, data')
-
