@@ -36,12 +36,8 @@ def create_app():
     return app
 
 
-
-
-
 if __name__ == '__main__':
     app = create_app()
     app.register_error_handler(404,page_not_found)
     app.run()
     app.add_url_rule('/favicon.ico', redirect_to=url_for('static', filename='favicon.ico'))
-    
