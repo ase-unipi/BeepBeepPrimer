@@ -1,8 +1,7 @@
 from flask import Blueprint, render_template
 from stravalib import Client
-
+from flask_login import current_user, LoginManager, fresh_login_required, confirm_login
 from monolith.database import db, Run
-from monolith.auth import current_user
 
 
 home = Blueprint('home', __name__)
@@ -21,6 +20,8 @@ def strava_auth_url(config):
     return _strava_auth_url(config)
 
 
+## In this case I don't specify the type required because:
+## In the code there is the control of the current user
 @home.route('/')
 def index():
     if current_user is not None and hasattr(current_user, 'id'):

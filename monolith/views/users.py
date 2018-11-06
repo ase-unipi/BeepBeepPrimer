@@ -1,5 +1,6 @@
 from flask import Blueprint, redirect, render_template, request, flash, make_response
 from flask_login import login_required, current_user, logout_user, login_user
+from flask_login import LoginManager, fresh_login_required, confirm_login
 from monolith.database import db, User, Run
 from monolith.auth import admin_required
 from monolith.forms import UserForm, DeleteForm
@@ -10,26 +11,39 @@ users = Blueprint('users', __name__)
 
 
 @users.route('/users')
-@admin_required
+@admin_required             ## only the admin can see the list of the users
 def _users():
     users = db.session.query(User)
     return render_template("users.html", users=users)
 
 
-@users.route('/create_user', methods=['GET', 'POST'])
+##Error: The creation of the user consists only in the insertion of the password
+##       For this reason when you try to add a new user the only form that reset every time is that one
+##       The other remains inalterated
+@users.route('/create_user', methods=['GET', 'POST'])      
 def create_user():
+    if(current_user is not None):     ## The connected user cannot create other users
+        return redirect('/')          ## They are redirect instantaneously to the main page
+
     form = UserForm()
     if request.method == 'POST':
 
         if form.validate_on_submit():
             new_user = User()
-            form.populate_obj(new_user)
+            form.populate_obj(new_user)    ##What action does populate_obj?
+
+            ##In this would check the existence both for the email but also for the password
+
             c = db.session.query(User).filter(new_user.email == User.email)
             if c.first() is None:
                 new_user.set_password(form.password.data)  # pw should be hashed with some salt
                 db.session.add(new_user)
                 db.session.commit()
                 login_user(new_user)
+
+                ## This sets the current session as fresh.
+                #  Sessions become stale when they are reloaded from a cookie
+                confirm_login()
                 return redirect(strava_auth_url(home.app.config))
             else:
                 flash('Already existing user', category='error')
@@ -39,13 +53,13 @@ def create_user():
 
 
 @users.route('/delete_user', methods=['GET', 'POST'])
-@login_required
+@fresh_login_required       ## The fresh login provide the possibility to not have problem with the cookies
 def delete_user():
     form = DeleteForm()
 
     if request.method == 'POST':
         if form.validate_on_submit():
-            if current_user.authenticate(form.password.data) and hasattr(current_user, 'id'):
+            if current_user.authenticate(form.password.data) and hasattr(current_user, 'id'):  
                 runs = db.session.query(Run).filter(Run.runner_id == current_user.id)
 
                 for run in runs.all():
@@ -53,7 +67,8 @@ def delete_user():
 
                 db.session.delete(current_user)
                 db.session.commit()
-                logout_user()
+               
+                logout_user() ## This will also clean up the remember me cookie if it exists.      
                 return redirect('/')
             else:
                 flash("Incorrect password", category='error')

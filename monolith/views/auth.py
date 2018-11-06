@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, redirect, request, flash, make_response
-from flask_login import (current_user, login_user, logout_user,
-                         login_required)
+from flask_login import current_user, login_user, logout_user, login_required
+from flask_login import LoginManager, fresh_login_required, confirm_login
 from stravalib import Client
 
 from monolith.database import db, User
@@ -11,7 +11,7 @@ auth = Blueprint('auth', __name__)
 
 
 @auth.route('/strava_auth')
-@login_required
+@fresh_login_required
 def _strava_auth():
     code = request.args.get('code')
     client = Client()
@@ -27,15 +27,26 @@ def _strava_auth():
 
 @auth.route('/login', methods=['GET', 'POST'])
 def login():
+
+    if(current_user is not None):     ## The connected user cannot create other users
+        return redirect('/')          ## They are redirect instantaneously to the main page
+
     form = LoginForm()
     if form.validate_on_submit():
         email, password = form.data['email'], form.data['password']
-        q = db.session.query(User).filter(User.email == email)
+
+        ## Why we don't write instead User.query.filter_by with @login_manager.user_loader
+        q = db.session.query(User).filter(User.email == email and User.password == password)
         user = q.first()
         # print(user is None)
         # print(user.authenticate(password))
         if user is not None and user.authenticate(password):
             login_user(user)
+
+            ## Is a function of flask-login 
+            # This sets the current session as fresh. Sessions become stale
+            # when they are reloaded from a coookie
+            confirm_login() 
             return redirect('/')
         else:
             flash('Wrong email or password', category='error')
@@ -44,6 +55,8 @@ def login():
 
 
 @auth.route("/logout")
+@fresh_login_required         ##The user if is not fresh login can't do the logout
 def logout():
     logout_user()
     return redirect('/')
+
