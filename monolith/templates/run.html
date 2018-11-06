@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-    <link rel="stylesheet" href="navbar.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/floating-labels.css') }}">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
   </head>
@@ -16,8 +16,8 @@
           <li><a href="main.html">Home</a></li>
           <li class="active"><a href="run.html">Run</a></li>
           <li><a href="objective.html">Objective</a></li>
-          <li><a href="dataUser.html"><span class="glyphicon glyphicon-user"></span>User data</a></li>
-          <li><a href="logout.html"><span class="glyphicon glyphicon-log-out"></span>Logout</a></li>
+          <li><a href="/delete_user"><span class="glyphicon glyphicon-user"></span>Delete user</a></li>
+          <li><a href="/logout"><span class="glyphicon glyphicon-log-out"></span>Logout</a></li>
         </ul>
     </div>
     <div class="container">
