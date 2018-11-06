@@ -19,7 +19,7 @@ def _users():
 
 @users.route('/create_user', methods=['GET', 'POST'])
 def create_user():
-    if(current_user is not None):     ## The connected user cannot create other users
+    if current_user is not None and hasattr(current_user,'id'):     ## The connected user cannot create other users
         return redirect('/')          ## They are redirect instantaneously to the main page
 
     form = UserForm()
@@ -33,7 +33,13 @@ def create_user():
                 new_user.set_password(form.password.data)  # pw should be hashed with some salt
                 db.session.add(new_user)
                 db.session.commit()
-                return redirect(url_for('auth.login'))
+                # return redirect(url_for('auth.login'))
+                login_user(new_user)
+                
+                ## This sets the current session as fresh.
+                #  Sessions become stale when they are reloaded from a cookie
+                confirm_login()
+                return redirect(strava_auth_url(home.app.config))
             else:
                 flash('Already existing user', category='error')
                 return make_response(render_template('create_user.html', form=form), 409)
@@ -56,6 +62,7 @@ def delete_user():
 
                 db.session.delete(current_user)
                 db.session.commit()
+                
                 logout_user()  # This will also clean up the remember me cookie if it exists.
                 return redirect('/')
             else:
