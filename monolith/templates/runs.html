@@ -14,8 +14,8 @@
         </tr>
       </tbody>
     </table>
-    {% if run.id > 1 %}
-    <a href="/runs/{{ run.id-1 }}">Previous</a>
+    {% if prev_run %}
+    <a href="/runs/{{ prev_run.id }}">Previous</a>
     {% endif %}
     <a href="/">Go home</a>
   </body>
