@@ -17,9 +17,6 @@ def _users():
     return render_template("users.html", users=users)
 
 
-##Error: The creation of the user consists only in the insertion of the password
-##       For this reason when you try to add a new user the only form that reset every time is that one
-##       The other remains inalterated
 @users.route('/create_user', methods=['GET', 'POST'])      
 def create_user():
     if(current_user is not None):     ## The connected user cannot create other users
