@@ -4,10 +4,10 @@ from monolith.database import db, User, Objective
 from monolith.auth import admin_required
 from monolith.forms import ObjectiveForm
 from monolith.views.home import home, strava_auth_url
+from stravalib import Client
 
 
 objectives = Blueprint('objectives', __name__)
-
 
 @objectives.route('/objectives')
 @login_required
@@ -29,6 +29,6 @@ def create_objective():
             
             db.session.add(new_objective)
             db.session.commit()
-            return redirect(strava_auth_url(objectives.app.config))
+            return redirect('http://127.0.0.1:5000/objectives')
 
     return render_template('create_objective.html', form=form)
