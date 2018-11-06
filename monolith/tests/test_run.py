@@ -1,5 +1,5 @@
 from monolith.database import db, User, Run
-from monolith.tests.utility import client, new_user, new_run, login
+from monolith.tests.utility import client, create_user, new_run, login
 from monolith.tests.id_parser import get_element_by_id
 
 
@@ -7,7 +7,7 @@ def test_run(client):
     tested_app, app = client
 
     # prepare the database creating a new user
-    reply = new_user(tested_app)  # creates a user with 'marco@prova.it' as email, default
+    reply = create_user(tested_app)  # creates a user with 'marco@prova.it' as email, default
     assert reply.status_code == 302
 
     # login as new user
