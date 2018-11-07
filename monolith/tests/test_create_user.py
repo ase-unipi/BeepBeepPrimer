@@ -1,4 +1,4 @@
-from monolith.tests.utility import client, login, new_user, logout
+from monolith.tests.utility import client, login, create_user, logout
 from monolith.database import db, User
 from werkzeug.security import check_password_hash
 from flask_login import current_user

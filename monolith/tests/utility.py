@@ -5,7 +5,7 @@ from random import uniform, randint
 from datetime import datetime
 
 from monolith.app import create_app
-from monolith.database import db, Run
+from monolith.database import db, Run, User
 
 
 # read in SQL for populating test data
@@ -46,16 +46,34 @@ def logout(client):
     return client.get('/logout')
 
 
-def new_user(client, email='marco@prova.it', firstname='marco', lastname='mario', password='123456', age=18,
-             weight=70, max_hr=120, rest_hr=65, vo2max=99):
+def create_user(client, email='marco@prova.it', firstname='marco', lastname='mario', password='123456', age=18,
+                weight=70, max_hr=120, rest_hr=65, vo2max=99):
 
-    return client.post('/create_user', data=dict(email=email, firstname=firstname, lastname=lastname, password=password,
+    return client.post('/create_user', data=dict(email=email,
+                                                 firstname=firstname,
+                                                 lastname=lastname,
+                                                 password=password,
                                                  age=age,
                                                  weight=weight,
                                                  max_hr=max_hr,
                                                  rest_hr=rest_hr,
-                                                 vo2max=vo2max),
-                       follow_redirects=True)
+                                                 vo2max=vo2max), follow_redirects=True)
+
+
+def new_user():
+    user = User()
+    user.email = 'test@example.com'
+    user.firstname = "A"
+    user.lastname = "Tester"
+    user.strava_token = 0
+    user.age = 0
+    user.weight = 0
+    user.max_hr = 0
+    user.rest_hr = 0
+    user.vo2max = 0
+    user.set_password('test')
+    db.session.add(user)
+    db.session.commit()
 
 
 def new_run(user):
@@ -71,37 +89,3 @@ def new_run(user):
     run.start_date = datetime.now()
     db.session.add(run)
     db.session.commit()
-
-
-# TODO: delete this
-'''
-def create_user():
-    user = User()
-    user.email = 'test@example.com'
-    user.firstname = "A"
-    user.lastname = "Tester"
-    user.strava_token = None
-    user.age = 0
-    user.weight = 0
-    user.max_hr = 0
-    user.rest_hr = 0
-    user.vo2max = 0
-    user.set_password('test')
-    db.session.add(user)
-    db.session.commit()
-
-
-def create_run(user, name, distance, elapsed_time, average_speed, average_heartrate, total_elevation_gain, start_date):
-    run = Run()
-    run.runner = user
-    run.strava_id = 1
-    run.name = name
-    run.distance = distance
-    run.elapsed_time = elapsed_time
-    run.average_speed = average_speed
-    run.average_heartrate = average_heartrate
-    run.total_elevation_gain = total_elevation_gain
-    run.start_date = start_date
-    db.session.add(run)
-    db.session.commit()
-'''

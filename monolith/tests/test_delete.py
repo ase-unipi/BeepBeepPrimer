@@ -1,11 +1,11 @@
-from monolith.tests.utility import client, login, new_user, logout
+from monolith.tests.utility import client, login, create_user, logout
 from monolith.database import db, User
 
 
 def test_delete(client):
     tested_app, app = client
 
-    reply = new_user(tested_app)  # creates a user with 'marco@prova.it' as email, default
+    reply = create_user(tested_app)  # creates a user with 'marco@prova.it' as email, default
     assert reply.status_code == 200
 
     reply = login(tested_app, 'marco@prova.it', '123456')
