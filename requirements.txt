@@ -1,5 +1,6 @@
 flask
 flask-login
+flask-mail==0.9
 celery
 redis
 flask-wtf

@@ -7,12 +7,20 @@ from monolith.errors import render_error_page
 
 def create_app():
     app = Flask(__name__)
+    # App
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False  # suppress pytest warning
     app.config['WTF_CSRF_SECRET_KEY'] = 'A SECRET KEY'
     app.config['SECRET_KEY'] = 'ANOTHER ONE'
     app.config['STRAVA_CLIENT_ID'] = os.environ['STRAVA_CLIENT_ID']
     app.config['STRAVA_CLIENT_SECRET'] = os.environ['STRAVA_CLIENT_SECRET']
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///beepbeep.db'
+    # Mail
+    app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+    app.config['MAIL_PORT'] = 465
+    app.config['MAIL_USERNAME'] = os.environ['MAIL_USERNAME']
+    app.config['MAIL_PASSWORD'] = os.environ['MAIL_PASSWORD']
+    app.config['MAIL_USE_TLS'] = False
+    app.config['MAIL_USE_SSL'] = True
 
     for bp in blueprints:
         app.register_blueprint(bp)
