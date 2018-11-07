@@ -1,5 +1,8 @@
-BeepBeep Skeleton
+BeepBeep |travis|
 ==================
+
+.. |travis| image:: https://travis-ci.org/MFranceschi6/BeepBeepPrimer.svg?branch=master 
+    :target: https://travis-ci.org/MFranceschi6/BeepBeepPrimer 
 
 How to run the app
 -------------------
