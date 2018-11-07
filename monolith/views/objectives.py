@@ -9,7 +9,7 @@ from stravalib import Client
 
 objectives = Blueprint('objectives', __name__)
 
-@objectives.route('/objectives')
+@objectives.route('/objectives', methods=['GET'])
 @login_required
 def _objectives():
     objectives = db.session.query(Objective)
