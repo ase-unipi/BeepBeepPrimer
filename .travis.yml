@@ -1,0 +1,11 @@
+language: python
+python: 3.6
+install:
+- pip install pip-tools
+- pip install -r requirements.txt
+- pip install pytest pytest-cov coveralls
+- python setup.py develop
+script:
+- pytest --cov-config .coveragerc --cov monolith/tests
+after_success:
+- coveralls
