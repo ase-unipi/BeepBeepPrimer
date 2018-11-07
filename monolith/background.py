@@ -1,11 +1,7 @@
 from celery import Celery
-#IMPORT SETTING FOR FETCH
 from stravalib import Client
-# IMPORT SETTING FOR MAIL
 from datetime import datetime, timedelta
 from flask_mail import Mail, Message
-
-#IMPORT SETTING FOR BOTH FETCH AND MAIL
 from monolith.database import db, User, Run
 
 BACKEND = BROKER = 'redis://localhost:6379'
@@ -13,7 +9,14 @@ celery = Celery(__name__, backend=BACKEND, broker=BROKER)
 
 _APP = None
 
-## CELERY TASK FOR FETCH
+
+@celery.on_after_configure.connect
+def setup_periodic_tasks(sender, **kwargs):
+    sender.add_periodic_task(10.0, fetch_all_runs)
+
+    sender.add_periodic_task(30.0, send_all_mail)
+
+
 @celery.task
 def fetch_all_runs():
     global _APP
@@ -71,9 +74,10 @@ def fetch_runs(user):
     db.session.commit()
     return runs
 
-#CELERY TASK FOR MAIL
+
 @celery.task
 def send_all_mail():
+    print('sending')
     global _APP
     # lazy init
     if _APP is None:
@@ -82,20 +86,22 @@ def send_all_mail():
         db.init_app(app)
     else:
         app = _APP
-    mail = Mail(app)
+    mail = Mail()
+    mail.init_app(app=app)
+    with app.app_context():
+        users = db.session.query(User).filter()
+        for user in users:
+            body = prepare_body(user, app)
+            if body:
+                msg = Message('Your BeepBeep Report', sender=app.config['MAIL_USERNAME'], recipients=[user.email])
+                msg.body = body
+                mail.send(msg)
 
-    users = db.session.query(User).filter()
-    for user in users:
-        body = prepare_body(user)
-        if body:
-            msg = Message('Your BeepBeep Report', sender=app.config['MAIL_USERNAME'], recipients=[user.email])
-            msg.body = body
-            mail.send(msg)
 
-
-def prepare_body(user):
+def prepare_body(user, app):
     body = ""
-    runs = db.session.query(Run).filter(Run.runner == user, Run.start_date >= (datetime.now() - timedelta(days=15)))
+    with app.app_context():
+        runs = db.session.query(Run).filter(Run.runner == user, Run.start_date >= (datetime.now() - timedelta(days=15)))
     if runs.count() == 0:
         return None
     for run in runs:
