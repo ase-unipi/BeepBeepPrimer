@@ -1,7 +1,6 @@
-{% if run %}
-<html>
-  <body>
-    <h1>Info about Run</h1>
+<h1>Info about Run</h1>
+{% if current_user.is_authenticated %}
+  {% if run %}
     <table>
       <tbody>
         <tr>
@@ -18,9 +17,13 @@
     {% if prev_run %}
     <a href="/runs/{{ prev_run.id }}">Previous</a>
     {% endif %}
-    <a href="/">Go home</a>
-  </body>
-</html>
+  {% else %}
+    <h4>!!! Run not found...</h4>
+  {% endif %}
+  <a href="/">Go home</a>
+{% else %}
+  Hi Anonymous, <a href="/login">Log in</a>
+{% endif %}
 <style>
   table {
     font-size: 18px;
@@ -50,4 +53,3 @@
     transition: .3s;
   }
 </style>
-{% endif %}
