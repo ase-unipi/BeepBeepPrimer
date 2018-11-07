@@ -55,7 +55,7 @@ def create_user(client, email='marco@prova.it', firstname='marco', lastname='mar
                                                  max_hr=max_hr,
                                                  rest_hr=rest_hr,
                                                  vo2max=vo2max),
-                       follow_redirects=False)
+                       follow_redirects=True)
 
 
 def new_user():

@@ -3,6 +3,7 @@ from monolith.database import db, User
 from werkzeug.security import check_password_hash
 from flask_login import current_user
 
+
 def test_create_user(client):
     tested_app, app = client
     reply = tested_app.post('/create_user', data=dict(email='andrea@prova.it', firstname='andrea', lastname='bongiorno',
@@ -11,9 +12,11 @@ def test_create_user(client):
                                               weight=70,
                                               max_hr=120,
                                               rest_hr=60,
-                                              vo2max=99), follow_redirects=False)
+                                              vo2max=99), follow_redirects=True)
 
-    assert reply.status_code == 302  # create_user login and redirect to strava_auth
+    assert reply.status_code == 200  # create_user success (it also redirect to login)
+
+    assert login(tested_app, 'andrea@prova.it', '123456').status_code == 200
 
     # now andrea@prova.it is logged in
     with app.app_context():
