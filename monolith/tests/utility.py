@@ -89,3 +89,32 @@ def new_run(user):
     run.start_date = datetime.now()
     db.session.add(run)
     db.session.commit()
+
+def new_predef_run(user):
+    run = Run()
+    run.runner = user
+    run.strava_id = 10  # a random number 100 - 1.000.000, we hope is unique
+    run.name = "Run " + str(run.strava_id)
+    run.distance = 50000.0  # 50m - 10 km
+    run.elapsed_time = 3900.0  # 30s - 1h
+    run.average_speed = run.distance / run.elapsed_time
+    run.average_heartrate = None
+    run.total_elevation_gain = 3.0 # 0m - 25m
+    run.start_date = datetime.now()
+    db.session.add(run)
+    db.session.commit()
+
+
+def new_predefined_run(user):
+    run = Run()
+    run.runner = user
+    run.strava_id = 10  # a random number 100 - 1.000.000, we hope is unique
+    run.name = "Run " + str(run.strava_id)
+    run.distance = 80000.0  # 50m - 10 km
+    run.elapsed_time = 5000.0  # 30s - 1h
+    run.average_speed = run.distance / run.elapsed_time
+    run.average_heartrate = None
+    run.total_elevation_gain = 2.0 # 0m - 25m
+    run.start_date = datetime.now()
+    db.session.add(run)
+    db.session.commit()
