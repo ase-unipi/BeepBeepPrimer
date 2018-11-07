@@ -6,6 +6,6 @@ install:
 - pip install pytest pytest-cov coveralls
 - python setup.py develop
 script:
-- pytest --cov-config .coveragerc --cov monolith/tests
+- pytest --cov-config .coveragerc --cov monolith monolith/tests
 after_success:
 - coveralls
