@@ -2,7 +2,7 @@
 
 # FIX Celery redis on Python3.7
 # https://github.com/celery/celery/issues/4500
-TARGET=/home/travis/build/deselmo/BeepBeepPrimer/.tox/py37/lib/python3.7/site-packages/celery/backends
+TARGET=/home/travis/build/MFranceschi6/BeepBeepPrimer/.tox/py37/lib/python3.7/site-packages/celery/backends
 cd $TARGET
 if [ -e async.py ]
 then
