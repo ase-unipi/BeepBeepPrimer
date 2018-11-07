@@ -1,9 +1,19 @@
 from unittest import mock
 from monolith.database import User, Run, Challenge
 from tests.conftest import mocked_result
+from flask import url_for
 
-# Test that checks if the create_user page permits to create 2 user with the same email
-def test_create_challenge_without_run(client, db_instance, celery_session_worker):
+def test_create_challenge_with_non_authenticated_user(client, db_instance, celery_session_worker):
+    response = client.post('/create_challenge',
+        follow_redirects=True,
+        data=dict(id_run='1'))
+
+    assert response.status_code == 200
+
+    assert b'Hi Anonymous, <a href="/login">Log in</a> <a href="/create_user">Create user</a>' in response.data
+    
+
+def test_create_challenge_with_non_existing_run(client, db_instance, celery_session_worker):
     client.post('/create_user', follow_redirects=True,
         data=dict(
             submit='Publish',
@@ -22,11 +32,11 @@ def test_create_challenge_without_run(client, db_instance, celery_session_worker
 
     assert db_instance.session.query(Challenge).count() == 0
 
-    resp = client.post('/create_challenge',
+    response = client.post('/create_challenge',
         follow_redirects=True,
         data=dict(id_run='1'))
 
-    assert resp.status_code == 200
+    assert response.status_code == 200
     
-    assert db_instance.session.query(Challenge).count() == 0
+    # assert db_instance.session.query(Challenge).count() == 0
   
