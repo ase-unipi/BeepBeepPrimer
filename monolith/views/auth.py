@@ -1,10 +1,11 @@
-from flask import Blueprint, render_template, redirect, request, flash, make_response
+from flask import Blueprint, render_template, redirect, request, flash, make_response, url_for
 from flask_login import current_user, login_user, logout_user, login_required
 from flask_login import LoginManager, fresh_login_required, confirm_login
 from stravalib import Client
 from monolith.database import db, User
+from monolith.views.home import index
 from monolith.forms import LoginForm
-from monolith.views.home import strava_auth_url, home
+from monolith.views.home import strava_auth_url, home, index
 auth = Blueprint('auth', __name__)
 
 
@@ -30,8 +31,8 @@ def _strava_auth():
 @auth.route('/login', methods=['GET', 'POST'])
 def login():
 
-    if current_user is not None and hasattr(current_user, 'id'):     ## The connected user cannot create other users
-        return redirect('/')          ## They are redirect instantaneously to the main page
+    if hasattr(current_user, 'is_authenticated') and current_user.is_authenticated is True:     ## The connected user cannot create other users
+        return make_response(index(), 403)          ## They are redirect instantaneously to the main page
 
     form = LoginForm()
     if form.validate_on_submit():
@@ -43,11 +44,6 @@ def login():
         # print(user.authenticate(password))
         if user is not None and user.authenticate(password):
             login_user(user)
-
-            ## Is a function of flask-login 
-            # This sets the current session as fresh. Sessions become stale
-            # when they are reloaded from a coookie
-            confirm_login() 
             return redirect('/')
         else:
             flash('Wrong email or password', category='error')
@@ -56,9 +52,8 @@ def login():
 
 
 @auth.route("/logout")
-@login_required         ##The user if is not fresh login can't do the logout
+@login_required  # throws 401 HTTPExcpetion if user is anonymous
 def logout():
-    if current_user.is_authenticated is True:
-        logout_user()
+    logout_user()
     return redirect('/')
 
