@@ -24,7 +24,7 @@ def strava_auth_url(config):
 ## In the code there is the control of the current user
 @home.route('/')
 def index():
-    if current_user is not None and hasattr(current_user, 'id'):
+    if hasattr(current_user, 'is_authenticated') and current_user.is_authenticated:
         runs = db.session.query(Run).filter(Run.runner_id == current_user.id)
         total_average_speed = 0
         for run in runs:

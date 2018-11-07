@@ -3,7 +3,7 @@ from flask import Flask
 from monolith.database import db, User
 from monolith.views import blueprints
 from monolith.auth import login_manager
-
+from monolith.errors import render_error_page
 
 def create_app():
     app = Flask(__name__)
@@ -24,6 +24,9 @@ def create_app():
 
     # create a first admin user
     with app.app_context():
+        app.register_error_handler(401, render_error_page)
+        app.register_error_handler(403, render_error_page)
+        app.register_error_handler(404, render_error_page)
         q = db.session.query(User).filter(User.email == 'example@example.com')
         user = q.first()
         if user is None:

@@ -1,4 +1,4 @@
-from flask import Blueprint, redirect, render_template, request, flash, make_response, url_for
+from flask import Blueprint, redirect, render_template, request, flash, make_response, url_for, abort
 from flask_login import login_required, current_user, logout_user
 from monolith.database import db, User, Run
 from monolith.auth import admin_required
@@ -9,7 +9,7 @@ users = Blueprint('users', __name__)
 
 
 @users.route('/users')
-@admin_required
+@admin_required  # throws 401 HTTPException
 def _users():
     users = db.session.query(User)
     return render_template("users.html", users=users)
@@ -17,8 +17,9 @@ def _users():
 
 @users.route('/create_user', methods=['GET', 'POST'])
 def create_user():
-    if current_user is not None and hasattr(current_user, 'id'):
-        return redirect('/')
+    # A connected user cannot create other users
+    if hasattr(current_user, 'is_authenticated') and current_user.is_authenticated is True:
+        return abort(403)
 
     form = UserForm()
     if request.method == 'POST':

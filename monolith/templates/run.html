@@ -21,11 +21,6 @@
         </ul>
     </div>
     <div class="container">
-      {% if run is none %}
-        {% for errmess in get_flashed_messages(False,['error']) %}
-          {{ errmess }}
-        {% endfor%}
-      {% else %}
         <h1>Run {{run.name}}</h1>
         <ul>
           <li>Start date: <span id="start_date">{{run.start_date}}</span></li>
