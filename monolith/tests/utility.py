@@ -49,13 +49,15 @@ def logout(client):
 def create_user(client, email='marco@prova.it', firstname='marco', lastname='mario', password='123456', age=18,
                 weight=70, max_hr=120, rest_hr=65, vo2max=99):
 
-    return client.post('/create_user', data=dict(email=email, firstname=firstname, lastname=lastname, password=password,
+    return client.post('/create_user', data=dict(email=email,
+                                                 firstname=firstname,
+                                                 lastname=lastname,
+                                                 password=password,
                                                  age=age,
                                                  weight=weight,
                                                  max_hr=max_hr,
                                                  rest_hr=rest_hr,
-                                                 vo2max=vo2max),
-                       follow_redirects=True)
+                                                 vo2max=vo2max), follow_redirects=True)
 
 
 def new_user():
