@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify
-from monolith.background import fetch_all_runs
+from monolith.tasks.fetch import fetch_all_runs
 from monolith.tasks.mail import send_all_mail
 
 
