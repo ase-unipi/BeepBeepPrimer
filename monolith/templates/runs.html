@@ -1,27 +1,38 @@
 <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='bootstrap.min.css') }}">
 <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='bootstrap.css') }}">
 <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='landing-page.css') }}">
-<link href="https://fonts.googleapis.com/css?family=Lato:300,400,700,300italic,400italic,700italic" rel="stylesheet" type="text/css">
+<link href="https://fonts.googleapis.com/css?family=Lato:300,400,700,300italic,400italic,700italic" rel="stylesheet"
+  type="text/css">
 
 <html>
-  <body>
-    <h1>Info about Run</h1>
-    <table>
-      <tbody>
-        <tr>
-          <td>Name</td><td>{{ run.name }}</td>
-        </tr>
-        <tr>
-          <td>Speed</td><td>{{ run.average_speed }}</td>
-        </tr>
-        <tr>
-          <td>Distance</td><td>{{ run.distance }}</td>
-        </tr>
-      </tbody>
-    </table>
-    {% if run.id > 1 %}
-    <a href="/runs/{{ run.id-1 }}">Previous</a>
-    {% endif %}
-    <a href="/">Go home</a>
-  </body>
+
+<body>
+  {% include 'header.html' %}
+  <div class="intro-header">
+    <div class="container">
+      <h1>Info about Run</h1>
+      <table>
+        <tbody>
+          <tr>
+            <td>Name</td>
+            <td>{{ run.name }}</td>
+          </tr>
+          <tr>
+            <td>Speed</td>
+            <td>{{ run.average_speed }}</td>
+          </tr>
+          <tr>
+            <td>Distance</td>
+            <td>{{ run.distance }}</td>
+          </tr>
+        </tbody>
+      </table>
+      {% if run.id > 1 %}
+      <button><a href="/runs/{{ run.id-1 }}">Previous</a></button>
+      {% endif %}
+      <button><a href="/">Go home</a></button>
+    </div>
+  </div>
+</body>
+
 </html>

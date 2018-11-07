@@ -1,44 +1,53 @@
 <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='bootstrap.min.css') }}">
 <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='bootstrap.css') }}">
 <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='landing-page.css') }}">
-<link href="https://fonts.googleapis.com/css?family=Lato:300,400,700,300italic,400italic,700italic" rel="stylesheet" type="text/css">
+<link href="https://fonts.googleapis.com/css?family=Lato:300,400,700,300italic,400italic,700italic" rel="stylesheet"
+  type="text/css">
 
-<h1>Comparisons</h1>
+<body>
+  {% include 'header.html' %}
 
-{% if current_user.is_authenticated %}
+  <div class="intro-header">
+    <div class="container">
+      <h1>Comparisons</h1>
 
-    <h2>Your runs comparisons</h2>
-    <table>
-      <tr>
-        <th>
-          Name
-        </th>
-        <th>
-          Speed (km/h)
-        </th>
-        <th>
-          Time (min)
-        </th>
-      </tr>
-      {% for run in runs%}
+      {% if current_user.is_authenticated %}
+
+      <h2>Your runs comparisons</h2>
+      <table>
+        <tr>
+          <th>
+            Name
+          </th>
+          <th>
+            Speed (km/h)
+          </th>
+          <th>
+            Time (min)
+          </th>
+        </tr>
+        {% for run in runs%}
         <tr>
           <td>
             {{run.name}}
           </td>
           <td>
-              {{run.average_speed}}
+            {{run.average_speed}}
           </td>
           <td>
-              {{run.elapsed_time}}
+            {{run.elapsed_time}}
           </td>
         </tr>
-      {% endfor %}
+        {% endfor %}
 
-    </table>
+      </table>
 
-    <br/>
-    <a href="/"><button>Go back</button></a>
+      <br />
+      <a href="/"><button>Go back</button></a>
 
-{% else %}
-  Hi Anonymous, <a href="/login">Log in</a>
-{% endif %}
+      {% else %}
+      Hi Anonymous, <a href="/login">Log in</a>
+      {% endif %}
+    </div>
+  </div>
+</body>
