@@ -36,7 +36,7 @@
               <form action="{{ url_for('user_challenge.create_challenge') }}" method="post">
               <td> 
                 <input type="hidden" name="id_run" value={{run.id}} />
-                <a href="#" onclick="document.forms[{{run.id}}-1].submit()"> 
+                <a href="#" onclick="document.forms[{{loop.index}}-1].submit()"> 
                 <img class="icon" src="{{url_for('static', filename='challenge.png')}}"/> </a> </td> </form> 
             </tr>
             {% endfor %}
