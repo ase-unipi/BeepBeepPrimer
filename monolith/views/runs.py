@@ -22,6 +22,5 @@ def run(id):
         date    = run.start_date.strftime('%A %d/%m/%y at %H:%M')
         headers = ['Distance (m)', 'AVG Speed (m/s)', 'Elapsed Time (s)', 'Elevation (m)']
         values  = [run.distance, run.average_speed, run.elapsed_time, run.total_elevation_gain]
-        print("Hola :D")
         return render_template("runs.html", name=name, date=date, headers=headers, values=values, id=runId)
     abort(404)
