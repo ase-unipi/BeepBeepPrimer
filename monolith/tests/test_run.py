@@ -13,7 +13,6 @@ def test_run(client):
     # login as new user
     reply = login(tested_app, email='marco@prova.it', password='123456')
     assert reply.status_code == 200
-    print("Logged in as marco@prova.it")
 
     # retrieve the user object from db
     with app.app_context():
