@@ -1,0 +1,15 @@
+<html>
+{% include 'header.html' %}
+  <form action="" method="POST">
+    <select>
+      <option value="1">None</option>
+      <option value="2">Daily</option>   <!-- At 23:00 of the day            -->
+      <option value="3">Weekly</option>  <!-- Last day of the week at 23:00  -->
+      <option value="4">Monthly</option> <!-- Last day of the month at 23:00 -->
+    </select>
+    <input type="submit" value="Update">
+  </form>
+{% include 'footer.html' %}
+</html>
+
+<html>

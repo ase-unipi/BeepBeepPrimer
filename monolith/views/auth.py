@@ -23,7 +23,7 @@ def _strava_auth():
     db.session.add(current_user)
     db.session.commit()
     res = fetch_runs_for_user.delay(current_user.id)
-    res.wait();
+    res.wait()
     return redirect('/')
 
 
