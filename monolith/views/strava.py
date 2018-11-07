@@ -1,7 +1,5 @@
 from flask import Blueprint, jsonify
-from monolith.tasks.fetch import fetch_all_runs
-from monolith.tasks.mail import send_all_mail
-
+from monolith.background import fetch_all_runs, send_all_mail
 
 strava = Blueprint('strava', __name__)
 
@@ -16,4 +14,4 @@ def fetch_runs():
 @strava.route('/report')
 def send_report():
     send_all_mail()
-    return "done"
+    return "Done"
