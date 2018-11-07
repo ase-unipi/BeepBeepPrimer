@@ -4,4 +4,5 @@ celery
 redis
 flask-wtf
 flask-sqlalchemy
+pip-tools
 stravalib==0.9
