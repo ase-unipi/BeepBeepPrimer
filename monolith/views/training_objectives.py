@@ -1,7 +1,7 @@
 from flask import Blueprint, redirect, render_template, request
 from monolith.database import db, Run, Training_Objective
 from monolith.auth import admin_required, login_required
-from monolith.forms import TrainingObjectiveSetterForm, CompletedTrainingObjectiveForm, ActiveTrainingObjectiveForm, FailedTrainingObjectiveForm
+from monolith.forms import TrainingObjectiveSetterForm, TrainingObjectiveVisualizerForm
 from flask_login import current_user
 from sqlalchemy.sql import between, func, text
 from datetime import date
@@ -14,13 +14,9 @@ training_objectives = Blueprint('training_objectives', __name__)
 @login_required
 def _training_objectives():
     setter_form = TrainingObjectiveSetterForm()
-    completed_form = CompletedTrainingObjectiveForm()
-    active_form = ActiveTrainingObjectiveForm()
-    failed_form = FailedTrainingObjectiveForm()
+    visualizer_form = TrainingObjectiveVisualizerForm()
 
-    completed_tos = None
-    active_tos = None
-    failed_tos = None
+    list_of_tos = None
 
     if request.method == 'POST':
         if setter_form.validate_on_submit():
@@ -30,11 +26,18 @@ def _training_objectives():
             db.session.add(new_objective)
             db.session.commit()
 
-    sql_active = text("""
-    SELECT * FROM
+    sql_text = text("""
+    SELECT
+        START_DATE,
+        END_DATE,
+        ROUND(KILOMETERS_TO_RUN, 3),
+        ROUND(TRAVELED_KILOMETERS, 3),
+        ROUND(KILOMETERS_LEFT, 3),
+        IS_EXPIRED
+    FROM
     (
         -------------------------------------------------
-        SELECT T.START_DATE, T.END_DATE, T.KILOMETERS_TO_RUN, (SUM(R.DISTANCE)/1000.0) AS TRAVELED_KILOMETERS, (T.KILOMETERS_TO_RUN - (SUM(R.DISTANCE)/1000.0)) AS KILOMETERS_LEFT
+        SELECT T.START_DATE, T.END_DATE, T.KILOMETERS_TO_RUN, (SUM(R.DISTANCE)/1000.0) AS TRAVELED_KILOMETERS, (T.KILOMETERS_TO_RUN - (SUM(R.DISTANCE)/1000.0)) AS KILOMETERS_LEFT, (T.END_DATE < DATE('NOW')) AS IS_EXPIRED
         FROM TRAINING_OBJECTIVE T, RUN R
 
         WHERE R.RUNNER_ID = {}
@@ -49,7 +52,7 @@ def _training_objectives():
             UNION ALL
         
         -------------------------------------------------    
-        SELECT T.START_DATE, T.END_DATE, T.KILOMETERS_TO_RUN, 0, T.KILOMETERS_TO_RUN
+        SELECT T.START_DATE, T.END_DATE, T.KILOMETERS_TO_RUN, 0, T.KILOMETERS_TO_RUN, T.END_DATE < DATE('NOW')
         FROM TRAINING_OBJECTIVE T
 
         WHERE T.ID IN
@@ -66,85 +69,10 @@ def _training_objectives():
         -------------------------------------------------
         
     )
-    
-    WHERE TRAVELED_KILOMETERS < KILOMETERS_TO_RUN
-    AND 
-    DATE('NOW') <= END_DATE
-    
-    ORDER BY END_DATE    
+   
+    ORDER BY START_DATE, END_DATE
     
     """.format(current_user.id,current_user.id))
-    active_tos = db.engine.execute(sql_active)
+    list_of_tos = db.engine.execute(sql_text)
 
-    sql_completed = text("""
-    SELECT * FROM
-    (
-        -------------------------------------------------
-        SELECT T.START_DATE, T.END_DATE, T.KILOMETERS_TO_RUN, (SUM(R.DISTANCE)/1000.0) AS TRAVELED_KILOMETERS, (T.KILOMETERS_TO_RUN - (SUM(R.DISTANCE)/1000.0)) AS KILOMETERS_LEFT
-        FROM TRAINING_OBJECTIVE T, RUN R
-
-        WHERE R.RUNNER_ID = {}
-        AND
-        T.RUNNER_ID = R.RUNNER_ID
-        AND
-        R.START_DATE BETWEEN T.START_DATE AND T.END_date
-
-        GROUP BY T.ID
-        -------------------------------------------------        
-    )
-    
-    WHERE TRAVELED_KILOMETERS >= KILOMETERS_TO_RUN
-    
-    ORDER BY END_DATE    
-    """.format(current_user.id))
-    completed_tos = db.engine.execute(sql_completed)
-
-    sql_failed = text("""
-    SELECT * FROM
-    (
-        -------------------------------------------------
-        SELECT T.START_DATE, T.END_DATE, T.KILOMETERS_TO_RUN, (SUM(R.DISTANCE)/1000.0) AS TRAVELED_KILOMETERS, (T.KILOMETERS_TO_RUN - (SUM(R.DISTANCE)/1000.0)) AS KILOMETERS_LEFT
-        FROM TRAINING_OBJECTIVE T, RUN R
-
-        WHERE R.RUNNER_ID = {}
-        AND
-        T.RUNNER_ID = R.RUNNER_ID
-        AND
-        R.START_DATE BETWEEN T.START_DATE AND T.END_date
-
-        GROUP BY T.ID
-        -------------------------------------------------
-    
-            UNION ALL
-        
-        -------------------------------------------------    
-        SELECT T.START_DATE, T.END_DATE, T.KILOMETERS_TO_RUN, 0, T.KILOMETERS_TO_RUN
-        FROM TRAINING_OBJECTIVE T
-
-        WHERE T.ID IN
-        (
-            SELECT T.ID
-            FROM TRAINING_OBJECTIVE T LEFT JOIN RUN R ON
-            (T.RUNNER_ID = R.RUNNER_ID AND R.START_DATE BETWEEN T.START_DATE AND T.END_DATE)
-            
-            WHERE T.RUNNER_ID = {}
-            
-            GROUP BY T.ID
-            HAVING COUNT(R.ID)=0
-        )
-        -------------------------------------------------
-        
-    )
-    
-    WHERE TRAVELED_KILOMETERS < KILOMETERS_TO_RUN
-    AND 
-    DATE('NOW') > END_DATE
-    
-    ORDER BY END_DATE    
-    
-    """.format(current_user.id,current_user.id))
-    failed_tos = db.engine.execute(sql_failed)
-
-    return render_template("training_objectives.html",\
-        active_tos=active_tos, completed_tos=completed_tos, failed_tos=failed_tos,\
-        setter_form=setter_form, active_form=active_form, completed_form=completed_form, failed_form=failed_form)
+    return render_template("training_objectives.html",list_of_tos=list_of_tos,setter_form=setter_form,visualizer_form=visualizer_form)

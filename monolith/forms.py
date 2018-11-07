@@ -48,28 +48,12 @@ class TrainingObjectiveSetterForm(FlaskForm):
 
     display = ['start_date', 'end_date', 'kilometers_to_run']
 
-class ActiveTrainingObjectiveForm(FlaskForm):
+class TrainingObjectiveVisualizerForm(FlaskForm):
     start_date = f.DateField('Start date')
     end_date = f.DateField('End date')
     kilometers_to_run = f.FloatField('Kilometers to run')
     traveled_kilometers = f.FloatField('Traveled kilometers')
-    kilometers_left = f.FloatField('Kilometers left')
+    status = f.StringField('Status')
+    description = f.StringField('Description')
 
-    display = ['start_date', 'end_date', 'kilometers_to_run', 'traveled_kilometers', 'kilometers_left']
-
-class CompletedTrainingObjectiveForm(FlaskForm):
-    start_date = f.DateField('Start date')
-    end_date = f.DateField('End date')
-    kilometers_to_run = f.FloatField('Kilometers to run')
-    traveled_kilometers = f.FloatField('Traveled kilometers')
-
-    display = ['start_date', 'end_date', 'kilometers_to_run', 'traveled_kilometers']
-
-class FailedTrainingObjectiveForm(FlaskForm):
-    start_date = f.DateField('Start date')
-    end_date = f.DateField('End date')
-    kilometers_to_run = f.FloatField('Kilometers to run')
-    traveled_kilometers = f.FloatField('Traveled kilometers')
-    kilometers_left = f.FloatField('Kilometers left')
-
-    display = ['start_date', 'end_date', 'kilometers_to_run', 'traveled_kilometers', 'kilometers_left']
+    display = ['start_date', 'end_date', 'kilometers_to_run', 'traveled_kilometers', 'status', 'description']
