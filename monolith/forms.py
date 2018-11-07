@@ -32,9 +32,8 @@ class UserForm(FlaskForm):
 
     display = ['email', 'firstname', 'lastname', 'password',
                'age', 'weight', 'max_hr', 'rest_hr', 'vo2max']
-
-
-class TrainingObjectiveForm(FlaskForm):
+   
+class TrainingObjectiveSetterForm(FlaskForm):
     start_date = f.DateField('Start date',
                              validators=[DataRequired(message='Not a valid date format'), 
                                          fc.NotLessThenToday()],
@@ -51,3 +50,13 @@ class TrainingObjectiveForm(FlaskForm):
                                      filters=[lambda value: float('%.3f' % float(value)) if value is not None else value])
 
     display = ['start_date', 'end_date', 'kilometers_to_run']
+
+class TrainingObjectiveVisualizerForm(FlaskForm):
+    start_date = f.DateField('Start date')
+    end_date = f.DateField('End date')
+    kilometers_to_run = f.FloatField('Kilometers to run')
+    traveled_kilometers = f.FloatField('Traveled kilometers')
+    status = f.StringField('Status')
+    description = f.StringField('Description')
+
+    display = ['start_date', 'end_date', 'kilometers_to_run', 'traveled_kilometers', 'status', 'description']
