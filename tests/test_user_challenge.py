@@ -3,7 +3,7 @@ from monolith.database import User, Run, Challenge
 from tests.conftest import mocked_result
 
 # Test that checks if the create_user page permits to create 2 user with the same email
-def test_create_same_user(client, db_instance, celery_session_worker):
+def test_create_challenge_without_run(client, db_instance, celery_session_worker):
     client.post('/create_user', follow_redirects=True,
         data=dict(
             submit='Publish',
