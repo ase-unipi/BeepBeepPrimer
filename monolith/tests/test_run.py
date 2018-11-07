@@ -34,11 +34,11 @@ def test_run(client):
 
     # check the correctness of the fields
     assert get_element_by_id('start_date', str(reply.data)) == str(run.start_date)
-    assert get_element_by_id('distance', str(reply.data)) == str(run.distance) + " meters"
-    assert get_element_by_id('elapsed_time', str(reply.data)) == str(run.elapsed_time // 60) + " minutes"
-    assert get_element_by_id('average_speed', str(reply.data)) == str(run.average_speed) + " meters/seconds"
-    assert get_element_by_id('average_heartrate', str(reply.data)) == str(run.average_heartrate) + " bps"
-    assert get_element_by_id('total_elevation_gain', str(reply.data)) == str(run.total_elevation_gain) + " meters"
+    assert get_element_by_id('distance', str(reply.data)) == str(run.distance)
+    assert get_element_by_id('elapsed_time', str(reply.data)) == str(run.elapsed_time // 60)
+    assert get_element_by_id('average_speed', str(reply.data)) == str(run.average_speed)
+    assert get_element_by_id('average_heartrate', str(reply.data)) == str(run.average_heartrate)
+    assert get_element_by_id('total_elevation_gain', str(reply.data)) == str(run.total_elevation_gain)
 
 
 
