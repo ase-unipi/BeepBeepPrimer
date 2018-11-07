@@ -132,7 +132,7 @@ input[type="submit"] {
   cursor: pointer;
   background-color: #337ab7;
   height: 30px;
-  width: 100px;
+  width: auto;
   margin: 10px;
 }
 button[disabled],
