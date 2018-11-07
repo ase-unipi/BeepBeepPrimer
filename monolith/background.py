@@ -2,6 +2,8 @@ from celery import Celery
 from stravalib import Client
 from monolith.database import db, User, Run
 
+from celery.schedules import crontab
+
 BACKEND = BROKER = 'redis://localhost:6379'
 celery = Celery(__name__, backend=BACKEND, broker=BROKER)
 
@@ -61,3 +63,12 @@ def fetch_runs(user):
 
     db.session.commit()
     return runs
+
+# @app.on_after_configure.connect
+# def setup_periodic_tasks(sender, **kwargs):
+
+#     # Executes every day at 23:00 a.m.
+#     sender.add_periodic_task(
+#         crontab(hour=23, minute=0, day_of_week=1),
+        
+#     )
