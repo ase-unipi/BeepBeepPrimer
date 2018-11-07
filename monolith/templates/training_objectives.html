@@ -6,21 +6,21 @@
     <h1>Set a training objective</h1>
     <form action="" method="POST">
       <table>
-        {{ form.hidden_tag() }}
+        {{ setter_form.hidden_tag() }}
         <thead>
           <tr>
-            {% for field in form.display %}
-                <th>{{ form[field].label }}</th>
+            {% for field in setter_form.display %}
+                <th>{{ setter_form[field].label }}</th>
             {% endfor %}
           </tr>
         </thead>
         <tbody>
           <tr>
-            {% for field in form.display %}
+            {% for field in setter_form.display %}
               <td  class="text-center" style="vertical-align: top;">
-                {{ form[field]() }}
-                {% if form[field].errors %}
-                  {% for e in form[field].errors %}
+                {{ setter_form[field]() }}
+                {% if setter_form[field].errors %}
+                  {% for e in setter_form[field].errors %}
                     <p class="help-block">{{ e }}</p>
                   {% endfor %}
                 {% endif %}
@@ -35,24 +35,65 @@
       </p>
     </form>
 
-    <h1>Your Training Objectives</h1>
+    <h1>Active Training Objectives</h1>
     <table>
       <thead>
         <tr>
-          {% for field in form.display %}
-            <th>{{ form[field].label }}</th>
+          {% for field in active_form.display %}
+            <th>{{ active_form[field].label }}</th>
           {% endfor %}
         </tr>
       </thead>
       <tbody>
-        {% for objective in objectives%}
-          <tr>
-          {% for field in form.display %}
-            <td class="text-center">{{ objective[field] }}</td>
+        {% for objective in active_tos%}
+        <tr>
+          {% for x in range(0,5) %}
+            <td>{{ objective[x] }}</td>
           {% endfor %}
-          </tr>
+        </tr>
         {% endfor %}
       </tbody>
     </table>
+
+    <h1>Completed Training Objectives</h1>
+    <table>
+      <thead>
+        <tr>
+          {% for field in completed_form.display %}
+            <th>{{ completed_form[field].label }}</th>
+          {% endfor %}
+        </tr>
+      </thead>
+      <tbody>
+        {% for objective in completed_tos%}
+        <tr>
+          {% for x in range(0,4) %}
+            <td>{{ objective[x] }}</td>
+          {% endfor %}
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+      <h1>Failed Training Objectives</h1>
+    <table>
+      <thead>
+        <tr>
+          {% for field in failed_form.display %}
+            <th>{{ failed_form[field].label }}</th>
+          {% endfor %}
+        </tr>
+      </thead>
+      <tbody>
+        {% for objective in failed_tos%}
+        <tr>
+          {% for x in range(0,5) %}
+            <td>{{ objective[x] }}</td>
+          {% endfor %}
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
   </body>
 </html>
