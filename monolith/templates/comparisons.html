@@ -1,3 +1,8 @@
+<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='bootstrap.min.css') }}">
+<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='bootstrap.css') }}">
+<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='landing-page.css') }}">
+<link href="https://fonts.googleapis.com/css?family=Lato:300,400,700,300italic,400italic,700italic" rel="stylesheet" type="text/css">
+
 <h1>Comparisons</h1>
 
 {% if current_user.is_authenticated %}
@@ -37,12 +42,3 @@
 {% else %}
   Hi Anonymous, <a href="/login">Log in</a>
 {% endif %}
-
-<style>
-  table, tr, td, th {
-    border: 1px solid black;
-    text-align: center;
-    border-collapse: collapse;
-    padding: 5px;
-  }
-</style>

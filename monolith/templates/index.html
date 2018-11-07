@@ -1,43 +1,133 @@
-<h1>Runnerly</h1>
+<html>
+<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='bootstrap.min.css') }}">
+<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='bootstrap.css') }}">
+<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='landing-page.css') }}">
+<link href="https://fonts.googleapis.com/css?family=Lato:300,400,700,300italic,400italic,700italic" rel="stylesheet" type="text/css">
 
-{% if current_user.is_authenticated %}
-  Hi {{ current_user.email }}! <a href="/logout">Log out</a> <a href="/delete_user">Delete user</a>
 
-<p> <a href="/objective">Set your objective</a> </p>
+<body>
+  {% if current_user.is_authenticated %}
+  <!-- Navigation -->
+  <nav class="navbar navbar-default navbar-fixed-top topnav" role="navigation">
+    <div class="container topnav">
+      <!-- Brand and toggle get grouped for better mobile display -->
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand topnav" href="#">Runnerly</a>
+      </div>
 
-  {% if not current_user.strava_token %}
-    <a href="{{strava_auth_url}}">Authorize Strava Access</a>
-  {% else %}
-    <h2>Your last 10 runs</h2>
-    <form action="/comparisons" method="post">
-      {% for run in runs%}
-        <div>
-        <input type="checkbox" name="runs" value="{{run.id}}"> 
-        <a href="/runs/{{run.id}}">{{run.name}}</a>
-        </div>
-      {% endfor %}
-      <br/>
-      {% if comparisonError %}
-        <p style="color: red">
-          {{comparisonError}}
-        </p>
+      <!-- Collect the nav links, forms, and other content for toggling -->
+      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+        <ul class="nav navbar-nav navbar-right">
+          <li>
+            <a> Hi, {{ current_user.email }}! </a>
+          </li>
+          <li>
+            <a href="/logout">Log out</a>
+          </li>
+          <li>
+            <a href="/delete_user">Delete user</a>
+          </li>
+        </ul>
+      </div>
+      <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+  </nav>
+
+
+  <div class="intro-header">
+    <div class="container">
+      <div class="row">
+        {% if not current_user.strava_token %}
+        <a href="{{strava_auth_url}}">Authorize Strava Access</a>
+        {% else %}
+        <h2>Your last 10 runs</h2>
+        <form action="/comparisons" method="post">
+          {% for run in runs%}
+          <div>
+            <input type="checkbox" name="runs" value="{{run.id}}">
+            <a href="/runs/{{run.id}}">{{run.name}}</a>
+          </div>
+          {% endfor %}
+          <br />
+          {% if comparisonError %}
+          <p style="color: red">
+            {{comparisonError}}
+          </p>
+          {% endif %}
+          <input type="submit" value="Compare" />
+        </form>
+        <h3><a href="/objective">Set your objective</a></h3>
+      </div>
+    </div>
+  </div>
+
+  <div class="content-section-b">
+    <div class="container">
+      <h2>Stats</h2>
+      Total average speed: {{avgSpeed}}
       {% endif %}
-      <input type="submit" value="Compare"/>
-    </form>
+    </div>
+  </div>
 
-    <h2>Stats</h2>
-    Total average speed: {{avgSpeed}}
+  <div class="content-section-a">
+    <div class="container">
+      <h2>Objective</h2>
+      Distance objective: {{objective_distance}}
+    </div>
+  </div>
+
+  <div class="content-section-b">
+    <div class="container">
+      <h2>Progress</h2>
+      Total distance achieved: {{ '%0.2f'| format(tot_distance)}} <br>
+
+      Remaining: {{ '%0.2f'| format(progress)}} <br>
+      Percentage: {{ '%0.2f'| format(percentage)}} <br>
+    </div>
+  </div>
+  </div>
+
+
+
+  {% else %}
+  <nav class="navbar navbar-default navbar-fixed-top topnav" role="navigation">
+    <div class="container topnav">
+      <!-- Brand and toggle get grouped for better mobile display -->
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand topnav" href="#">Runnerly</a>
+      </div>
+
+      <!-- Collect the nav links, forms, and other content for toggling -->
+      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+        <ul class="nav navbar-nav navbar-right">
+          <li>
+            <a>Hi, Anonymous</a>
+          </li>
+          <li>
+            <a href="/login">Log in</a>
+          </li>
+        </ul>
+      </div>
+      <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+  </nav>
+
   {% endif %}
 
-    <h2>Objective</h2>
-    Distance objective: {{objective_distance}}
+</body>
 
-    <h2>Progress</h2>
-    Total distance achieved: {{ '%0.2f'| format(tot_distance)}} <br>
-
-    Remaining: {{ '%0.2f'| format(progress)}} <br>
-    Percentage: {{ '%0.2f'| format(percentage)}} <br>
-
-{% else %}
-  Hi Anonymous, <a href="/login">Log in</a>
-{% endif %}
+</html>
