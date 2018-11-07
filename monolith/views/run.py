@@ -14,13 +14,29 @@ def get_run(id):
         abort(404)
     return render_template("run.html", run=the_run)
 
-'''
-for statistics 
-'''
+
 @run.route('/run/statistics', methods=['GET', 'POST'])
 @login_required
 def get_runsData():
+    toSend = dict()
     print(request)
     jsondata = request.get_json()
     print(jsondata)
-    return jsonify({})
+    listRun = jsondata["runs"]
+    print(listRun)
+    runs = db.session.query(Run).filter(Run.id.in_(listRun)).all()
+    print(runs)
+    for run in runs:
+        print(run)
+        toSend[run.id] = [0, 0, 0, run.name]
+        #Average Speed
+        if jsondata["params"][0]:
+            toSend[run.id][0] = run.average_speed
+        #Distance
+        if jsondata["params"][1]:
+            toSend[run.id][1] = run.distance
+        #Time 
+        if jsondata["params"][2]:
+            toSend[run.id][2] = run.elapsed_time
+    print(toSend)
+    return jsonify(toSend)
