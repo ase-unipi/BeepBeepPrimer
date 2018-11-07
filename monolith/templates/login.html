@@ -24,8 +24,10 @@
             {% endif %}
             {% endfor %}
           </dl>
-          <p>
-            <input type=submit value="Publish">
+          {% if error %}
+             <p>Wrong email or password!</p>
+          {% endif %}
+            <input type=submit value="Log in">
         </form>
       </div>
     <button onclick="location.href='/create_user'" type="button">Sign up</button>

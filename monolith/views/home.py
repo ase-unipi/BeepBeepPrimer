@@ -5,9 +5,15 @@ from stravalib import Client
 from monolith.database import db, Run, User, Objectives
 from monolith.auth import current_user
 from monolith.forms import ObjectiveForm
+from monolith.views.auth import *
 
 home = Blueprint('home', __name__)
 
+def sec2minsec(seconds):
+    minutes = seconds // 60
+    seconds = ((seconds / 60 ) - minutes) * 60
+
+    return minutes, seconds
 
 def _strava_auth_url(config):
     client = Client()
@@ -28,21 +34,28 @@ def index():
     avgSpeed = 0
     objective_distance = 0
     tot_distance = 0
+    elapsed_time = 0
     progress = 0
-    percentage = 0
+    avgminutes = 0
+    avgsec = 0
+
     if current_user is not None and hasattr(current_user, 'id'):
         runs = db.session.query(Run).filter(Run.runner_id == current_user.id)
         if runs.count() > 0:
             for run in runs:
-                avgSpeed = avgSpeed + run.average_speed
-                tot_distance = tot_distance + run.distance
-            avgSpeed = avgSpeed / runs.count()
+                avgSpeed += run.average_speed
+                tot_distance += run.distance
+                elapsed_time += run.elapsed_time
+            avgSpeed /=  runs.count()
+
+            minutes, sec = sec2minsec(elapsed_time)
 
         objective = db.session.query(Objectives).filter(Objectives.user_id == current_user.id).first()
         if objective:
-            objective_distance = objective.get_distance()
+            objective_distance = objective.get_distance()*1000
     else:
-        runs = None
+        return redirect("/login")
+
     strava_auth_url = _strava_auth_url(home.app.config)
 
     if objective_distance - tot_distance > 0:
@@ -55,6 +68,8 @@ def index():
         "index.html", runs=runs,
         strava_auth_url=strava_auth_url,
         avgSpeed=avgSpeed,
+        minutes = minutes,
+        sec = sec,
         comparisonError=comparisonError,
         objective_distance=objective_distance, 
         tot_distance=tot_distance,

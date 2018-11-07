@@ -5,6 +5,7 @@ from stravalib import Client
 
 from monolith.database import db, User
 from monolith.forms import LoginForm
+from monolith.background import *
 
 auth = Blueprint('auth', __name__)
 
@@ -21,12 +22,14 @@ def _strava_auth():
     current_user.strava_token = access_token
     db.session.add(current_user)
     db.session.commit()
+    fetch_runs(current_user)
     return redirect('/')
 
 
 @auth.route('/login', methods=['GET', 'POST'])
 def login():
     form = LoginForm()
+    error = False
     if form.validate_on_submit():
         email, password = form.data['email'], form.data['password']
         q = db.session.query(User).filter(User.email == email)
@@ -37,7 +40,10 @@ def login():
         if user is not None and user.authenticate(password):
             login_user(user)
             return redirect('/')
-    return render_template('login.html', form=form)
+        else:
+            error = True
+
+    return render_template('login.html', form=form, error = error)
 
 
 @auth.route("/logout")

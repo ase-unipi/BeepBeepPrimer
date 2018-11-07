@@ -39,7 +39,10 @@
   <div class="content-section-b">
     <div class="container">
       <h2>Stats</h2>
-      Total average speed: {{avgSpeed}}
+      <ul>
+        <li>Total average speed: {{avgSpeed}}</li>
+        <li>Total running time: {{ '%0.0f' | format(minutes) }}'.{{ '%0.0f' | format(sec)}}''</li>
+      </ul>
       {% endif %}
     </div>
   </div>
