@@ -1,5 +1,8 @@
 # BeepBeep Monolith
+_Check also the original [README.rst](README.rst) file._
 
+[![Build Status](https://travis-ci.org/MariaCristina16/BeepBeepPrimer.svg?branch=master)](https://travis-ci.org/MariaCristina16/BeepBeepPrimer)
+[![Coverage Status](https://coveralls.io/repos/github/MariaCristina16/BeepBeepPrimer/badge.svg?branch=master)](https://coveralls.io/github/MariaCristina16/BeepBeepPrimer?branch=master)
 
 ## First setup
 
