@@ -28,9 +28,9 @@
         </tbody>
       </table>
       {% if run.id > 1 %}
-      <button><a href="/runs/{{ run.id-1 }}">Previous</a></button>
+      <button onclick="location.href='/runs/{{ run.id-1 }}'" type="button">Previous</button>
       {% endif %}
-      <button><a href="/">Go home</a></button>
+      <button onclick="location.href='/'" type="button">Go Back</button>
     </div>
   </div>
 </body>
