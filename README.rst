@@ -59,5 +59,18 @@ To invoke it, visit http://127.0.0.1:5000/fetch.
 Once the runs are retrieved, you should see your last ten runs
 on http://127.0.0.1:5000
 
+How to avoid the first sql alchemy warning
+------------------------------------------
+
+- edit the file `/home/leonardo/.local/lib/python3.6/site-packages/flask_sqlalchemy/__init__.py` 
+
+- at line 788
+        ```
+        track_modifications = app.config.setdefault(
+            'SQLALCHEMY_TRACK_MODIFICATIONS', None
+        )
+        ```
+
+- change None with False
 
 
