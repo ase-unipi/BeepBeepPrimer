@@ -6,4 +6,4 @@ redis
 flask-wtf
 flask-sqlalchemy
 pip-tools
-stravalib
+stravalib==0.9
