@@ -72,3 +72,15 @@ def test_create_training_negative_km(client, background_app, db_instance):
     assert rv.data.decode('ascii').count('2018-12-07') == 2
     r = db_instance.session.query(Training_Objective).filter(Training_Objective.id == 1)
     assert r.count() == 0
+
+def test_correct_assigning_trainig_runner(client, background_app, db_instance):
+    client.post('/create_user', data=dict(submit='Publish', email='peppino@giro.it', firstname='peppino', lastname='p',
+                                               password='peppino', age='1',
+                                               weight='1', max_hr='1', rest_hr='1', vo2max='1'))
+    client.post('/login', data=dict(email='peppino@giro.it', password='peppino'), follow_redirects=True)
+    client.post('/training_objectives', data=dict(submit='Publish', start_date='2018-12-07', end_date='2018-12-07', kilometers_to_run='1'),follow_redirects=True)
+    client.get('/logout', follow_redirects=True)
+    make_and_login_user(client)
+    rv = client.post('/training_objectives', data=dict(submit='Publish', start_date='2018-12-07', end_date='2018-12-07', kilometers_to_run='1'),follow_redirects=True)
+    r = db_instance.session.query(Training_Objective).filter(Training_Objective.id == 1)
+    assert r.count() == 1
