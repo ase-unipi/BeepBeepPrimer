@@ -5,7 +5,7 @@ from random import uniform, randint
 from datetime import datetime
 
 from monolith.app import create_app
-from monolith.database import db, Run, User
+from monolith.database import db, Run, User, Objective
 
 
 # read in SQL for populating test data
@@ -55,7 +55,6 @@ def login(client, email, password):
 def logout(client):
     return client.get('/logout')
 
-
 def create_user(client, email='marco@prova.it', firstname='marco', lastname='mario', password='123456', age=18,
                 weight=70, max_hr=120, rest_hr=65, vo2max=99):
 
@@ -68,7 +67,6 @@ def create_user(client, email='marco@prova.it', firstname='marco', lastname='mar
                                                  max_hr=max_hr,
                                                  rest_hr=rest_hr,
                                                  vo2max=vo2max), follow_redirects=True)
-
 
 def new_user():
     user = User()
@@ -86,17 +84,21 @@ def new_user():
     db.session.commit()
 
 
-def new_run(user):
+def new_run(user, strava_id=randint(100, 100000000), name=None, distance=uniform(50.0, 10000.0), elapsed_time=uniform(30.0, 3600.0),
+average_heartrate=None, total_elevation_gain=uniform(0.0, 25.0), start_date=datetime.now()):
+    if name == None :
+        name = "Run %s"%(strava_id)
+
     run = Run()
     run.runner = user
-    run.strava_id = randint(100, 100000000)  # a random number 100 - 1.000.000, we hope is unique
-    run.name = "Run " + str(run.strava_id)
-    run.distance = uniform(50.0, 10000.0)  # 50m - 10 km
-    run.elapsed_time = uniform(30.0, 3600.0)  # 30s - 1h
+    run.strava_id = strava_id  # a random number 100 - 1.000.000, we hope is unique
+    run.name = name
+    run.distance = distance  # 50m - 10 km
+    run.elapsed_time = elapsed_time  # 30s - 1h
     run.average_speed = run.distance / run.elapsed_time
-    run.average_heartrate = None
-    run.total_elevation_gain = uniform(0.0, 25.0)  # 0m - 25m
-    run.start_date = datetime.now()
+    run.average_heartrate = average_heartrate
+    run.total_elevation_gain = total_elevation_gain  # 0m - 25m
+    run.start_date = start_date
     db.session.add(run)
     db.session.commit()
 
@@ -112,20 +114,15 @@ def new_predef_run(user):
     run.total_elevation_gain = 3.0 # 0m - 25m
     run.start_date = datetime.now()
     db.session.add(run)
+
+def new_objective(user, name = "Test Objective", target_distance = "42", start_date = datetime.now(), end_date = datetime.now()):
+    objective = Objective()
+    objective.runner = user
+    objective.name = name
+    objective.target_distance = target_distance
+    objective.start_date = start_date
+    objective.end_date = end_date
+    db.session.add(objective)
     db.session.commit()
 
-
-def new_predefined_run(user):
-    run = Run()
-    run.runner = user
-    run.strava_id = 10  # a random number 100 - 1.000.000, we hope is unique
-    run.name = "Run " + str(run.strava_id)
-    run.distance = 80000.0  # 50m - 10 km
-    run.elapsed_time = 5000.0  # 30s - 1h
-    run.average_speed = run.distance / run.elapsed_time
-    run.average_heartrate = None
-    run.total_elevation_gain = 2.0 # 0m - 25m
-    run.start_date = datetime.now()
-    db.session.add(run)
-    db.session.commit()
-    return run
+    return objective
