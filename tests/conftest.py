@@ -46,6 +46,18 @@ def db_instance(app):
         yield db
 
 
+# overwrite the _APP in background to make it point to the test_app
+# to use in every test that calls a function from the monolith/background.py file
+# I want to remember that also /login make a calls to /fetch
+# Thanks to Stefano we need to give background._APP the correct app to work with otherwise calls to
+# fetch_all_runs would use the real app with the real db
+@pytest.fixture
+def background_app(app):
+    from monolith import background
+    background._APP = app
+    yield app
+
+
 # expose a client which is used to send requests to the app
 @pytest.fixture
 def client(app):

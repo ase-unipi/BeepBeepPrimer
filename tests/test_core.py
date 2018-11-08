@@ -29,10 +29,10 @@ def test_create_same_user(client, db_instance):
 
 # test the login and logout features now the login make a call to celery so we need celery_session_worker
 # tested with only celery_worker but got stuck after the execution of this function
-def test_login_logout(client, celery_session_worker):
+def test_login_logout(client, background_app, celery_session_worker):
     rv = client.post('/create_user',
-                         data=dict(submit='Publish', email='email', firstname='a', lastname='a', password='p', age='1',
-                                   weight='1', max_hr='1', rest_hr='1', vo2max='1', ), follow_redirects=True)
+                     data=dict(submit='Publish', email='email', firstname='a', lastname='a', password='p', age='1',
+                               weight='1', max_hr='1', rest_hr='1', vo2max='1', ), follow_redirects=True)
     assert rv.data.decode('ascii').count('a a') == 1
 
     rv = client.post('/login', data=dict(email='email', password='p'), follow_redirects=True)
@@ -46,7 +46,7 @@ def test_login_logout(client, celery_session_worker):
 
 
 # this is the interesting one test the /fetch with fake token and fake response
-def test_create_runs(client, app, db_instance, celery_session_worker):
+def test_create_runs(client, background_app, db_instance, celery_session_worker):
     """
 
     we use client app and db_instance celery_worker creates a celery worker instance for this test so we don't need to
@@ -69,24 +69,19 @@ def test_create_runs(client, app, db_instance, celery_session_worker):
         mocked.return_value.exchange_code_for_token.return_value = "blablabla"
         # create an user with email
         rv = client.post('/create_user',
-                             data=dict(submit='Publish', email='email', firstname='a', lastname='a', password='p',
-                                       age='1',
-                                       weight='1', max_hr='1', rest_hr='1', vo2max='1', ), follow_redirects=True)
+                         data=dict(submit='Publish', email='email', firstname='a', lastname='a', password='p',
+                                   age='1',
+                                   weight='1', max_hr='1', rest_hr='1', vo2max='1', ), follow_redirects=True)
         assert rv.data.decode('ascii').count('a a') == 1
         # create an user with emaill
         rv = client.post('/create_user',
-                             data=dict(submit='Publish', email='emaill', firstname='a', lastname='a', password='p',
-                                       age='1',
-                                       weight='1', max_hr='1', rest_hr='1', vo2max='1', ), follow_redirects=True)
+                         data=dict(submit='Publish', email='emaill', firstname='a', lastname='a', password='p',
+                                   age='1',
+                                   weight='1', max_hr='1', rest_hr='1', vo2max='1', ), follow_redirects=True)
 
         rv = client.post('/login', data=dict(email='email', password='p'), follow_redirects=True)
         assert b'Hi email!' in rv.data
         assert b'Authorize Strava Access' in rv.data
-
-        from monolith import background
-        background._APP = app
-        # Thanks to Stefano we need to give background._APP the correct app to work with otherwise calls to
-        # fetch_all_runs would use the real app with the real db
 
         """
             Alright calling mocked_result from conftest.py
@@ -255,7 +250,7 @@ def test_create_runs(client, app, db_instance, celery_session_worker):
             "total_elevation_gain": 0,
             "type": "Run",
             "workout_type": None,
-            "id": 15450425037682, # changed id
+            "id": 15450425037682,  # changed id
             "external_id": "garmin_push_12345678987654321",
             "upload_id": 987654321234567891234,
             "start_date": "2018-05-02T12:15:09Z",
@@ -314,7 +309,7 @@ def test_create_runs(client, app, db_instance, celery_session_worker):
             "total_elevation_gain": 0,
             "type": "Run",
             "workout_type": None,
-            "id": 123456780, # changed id
+            "id": 123456780,  # changed id
             "external_id": "garmin_push_12345678987654321",
             "upload_id": 1234567819,
             "start_date": "2018-04-30T12:35:51Z",
