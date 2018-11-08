@@ -84,3 +84,9 @@ def _delete_user(user):
     q.delete(synchronize_session=False)
     db.session.delete(user)
     db.session.commit()
+
+def _setObjective(user, distance):
+    new_objective = Objectives()
+    new_objective.distance = distance
+    new_objective.user = user
+    db.session.add(new_objective)

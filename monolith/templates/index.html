@@ -40,8 +40,8 @@
     <div class="container">
       <h2>Stats</h2>
       <ul>
-        <li>Total average speed: {{avgSpeed}}</li>
-        <li>Total running time: {{ '%0.0f' | format(minutes) }}'.{{ '%0.0f' | format(sec)}}''</li>
+        <li>Total average speed: {{avgSpeed}} km/h </li>
+        <li>Total running time: {{ '%0.0f' | format(minutes) }}' {{ '%0.0f' | format(sec)}}''</li>
       </ul>
       {% endif %}
     </div>
@@ -50,17 +50,17 @@
   <div class="content-section-a">
     <div class="container">
       <h2>Objective</h2>
-      Distance objective: {{objective_distance}}
+      Distance objective: {{objective_distance}} Km
     </div>
   </div>
 
   <div class="content-section-b">
     <div class="container">
       <h2>Progress</h2>
-      Total distance achieved: {{ '%0.2f'| format(tot_distance)}} <br>
+      Total distance achieved: {{ '%0.2f'| format(tot_distance)}} km<br>
 
-      Remaining: {{ '%0.2f'| format(progress)}} <br>
-      Percentage: {{ '%0.2f'| format(percentage)}} <br>
+      Remaining: {{ '%0.2f'| format(progress)}} km<br>
+      Percentage: {{ '%0.2f'| format(percentage)}} %<br>
     </div>
   </div>
   </div>

@@ -2,18 +2,13 @@ from flask import Blueprint, render_template, request, redirect
 
 from stravalib import Client
 
-from monolith.database import db, Run, User, Objectives
+from monolith.database import db, Run, User, Objectives, _setObjective
 from monolith.auth import current_user
 from monolith.forms import ObjectiveForm
 from monolith.views.auth import *
+from monolith.views.util import *
 
 home = Blueprint('home', __name__)
-
-def sec2minsec(seconds):
-    minutes = seconds // 60
-    seconds = ((seconds / 60 ) - minutes) * 60
-
-    return minutes, seconds
 
 def _strava_auth_url(config):
     client = Client()
@@ -36,8 +31,8 @@ def index():
     tot_distance = 0
     elapsed_time = 0
     progress = 0
-    avgminutes = 0
-    avgsec = 0
+    minutes = 0
+    sec = 0
 
     if current_user is not None and hasattr(current_user, 'id'):
         runs = db.session.query(Run).filter(Run.runner_id == current_user.id)
@@ -46,13 +41,13 @@ def index():
                 avgSpeed += run.average_speed
                 tot_distance += run.distance
                 elapsed_time += run.elapsed_time
-            avgSpeed /=  runs.count()
+            avgSpeed /= runs.count()
 
             minutes, sec = sec2minsec(elapsed_time)
 
         objective = db.session.query(Objectives).filter(Objectives.user_id == current_user.id).first()
         if objective:
-            objective_distance = objective.get_distance()*1000
+            objective_distance = objective.get_distance()
     else:
         return redirect("/login")
 
@@ -65,16 +60,16 @@ def index():
         percentage = 100
 
     return render_template(
-        "index.html", runs=runs,
-        strava_auth_url=strava_auth_url,
-        avgSpeed=avgSpeed,
+        "index.html", runs = runs,
+        strava_auth_url = strava_auth_url,
+        avgSpeed = mh2kmh(avgSpeed),
         minutes = minutes,
         sec = sec,
-        comparisonError=comparisonError,
-        objective_distance=objective_distance, 
-        tot_distance=tot_distance,
-        progress=progress, 
-        percentage=percentage
+        comparisonError = comparisonError,
+        objective_distance = m2km(objective_distance),
+        tot_distance = m2km(tot_distance),
+        progress = m2km(progress),
+        percentage = percentage
     )
 
 
@@ -83,17 +78,13 @@ def set_objective():
     form = ObjectiveForm()
 
     if form.validate_on_submit():
-        objective_distance = form.data['distance']
+        objective_distance = km2m(form.data['distance'])
         q = db.session.query(User).filter(User.email == current_user.email)
         user = q.first()
 
         existing_objective = db.session.query(Objectives).filter(Objectives.user == user).first()
         if existing_objective is None:
-            new_objective = Objectives()
-            new_objective.distance = objective_distance
-            new_objective.user = user
-
-            db.session.add(new_objective)
+            _setObjective(user, objective_distance)
 
         else:
             existing_objective.set_distance(objective_distance)
@@ -101,4 +92,4 @@ def set_objective():
         db.session.commit()
         return redirect("/")
 
-    return render_template('set_objective.html', form=form)
+    return render_template('set_objective.html', form = form)
