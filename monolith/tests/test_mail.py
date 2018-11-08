@@ -1,7 +1,7 @@
 from monolith.tests.utility import new_run, client, login, create_user, new_predef_run, new_predefined_run
 from monolith.database import db, User
 from werkzeug.security import check_password_hash
-from flask_login import current_user
+
 
 def test_create_repo(client):
     tested_app, app = client

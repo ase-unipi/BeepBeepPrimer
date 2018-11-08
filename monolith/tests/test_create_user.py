@@ -1,7 +1,6 @@
 from monolith.tests.utility import client, login, create_user, logout
 from monolith.database import db, User
 from werkzeug.security import check_password_hash
-from flask_login import current_user
 
 
 def test_create_user(client):
@@ -18,7 +17,9 @@ def test_create_user(client):
 
     assert login(tested_app, 'andrea@prova.it', '123456').status_code == 200
 
-    # now andrea@prova.it is logged in
+    # cannot create a user when already logged in
+    assert create_user(tested_app).status_code == 403
+
     with app.app_context():
         user = db.session.query(User).filter(User.email == 'andrea@prova.it').first()
         assert user is not None
@@ -31,10 +32,6 @@ def test_create_user(client):
         assert user.max_hr == 120
         assert user.rest_hr == 60
         assert user.vo2max == 99
-
-    #to check if the user is logged in
-    reply = tested_app.get('/delete_user')
-    assert reply.status_code == 200
 
     logout(tested_app)
 

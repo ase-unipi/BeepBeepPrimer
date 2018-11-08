@@ -31,6 +31,16 @@ def client():
     db.init_app(app=app)
     #with app.app_context():
         #db.engine.execute(_data_sql)
+    with app.app_context():
+        q = db.session.query(User).filter(User.email == 'example@example.com')
+        user = q.first()
+        if user is None:
+            example = User()
+            example.email = 'example@example.com'
+            example.is_admin = True
+            example.set_password('admin')
+            db.session.add(example)
+            db.session.commit()
 
     yield client, app
 

@@ -2,7 +2,7 @@ from monolith.tests.utility import client, login, create_user, logout
 from monolith.database import db, User
 
 
-def test_delete(client):
+def test_delete_user(client):
     tested_app, app = client
 
     reply = create_user(tested_app)  # creates a user with 'marco@prova.it' as email, default
@@ -21,6 +21,8 @@ def test_delete(client):
 
     reply = login(tested_app, email='marco@prova.it', password='123456')
     assert reply.status_code == 200
+
+    # TODO create a run for the user and check that it is deleted once the user is deleted
 
     # retrieve delete_user page
     reply = tested_app.get('/delete_user')
