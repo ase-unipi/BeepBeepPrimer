@@ -14,9 +14,9 @@ def test_set_objective(client):
     reply = create_user(tested_app)
     assert reply.status_code == 200
 
-    # USELESS ?
-    # reply = login(tested_app, email='marco@prova.it', password='123456')
-    # assert reply.status_code == 200
+
+    reply = login(tested_app, email='marco@prova.it', password='123456')
+    assert reply.status_code == 200
 
     # test for create_objective logged in
     reply = tested_app.post('/create_objective')
