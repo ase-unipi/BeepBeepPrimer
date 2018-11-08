@@ -38,6 +38,8 @@ def index():
     progress = 0
     avgminutes = 0
     avgsec = 0
+    minutes = 0
+    sec = 0
 
     if current_user is not None and hasattr(current_user, 'id'):
         runs = db.session.query(Run).filter(Run.runner_id == current_user.id)
