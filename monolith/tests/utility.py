@@ -57,29 +57,34 @@ def new_user(client, email='marco@prova.it', firstname='marco', lastname='mario'
                        follow_redirects=False)
 
 
-def new_run(user):
+def new_run(user, strava_id=randint(100, 100000000), name=None, distance=uniform(50.0, 10000.0), elapsed_time=uniform(30.0, 3600.0),
+average_heartrate=None, total_elevation_gain=uniform(0.0, 25.0), start_date=datetime.now()):
+    if name == None :
+        name = "Run %s"%(strava_id)
+
     run = Run()
     run.runner = user
-    run.strava_id = randint(100, 100000000)  # a random number 100 - 1.000.000, we hope is unique
-    run.name = "Run " + str(run.strava_id)
-    run.distance = uniform(50.0, 10000.0)  # 50m - 10 km
-    run.elapsed_time = uniform(30.0, 3600.0)  # 30s - 1h
+    run.strava_id = strava_id  # a random number 100 - 1.000.000, we hope is unique
+    run.name = name
+    run.distance = distance  # 50m - 10 km
+    run.elapsed_time = elapsed_time  # 30s - 1h
     run.average_speed = run.distance / run.elapsed_time
-    run.average_heartrate = None
-    run.total_elevation_gain = uniform(0.0, 25.0)  # 0m - 25m
-    run.start_date = datetime.now()
+    run.average_heartrate = average_heartrate
+    run.total_elevation_gain = total_elevation_gain  # 0m - 25m
+    run.start_date = start_date
     db.session.add(run)
     db.session.commit()
 
-def new_objective(user):
+def new_objective(user, name = "Test Objective", target_distance = "42", start_date = datetime.now(), end_date = datetime.now()):
     objective = Objective()
-    objective.name = "Objective_test"
-    objective.target_distance = 10
-    objective.start_date = datetime.now()
-    objective.end_date = datetime.now()
     objective.runner = user
+    objective.name = name
+    objective.target_distance = target_distance
+    objective.start_date = start_date
+    objective.end_date = end_date
     db.session.add(objective)
     db.session.commit()
+
 # TODO: delete this
 '''
 def create_user():

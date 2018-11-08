@@ -1,15 +1,19 @@
 <html>
 
- <body>
+<body>
     <h1>Objectives</h1>
     <ul>
         {% for objective in objectives: %}
         <li>
-            <div  id="name">{{objective.name}}</div>
-            <div> Start date: <span id="start_date">{{objective.start_date}}</span></div>
-            <div> End date: <span id="end_date">{{objective.end_date}}</span></div>
-            <div> Target Distance: <span id="target_distance">{{objective.target_distance}}</span></div>
-            <div> Runner: <span id="runner">{{objective.runner}}</span></div>
+            <div id="name">{{objective.name}}</div>
+            <div>Start date: <span id="start_date">{{objective.start_date}}</span></div>
+            <div>End date: <span id="end_date">{{objective.end_date}}</span></div>
+            <div>Target Distance: <span id="target_distance">{{objective.target_distance}}</span></div>
+            <div>Runner:
+                <div id="runner">
+                    <span id="runner_id">{{objective.runner.id}}</span>
+                </div>
+            </div>
         </li>
         {% endfor %}
     </ul>
