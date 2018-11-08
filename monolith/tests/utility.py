@@ -85,6 +85,8 @@ def new_objective(user, name = "Test Objective", target_distance = "42", start_d
     db.session.add(objective)
     db.session.commit()
 
+    return objective
+
 # TODO: delete this
 '''
 def create_user():

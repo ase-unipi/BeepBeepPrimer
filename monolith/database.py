@@ -3,6 +3,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import enum
 from sqlalchemy.orm import relationship
 from flask_sqlalchemy import SQLAlchemy
+import math
 
 
 db = SQLAlchemy()
@@ -72,11 +73,11 @@ class Objective(db.Model):
     runner_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     runner = relationship('User', foreign_keys='Objective.runner_id')
 
+    @property
     def completion(self):
-#        runs = db.session.query(Run).filter(Run.runner_id == self.runner_id).filter(Run.start_date > self.start_date and Run.end_date <= self.end_date)])
         runs = db.session.query(Run) \
-                         .join(Objective.runner_id) \
-                         .filter(Run.start_date > self.start_date and Run.end_date <= self.end_date)])
-
-        return 100 * (float(sum([run.distance for run in runs])) / float(self.target_distance))
-        # return sum([run.distance for run in runs if (run.start_date > self.start_date and run.end_date <= self.end_date)])
+                         .filter(Run.start_date > self.start_date) \
+                         .filter(Run.start_date <= self.end_date) \
+                         .filter(Run.runner_id == self.runner_id)
+        
+        return min(round(100 * (sum([run.distance for run in runs]) / (self.target_distance)), 2), 100)
