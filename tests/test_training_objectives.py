@@ -6,7 +6,7 @@ from datetime import date, timedelta, datetime
 
 import json
 
-def make_and_login_user(client, background_app):
+def make_and_login_user(client):
   rv = client.post('/create_user', data=dict(submit='Publish', email='peppe@giro.it', firstname='peppe', lastname='p',
                                                password='peppe', age='1',
                                                weight='1', max_hr='1', rest_hr='1', vo2max='1'))
