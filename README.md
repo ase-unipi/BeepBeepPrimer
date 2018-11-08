@@ -50,7 +50,7 @@ Start redis: `redis-server`
 2. Load the virtual env (only if you have created a virtual env):  
    `source venv/bin/activate`
 3. Start a celery worker:  
-   `celery worker -A monolith.background`
+   `celery worker -A monolith.background -B`
 
 ##### Terminal #3
 1. Load environment variables:  
