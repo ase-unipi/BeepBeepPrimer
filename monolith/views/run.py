@@ -17,26 +17,45 @@ def get_run(id):
 
 @run.route('/run/statistics', methods=['GET', 'POST'])
 @login_required
-def get_runsData():
-    toSend = dict()
+def get_runs_data():
+    """ This function takes as input (with a POST) one JSON dict
+    that contains: {
+                    'runs': [run_id_1, run_id_2, ...]
+                    'params: [bool1, bool2, bool3]
+                        }
+    bool1: true if avg speed is required
+    bool2: true if distance is required
+    bool3: true if elapsed time is required
+
+    And returns another json:
+        {
+            run_id_1: [avg_speed, distance, time, run_name]
+            run_id_2: ...
+            .
+            .
+            .
+        }
+    values are 0 if not required
+    """
+    to_send = dict()
     print(request)
-    jsondata = request.get_json()
-    print(jsondata)
-    listRun = jsondata["runs"]
-    print(listRun)
-    runs = db.session.query(Run).filter(Run.id.in_(listRun)).all()
+    json_data = request.get_json()
+    print(json_data)
+    runs_id_list = json_data["runs"]
+    print(runs_id_list)
+    runs = db.session.query(Run).filter(Run.id.in_(runs_id_list)).all()
     print(runs)
     for run in runs:
         print(run)
-        toSend[run.id] = [0, 0, 0, run.name]
-        #Average Speed
-        if jsondata["params"][0]:
-            toSend[run.id][0] = run.average_speed
-        #Distance
-        if jsondata["params"][1]:
-            toSend[run.id][1] = run.distance
-        #Time 
-        if jsondata["params"][2]:
-            toSend[run.id][2] = run.elapsed_time
-    print(toSend)
-    return jsonify(toSend)
+        to_send[run.id] = [0, 0, 0, run.name]
+        # Average Speed
+        if json_data["params"][0]:
+            to_send[run.id][0] = run.average_speed
+        # Distance
+        if json_data["params"][1]:
+            to_send[run.id][1] = run.distance
+        # Time
+        if json_data["params"][2]:
+            to_send[run.id][2] = run.elapsed_time
+    print(to_send)
+    return jsonify(to_send)

@@ -18,6 +18,9 @@
           <li><a href="objective.html">Objective</a></li>
           <li><a href="/delete_user"><span class="glyphicon glyphicon-user"></span>Delete User</a></li>
           <li><a href="/logout"><span class="glyphicon glyphicon-log-out"></span>Logout</a></li>
+          {% if current_user.is_admin %}
+          <li><a href="/users"><span class="glyphicon glyphicon-user"></span>Users list</a></li>
+          {% endif %}
         </ul>
     </div>
     <div class="container">

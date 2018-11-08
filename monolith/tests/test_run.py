@@ -40,5 +40,7 @@ def test_run(client):
     assert get_element_by_id('average_heartrate', str(reply.data)) == str(run.average_heartrate)
     assert get_element_by_id('total_elevation_gain', str(reply.data)) == str(run.total_elevation_gain)
 
-
+    # retrieving not existing run
+    reply = tested_app.get('/run/45678')
+    assert reply.status_code == 404
 

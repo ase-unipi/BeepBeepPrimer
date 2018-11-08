@@ -128,3 +128,4 @@ def new_predefined_run(user):
     run.start_date = datetime.now()
     db.session.add(run)
     db.session.commit()
+    return run
