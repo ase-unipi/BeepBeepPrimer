@@ -6,7 +6,7 @@ from datetime import date, timedelta, datetime
 
 import json
 
-def make_and_login_user(client):
+def make_and_login_user(client, background_app):
   rv = client.post('/create_user', data=dict(submit='Publish', email='peppe@giro.it', firstname='peppe', lastname='p',
                                                password='peppe', age='1',
                                                weight='1', max_hr='1', rest_hr='1', vo2max='1'))
@@ -20,7 +20,7 @@ def test_create_training_with_non_authenticated_user(client, celery_session_work
     assert rv.status_code == 200
     assert b'Hi Anonymous, <a href="/login">Log in</a> <a href="/create_user">Create user</a>' in rv.data
 
-def test_create_training(client, db_instance):
+def test_create_training(client, background_app, db_instance):
     make_and_login_user(client)
     rv = client.post('/training_objectives', data=dict(submit='Publish', start_date='2018-12-07', end_date='2018-12-07', kilometers_to_run='1'),follow_redirects=True)
     r = db_instance.session.query(Training_Objective).filter(Training_Objective.id == 1)
@@ -28,7 +28,7 @@ def test_create_training(client, db_instance):
     assert rv.data.decode('ascii').count('2018-12-07') == 4
     assert b'          <td>2018-12-07</td>\n          <td>2018-12-07</td>'  in rv.data
 
-def test_create_twice_same_training(client, db_instance):
+def test_create_twice_same_training(client, background_app, db_instance):
     make_and_login_user(client)
     rv = client.post('/training_objectives', data=dict(submit='Publish', start_date='2018-12-07', end_date='2018-12-07', kilometers_to_run='1'),follow_redirects=True)
     rv = client.post('/training_objectives', data=dict(submit='Publish', start_date='2018-12-07', end_date='2018-12-07', kilometers_to_run='1'),follow_redirects=True)
@@ -37,7 +37,7 @@ def test_create_twice_same_training(client, db_instance):
     assert rv.data.decode('ascii').count('2018-12-07') == 6
     assert rv.data.decode('ascii').count('          <td>2018-12-07</td>\n          <td>2018-12-07</td>') == 2
 
-def test_create_training_starts_yesterday(client, db_instance):
+def test_create_training_starts_yesterday(client, background_app, db_instance):
     make_and_login_user(client)
     yesterday = date.today() - timedelta(1)
     rv = client.post('/training_objectives', data=dict(submit='Publish', start_date=yesterday, end_date='2018-12-07', kilometers_to_run='1'),follow_redirects=True)
@@ -46,7 +46,7 @@ def test_create_training_starts_yesterday(client, db_instance):
     r = db_instance.session.query(Training_Objective).filter(Training_Objective.id == 1)
     assert r.count() == 0
 
-def test_create_training_opposite_date(client, db_instance):
+def test_create_training_opposite_date(client, background_app, db_instance):
     make_and_login_user(client)
     rv = client.post('/training_objectives', data=dict(submit='Publish', start_date='2018-12-07', end_date='2018-11-07', kilometers_to_run='1'),follow_redirects=True)
     assert rv.data.decode('ascii').count('2018-12-07') == 1
@@ -55,7 +55,7 @@ def test_create_training_opposite_date(client, db_instance):
     assert r.count() == 0
     assert b'<p class="help-block">End date must not be less than Start date</p>' in rv.data
 
-def test_create_training_ends_yesterday(client, db_instance):
+def test_create_training_ends_yesterday(client, background_app, db_instance):
     make_and_login_user(client)
     yesterday = date.today() - timedelta(1)
     rv = client.post('/training_objectives', data=dict(submit='Publish', start_date='2018-12-07', end_date=yesterday, kilometers_to_run='1'),follow_redirects=True)
@@ -66,7 +66,7 @@ def test_create_training_ends_yesterday(client, db_instance):
     assert b'<p class="help-block">End date must not be less than Start date</p>' in rv.data
     assert b'<p class="help-block">End date must not be less than Start date</p>' in rv.data
 
-def test_create_training_negative_km(client, db_instance):
+def test_create_training_negative_km(client, background_app, db_instance):
     make_and_login_user(client)
     rv = client.post('/training_objectives', data=dict(submit='Publish', start_date='2018-12-07', end_date='2018-12-07', kilometers_to_run='-1'),follow_redirects=True)
     assert rv.data.decode('ascii').count('2018-12-07') == 2
