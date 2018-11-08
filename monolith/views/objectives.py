@@ -32,3 +32,4 @@ def create_objective():
             return redirect('http://127.0.0.1:5000/objectives')
 
     return render_template('create_objective.html', form=form)
+
