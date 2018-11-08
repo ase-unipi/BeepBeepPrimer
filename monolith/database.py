@@ -1,7 +1,7 @@
 # encoding: utf8
 from werkzeug.security import generate_password_hash, check_password_hash
 import enum
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, backref
 from flask_sqlalchemy import SQLAlchemy
 
 
@@ -59,14 +59,14 @@ class Run(db.Model):
     average_heartrate = db.Column(db.Float)
     total_elevation_gain = db.Column(db.Float)
     runner_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    runner = relationship('User', foreign_keys='Run.runner_id')
+    runner = relationship('User', foreign_keys='Run.runner_id', backref=backref('Run', cascade="all,delete"))
 
 
 class Objectives(db.Model):
     __tablename__ = 'user_objectives'
     distance = db.Column(db.Float)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
-    user = relationship('User', foreign_keys='Objectives.user_id')
+    user = relationship('User', foreign_keys='Objectives.user_id', backref=backref('Objectives', cascade="all,delete"))
 
     def get_distance(self):
         return self.distance
@@ -76,12 +76,7 @@ class Objectives(db.Model):
 
 
 def _delete_user(user):
-    user_id = user.get_id()
-    # delete cascade would be a better solution
-    q = db.session.query(Run).filter(Run.runner_id == user_id)
-    q.delete(synchronize_session=False)
-    q = db.session.query(Objectives).filter(Objectives.user_id == user_id)
-    q.delete(synchronize_session=False)
+    # delete cascade
     db.session.delete(user)
     db.session.commit()
 

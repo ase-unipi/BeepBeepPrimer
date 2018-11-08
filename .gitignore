@@ -115,3 +115,4 @@ dump.rdb
 variables.sh
 /.vscode/settings.json
 key.sh
+*.DS_Store

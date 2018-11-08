@@ -40,13 +40,12 @@ def delete_user():
     if form.validate_on_submit():
         #verify user password
         password = form.data['password']
-        q = db.session.query(User).filter(User.email == email)
+        q = db.session.query(User).filter(User.id == current_user.id)
         user = q.first()
-        print(user is None)
 
         if user is not None and user.authenticate(password):
             logout_user()
-            #delete the user and its runs
+            #delete the user and all his data
             _delete_user(user)
             return redirect('/users')
 
