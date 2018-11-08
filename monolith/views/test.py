@@ -9,5 +9,5 @@ test = Blueprint('test', __name__)
 
 @test.route('/test', methods=['GET'])
 def _test():
-    send_reports()
+    _send_reports()
     return render_template("test.html")

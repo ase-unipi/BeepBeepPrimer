@@ -13,10 +13,11 @@ def _periodic_report():
 
     form = PeriodicReportForm()
     form.periodicity.choices = REPORT_PERIODICITY
-    form.periodicity.default = current_user.report_periodicity
 
     if request.method == 'POST':
         current_user.report_periodicity = form.periodicity.data
         db.session.commit()
+
+    form.periodicity.data = current_user.report_periodicity.code
 
     return render_template("periodic_report.html", form=form)
