@@ -1,11 +1,14 @@
 from celery import Celery
 from stravalib import client as c # Need to expose the ApiV3 import from stravalib.client (don't ask...)
 from monolith.database import db, User, Run
-
 from celery.schedules import crontab
+from monolith.mail_service import _send_reports
+
+import datetime
 
 BACKEND = BROKER = 'redis://localhost:6379'
 celery = Celery(__name__, backend=BACKEND, broker=BROKER)
+celery.conf.timezone = 'Europe/Rome'
 
 _APP = None
 
@@ -67,11 +70,21 @@ def fetch_runs(user):
     db.session.commit()
     return runs
 
-# @app.on_after_configure.connect
-# def setup_periodic_tasks(sender, **kwargs):
+@celery.task()
+def send_reports():
+    app = create_context()
+    with app.app_context():
+        _send_reports()
 
-#     # Executes every day at 23:00 a.m.
-#     sender.add_periodic_task(
-#         crontab(hour=23, minute=0, day_of_week=1),
-        
-#     )
+@celery.on_after_configure.connect
+def setup_periodic_tasks(sender, **kwargs):
+
+    # Execute every 10 seconds
+    sender.add_periodic_task(10.0, send_reports)
+    
+    # # Executes every day at 23:00 a.m.
+    # sender.add_periodic_task(
+    #     crontab(hour=23, minute=0),
+    #     send_reports()
+    # )
+

@@ -60,3 +60,9 @@ class TrainingObjectiveVisualizerForm(FlaskForm):
     description = f.StringField('Description')
 
     display = ['start_date', 'end_date', 'kilometers_to_run', 'traveled_kilometers', 'status', 'description']
+
+class PeriodicReportForm(FlaskForm):
+    periodicity = f.SelectField('Report Periodicity')
+    display     = ['periodicity']
+        
+
