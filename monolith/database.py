@@ -24,7 +24,6 @@ class User(db.Model):
     is_admin = db.Column(db.Boolean, default=False)
     is_anonymous = False
 
-
     def __init__(self, *args, **kw):
         super(User, self).__init__(*args, **kw)
         self._authenticated = False
@@ -60,6 +59,9 @@ class Run(db.Model):
     total_elevation_gain = db.Column(db.Float)
     runner_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     runner = relationship('User', foreign_keys='Run.runner_id', backref=backref('Run', cascade="all,delete"))
+    # added
+    is_challenged = db.Column(db.Boolean, default = False)
+
 
 
 class Objectives(db.Model):
