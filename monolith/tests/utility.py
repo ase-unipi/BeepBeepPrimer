@@ -5,7 +5,7 @@ from random import uniform, randint
 from datetime import datetime
 
 from monolith.app import create_app
-from monolith.database import db, Run
+from monolith.database import db, Run, Objective
 
 
 # read in SQL for populating test data
@@ -71,7 +71,15 @@ def new_run(user):
     db.session.add(run)
     db.session.commit()
 
-
+def new_objective(user):
+    objective = Objective()
+    objective.name = "Objective_test"
+    objective.target_distance = 10
+    objective.start_date = datetime.now()
+    objective.end_date = datetime.now()
+    objective.runner = user
+    db.session.add(objective)
+    db.session.commit()
 # TODO: delete this
 '''
 def create_user():
