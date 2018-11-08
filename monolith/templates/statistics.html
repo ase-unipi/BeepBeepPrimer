@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Yellow Beep Beep</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+    <link href="{{ url_for('static', filename='css/floating-labels.css') }}" rel="stylesheet">
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+</head>
+<body>
+  <div>
+        <h2>Chose runs to compare</h2>
+        {% for run in runs %}
+        <!--value to check-->
+        <input class="runs" type="checkbox" name="run" value={{run.id}}> {{run.name}}<br>
+        {% endfor %}
+      </div>
+      <div>
+          <h2>Chose parameters to compare</h2>
+          <input class="parameter" type="checkbox" name="run" value="1"> Average Speed<br>
+          <input class="parameter" type="checkbox" name="run" value="2"> Distance<br>
+          <input class="parameter" type="checkbox" name="run" value="3"> Time <br>
+
+      </div>
+      <button class="btn btn-lg btn-primary btn-block" type="button" onclick="myFunction()"> Statistics </button>
+      <div id="chart_div"></div>
+</body>
+  <script>
+    var dataToDraw = {}
+    function myFunction(){
+      //get selected items
+      var checkedValue = null;
+      var inputElements = document.getElementsByClassName('runs');
+      var inputElementsParameters = document.getElementsByClassName('parameter');
+      var dictToSend = {}
+      var j=0;
+      var lruns = [] // ids of selected runs
+      for(var i = 0; i<inputElements.length;i++){
+        if (inputElements[i].checked){
+          lruns[j] = inputElements[i].value;
+          j++;
+        }
+      }
+      var lparams = [false,false,false] // parameters for which the user wants statistics
+      for (i = 0; i<3;i++){
+        if (inputElementsParameters[i].checked){
+          lparams[i]=true;
+        }
+      }
+      dictToSend["runs"] = lruns;
+      dictToSend["params"] = lparams;
+      console.log(dictToSend);
+      //get data from server
+      var xmlhttp = new XMLHttpRequest();
+      const url = 'run/statistics'
+      xmlhttp.onreadystatechange = function() { //function called once we get data from server
+        //send ok check 4?
+        if (xmlhttp.readyState === 4) {
+          console.log(xmlhttp.response);
+          dataToDraw = JSON.parse(xmlhttp.response);
+          google.charts.load('current', {packages: ['corechart', 'line']});
+          google.charts.setOnLoadCallback(drawGraph);
+          
+        }
+      }
+      xmlhttp.open("POST", url)
+      xmlhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+      xmlhttp.send(JSON.stringify(dictToSend))
+    }
+
+    function drawGraph(){
+      console.log(dataToDraw)
+      var data = new google.visualization.DataTable();
+
+      var options = {
+        hAxis: {
+          title: 'Run'
+        },
+        vAxis: {
+          title: 'Average Speed'
+        }
+      };
+      data.addColumn('number', 'n°');
+      data.addColumn('number', 'Speed');
+      pointsToPlot = []
+      var i = 0;
+      for (var id in dataToDraw){
+        console.log(id)
+        pointsToPlot[i] = [parseInt(i),dataToDraw[id][0]]
+        i++;
+      }
+      console.log(pointsToPlot)
+      data.addRows(pointsToPlot);
+      var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
+      chart.draw(data, options);
+    }
+  
+  </script>
+</html>
