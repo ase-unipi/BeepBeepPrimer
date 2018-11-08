@@ -1,4 +1,4 @@
-from monolith.tests.utility import new_run, client, login, create_user, new_predef_run, new_predefined_run
+from monolith.tests.utility import new_run, client, login, create_user, new_predefined_run
 from monolith.database import db, User
 from werkzeug.security import check_password_hash
 

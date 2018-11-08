@@ -1,4 +1,4 @@
-from monolith.tests.utility import client, login, new_user, new_run, new_objective
+from monolith.tests.utility import client, login, new_user, new_run, new_objective, create_user
 from monolith.database import db, User, Objective
 from datetime import datetime, timedelta
 from monolith.tests.id_parser import get_element_by_id
@@ -11,8 +11,8 @@ def test_set_objective(client):
     assert reply.status_code == 401
     
     # create a new user
-    reply = new_user(tested_app)
-    assert reply.status_code == 200 or reply.status_code == 302
+    reply = create_user(tested_app)
+    assert reply.status_code == 200
 
     # USELESS ?
     # reply = login(tested_app, email='marco@prova.it', password='123456')
@@ -51,8 +51,8 @@ def test_check_objective(client):
     tested_app, app = client
 
     # create a new user
-    reply = new_user(tested_app)
-    assert reply.status_code == 302
+    reply = create_user(tested_app)
+    assert reply.status_code == 200
 
     # login as new user
     reply = login(tested_app, email='marco@prova.it', password='123456')

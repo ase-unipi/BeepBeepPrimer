@@ -10,6 +10,7 @@ statistics = Blueprint('statistics', __name__)
 @statistics.route('/statistics', methods=['GET'])
 @login_required
 def get_statistics():
-    """Inside the template we retrieve data from run/statistics"""
+    """Inside the template we retrieve data from run/statistics
+    using javascript"""
     runs = db.session.query(Run).filter(Run.runner_id == current_user.id)
     return render_template("statistics.html", runs=runs)

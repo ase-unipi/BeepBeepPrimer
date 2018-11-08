@@ -8,7 +8,7 @@ strava = Blueprint('strava', __name__)
 @strava.route('/fetch')
 @admin_required
 def fetch_runs():
-    """Leave and use this function only for testing purpose"""
+    """using this function only for testing purpose"""
     res = fetch_all_runs.delay()
     res.wait()
     return jsonify(res.result)

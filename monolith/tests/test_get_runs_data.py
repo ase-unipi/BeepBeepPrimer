@@ -1,12 +1,17 @@
-from monolith.database import db, User, Run
+from monolith.database import db, User
 from monolith.tests.utility import client, create_user, new_predefined_run, login
-from monolith.tests.id_parser import get_element_by_id
 import json
+
 
 def test_runs_data(client):
     tested_app, app = client
 
     assert create_user(tested_app).status_code == 200
+
+    # trying to retrieve data without logging in
+    reply = tested_app.post('run/statistics', data=json.dumps({'runs': [1, 2, 3, 4, 5], 'params': [True, True, True]}),
+                            content_type='application/json')
+    assert reply.status_code == 401
 
     assert login(tested_app, email='marco@prova.it', password='123456').status_code == 200
 
@@ -25,9 +30,10 @@ def test_runs_data(client):
 
     assert reply.status_code == 200
     body = json.loads(str(reply.data, 'utf8'))
-    assert body == {'1': [16.0, 80000.0, 5000.0, 'Run 10'],
-                    '2': [16.0, 80000.0, 5000.0, 'Run 10'],
-                    '3': [16.0, 80000.0, 5000.0, 'Run 10'],
-                    '4': [16.0, 80000.0, 5000.0, 'Run 10'],
-                    '5': [16.0, 80000.0, 5000.0, 'Run 10']}
+    assert body == {'1': [12.820512820512821, 50000.0, 3900.0, 'Run 10'],
+                    '2': [12.820512820512821, 50000.0, 3900.0, 'Run 10'],
+                    '3': [12.820512820512821, 50000.0, 3900.0, 'Run 10'],
+                    '4': [12.820512820512821, 50000.0, 3900.0, 'Run 10'],
+                    '5': [12.820512820512821, 50000.0, 3900.0, 'Run 10']}
+
 

@@ -55,6 +55,7 @@ def login(client, email, password):
 def logout(client):
     return client.get('/logout')
 
+
 def create_user(client, email='marco@prova.it', firstname='marco', lastname='mario', password='123456', age=18,
                 weight=70, max_hr=120, rest_hr=65, vo2max=99):
 
@@ -102,7 +103,7 @@ average_heartrate=None, total_elevation_gain=uniform(0.0, 25.0), start_date=date
     db.session.add(run)
     db.session.commit()
 
-def new_predef_run(user):
+def new_predefined_run(user):
     run = Run()
     run.runner = user
     run.strava_id = 10  # a random number 100 - 1.000.000, we hope is unique
@@ -114,6 +115,7 @@ def new_predef_run(user):
     run.total_elevation_gain = 3.0 # 0m - 25m
     run.start_date = datetime.now()
     db.session.add(run)
+    db.session.commit()
 
 def new_objective(user, name = "Test Objective", target_distance = "42", start_date = datetime.now(), end_date = datetime.now()):
     objective = Objective()
