@@ -1,15 +1,11 @@
-import unittest
+import unittest, os
 
-from flask import request
+from flask import request,Flask
 from monolith.app import create_app
-from monolith.database import db, Run, User, _delete_user
-from werkzeug import ImmutableMultiDict
-
-import os
-from flask import Flask
-from monolith.database import db, User
+from monolith.database import db, Run, User
 from monolith.views import blueprints
 from monolith.auth import login_manager
+from werkzeug import ImmutableMultiDict
 
 
 

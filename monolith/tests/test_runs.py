@@ -1,6 +1,5 @@
-import unittest
-
-from flask import request
+import unittest, json
+from flask import request, jsonify
 from monolith.app import create_app
 from monolith.views.runs import _runs
 from flask import Blueprint, render_template
@@ -8,9 +7,6 @@ from monolith.database import db, Run, User, _delete_user
 from monolith.auth import current_user
 from werkzeug import ImmutableMultiDict
 import random
-
-import json
-from flask import request, jsonify
 
 
 class TestApp(unittest.TestCase):
