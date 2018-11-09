@@ -1,7 +1,8 @@
-from monolith.tests.utility import client, login, new_user, new_run, new_objective, create_user
+from monolith.tests.utility import client, login, new_run, new_objective, create_user
 from monolith.database import db, User, Objective
 from datetime import datetime, timedelta
 from monolith.tests.id_parser import get_element_by_id
+
 
 def test_set_objective(client):
     tested_app, app = client
@@ -13,7 +14,6 @@ def test_set_objective(client):
     # create a new user
     reply = create_user(tested_app)
     assert reply.status_code == 200
-
 
     reply = login(tested_app, email='marco@prova.it', password='123456')
     assert reply.status_code == 200
@@ -33,19 +33,20 @@ def test_set_objective(client):
         new_objective(user, name = "Test3")
         new_objective(user, name = "Test4")
                 
-        # retrieve the objective page DOUBTS
+        # retrieve the objective table
         objectives = db.session.query(Objective) 
 
         reply = tested_app.get('objectives')
         assert reply.status_code == 200
 
-        for o in objectives:
+        for o in objectives.all():
             assert get_element_by_id("objective_%s_name"%(o.id), str(reply.data)) == str(o.name)
             assert get_element_by_id("objective_%s_start_date"%(o.id), str(reply.data)) == str(o.start_date)
             assert get_element_by_id("objective_%s_end_date"%(o.id), str(reply.data)) == str(o.end_date)
             assert get_element_by_id("objective_%s_target_distance"%(o.id), str(reply.data)) == str(o.target_distance)
             assert get_element_by_id("objective_%s_completion"%(o.id), str(reply.data)) == str(o.completion)
             assert get_element_by_id("objective_%s_runner_id"%(o.id), str(reply.data)) == str(o.runner_id)
+
 
 def test_check_objective(client):
     tested_app, app = client
@@ -82,9 +83,3 @@ def test_check_objective(client):
         # check an objective with completion of 100% with exactly the km needed to complete it
         objective_4 = new_objective(user, start_date = datetime.now(), end_date = datetime.now() + timedelta(days = 5), target_distance = 540)
         assert objective_4.completion == 100
-    
-
-
-
-
-    

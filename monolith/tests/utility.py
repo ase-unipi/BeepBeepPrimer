@@ -53,7 +53,7 @@ def login(client, email, password):
 
 
 def logout(client):
-    return client.get('/logout')
+    return client.get('/logout', follow_redirects=True)
 
 
 def create_user(client, email='marco@prova.it', firstname='marco', lastname='mario', password='123456', age=18,
@@ -68,6 +68,7 @@ def create_user(client, email='marco@prova.it', firstname='marco', lastname='mar
                                                  max_hr=max_hr,
                                                  rest_hr=rest_hr,
                                                  vo2max=vo2max), follow_redirects=True)
+
 
 def new_user():
     user = User()
@@ -86,9 +87,9 @@ def new_user():
 
 
 def new_run(user, strava_id=randint(100, 100000000), name=None, distance=uniform(50.0, 10000.0), elapsed_time=uniform(30.0, 3600.0),
-average_heartrate=None, total_elevation_gain=uniform(0.0, 25.0), start_date=datetime.now()):
-    if name == None :
-        name = "Run %s"%(strava_id)
+            average_heartrate=None, total_elevation_gain=uniform(0.0, 25.0), start_date=datetime.now()):
+    if name is None :
+        name = "Run %s" % strava_id
 
     run = Run()
     run.runner = user
@@ -103,6 +104,7 @@ average_heartrate=None, total_elevation_gain=uniform(0.0, 25.0), start_date=date
     db.session.add(run)
     db.session.commit()
 
+
 def new_predefined_run(user):
     run = Run()
     run.runner = user
@@ -116,6 +118,8 @@ def new_predefined_run(user):
     run.start_date = datetime.now()
     db.session.add(run)
     db.session.commit()
+    return run
+
 
 def new_objective(user, name = "Test Objective", target_distance = "42", start_date = datetime.now(), end_date = datetime.now()):
     objective = Objective()

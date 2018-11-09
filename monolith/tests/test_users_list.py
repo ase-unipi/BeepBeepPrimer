@@ -10,8 +10,7 @@ def test_users_list(client):
     assert tested_app.get('/users').status_code == 200
 
     reply = logout(tested_app)
-    assert reply.status_code == 302
-    assert reply.location == 'http://localhost/'
+    assert reply.status_code == 200
 
     assert create_user(tested_app).status_code == 200
 

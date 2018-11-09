@@ -29,7 +29,7 @@ def get_runs_data():
 
     And returns another json:
         {
-            run_id_1: [avg_speed, distance, time, run_name, run_data]
+            run_id_1: [avg_speed, distance, time, run_name]
             run_id_2: ...
             .
             .
@@ -47,7 +47,7 @@ def get_runs_data():
     print(runs)
     for run in runs:
         print(run)
-        to_send[run.id] = [0, 0, 0, run.name, run.start_date]
+        to_send[run.id] = [0, 0, 0, run.name]
         # Average Speed
         if json_data["params"][0]:
             to_send[run.id][0] = run.average_speed
