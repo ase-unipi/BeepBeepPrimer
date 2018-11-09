@@ -25,6 +25,10 @@ def index():
         comparisonError = ""
     else:
         comparisonError = request.args.get('comparisonError')
+    if request.args.get('challengeError') is None:
+        challengeError = ""
+    else:
+        challengeError = request.args.get('challengeError')
 
     avgSpeed = 0
     objective_distance = 0
@@ -53,17 +57,19 @@ def index():
         yellow = []
         red = []
         green = []
+        grey = []
         challenged_run = db.session.query(Run).filter(current_user.id == Run.runner_id, Run.is_challenged == True).first()
         if challenged_run:
-            after_challenge_run = db.session.query(Run).filter(current_user.id == Run.runner_id, Run.id > challenged_run.id).all()
-            for run in after_challenge_run:
+            yellow.append(challenged_run.id)
+            after_challenge_run = db.session.query(Run).filter(current_user.id == Run.runner_id, Run.id >= challenged_run.id).all()
+            for run in after_challenge_run:                
                 if run.average_speed > challenged_run.average_speed and run.distance > challenged_run.distance:
-                    green.append(run)
+                    green.append(run.id)
                 elif run.average_speed <= challenged_run.average_speed and run.distance <= challenged_run.distance:
-                    red.append(run)
+                    red.append(run.id)
                 else: 
-                    yellow.append(run)
-        
+                    grey.append(run.id)
+    
     else:
         return redirect("/login")
 
@@ -82,13 +88,15 @@ def index():
         minutes = minutes,
         sec = sec,
         comparisonError = comparisonError,
+        challengeError = challengeError,
         objective_distance = m2km(objective_distance),
         tot_distance = m2km(tot_distance),
         progress = m2km(progress),
         percentage = percentage,
-        challenge_yellow = yellow,
+        challenge_grey = grey,
         challenge_red = red,
-        challenge_green = green
+        challenge_green = green,
+        challenged_run = yellow
     )
 
 

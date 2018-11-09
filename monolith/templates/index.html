@@ -15,12 +15,16 @@
         {% if not current_user.strava_token %}
         <a href="{{strava_auth_url}}">Authorize Strava Access</a>
         {% else %}
-        <h2>Your last 10 runs</h2>{{run_id}}
+        <h2>Your last 10 runs</h2>
         <form action="/comparisons" method="post">
           {% for run in runs %}
           <div>
             <input type="checkbox" name="runs" value="{{run.id}}">
-            <a href="/runs/{{run.id}}" {% if run.id in [run_id] %} style="color:green" {% endif %} >{{run.name}}</a>
+            <a href="/runs/{{run.id}}" {% if run.id in challenged_run %} style="color:yellow"
+                                       {% elif run.id in challenge_green %} style="color:green"
+                                       {% elif run.id in challenge_red %} style="color:red"                                       
+                                       {% elif run.id in challenge_grey %} style="color:grey"
+                                       {% endif %}> {{run.name}} </a>
           </div>
           {% endfor %}
           <br />

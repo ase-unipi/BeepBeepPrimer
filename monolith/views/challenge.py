@@ -11,15 +11,15 @@ challenge = Blueprint('challenge', __name__)
 def post_challenge():
 
     form = ChallengeForm()
-
+    '''
     dataRun = datetime.now()
     run = Run()
     
     run.average_heartrate = 140
-    run.average_speed = 4.5
-    run.distance = 8000
+    run.average_speed = 7
+    run.distance = 3000
     run.elapsed_time = 2300
-    run.name = 'run'
+    run.name = 'run GREY'
     run.runner = current_user
     run.runner_id = current_user.id
     run.start_date = dataRun
@@ -28,7 +28,7 @@ def post_challenge():
     
     db.session.add(run)
     db.session.commit()
-
+    '''
     runIds = form.data['runs']
     if runIds is None or len(runIds) != 1:
         return redirect('/?challengeError=Please select exactly one run to challenge')
