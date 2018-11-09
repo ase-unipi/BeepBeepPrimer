@@ -31,8 +31,8 @@ def _strava_auth():
 @auth.route('/login', methods=['GET', 'POST'])
 def login():
 
-    if current_user is not None and hasattr(current_user, 'id'):
-        return redirect('/')         ## They are redirect instantaneously to the main page
+    if hasattr(current_user, 'is_authenticated') and current_user.is_authenticated is True:     ## The connected user cannot create other users
+        return make_response(index(), 403)          ## They are redirect instantaneously to the main page
 
     form = LoginForm()
     if form.validate_on_submit():
@@ -44,8 +44,6 @@ def login():
         # print(user.authenticate(password))
         if user is not None and user.authenticate(password):
             login_user(user)
-
-            confirm_login()
             return redirect('/')
         else:
             flash('Wrong email or password', category='error')
