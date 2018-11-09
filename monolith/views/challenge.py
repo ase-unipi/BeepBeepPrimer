@@ -34,14 +34,14 @@ def post_challenge():
         return redirect('/?challengeError=Please select exactly one run to challenge')
 
     if current_user is not None and hasattr(current_user, 'id'):
-        prevChallengedRun = db.session.query(Run).filter(Run.runner_id == current_user.id, Run.is_challenged == True)
+        prev_challenged_run = db.session.query(Run).filter(Run.runner_id == current_user.id, Run.is_challenged == True).first()
         #found a previosly challenged run, gotta make it unchallenged and then challenge the next one
-        if prevChallengedRun is not None:
-            prevChallengedRun[0].is_challenged = False
-        new_challenge = db.session.query(Run).filter(Run.runner_id == current_user.id, Run.id == runIds[0])
+        if prev_challenged_run:
+            prev_challenged_run.is_challenged = False
+        new_challenge = db.session.query(Run).filter(Run.runner_id == current_user.id, Run.id == runIds[0]).first()
         new_challenge.is_challenged = True
         db.session.commit()
     else:
         return redirect("/login")
     
-    return redirect("/home")
+    return redirect("/")
