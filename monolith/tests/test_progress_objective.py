@@ -31,7 +31,7 @@ def test_objective(client, db_instance):
     db_instance.session.commit()
 
     
-    #Testing total total distance in "PROGRESS" field
+    #Testing total distance in "PROGRESS" field
     res = client.get("/")
     html=pq(res.data)
     total_distance = html("#tot_dist").html()
@@ -39,7 +39,7 @@ def test_objective(client, db_instance):
     assert float(total_distance) == float(len(runs) * KILOMETERS)
 
 
-    #Testing total remaining kilometers in "PROGRESS" field
+    #Testing remaining kilometers in "PROGRESS" field
     user = db_instance.session.query(User).first()
     _setObjective(user, 30000)
     res = client.get("/")
