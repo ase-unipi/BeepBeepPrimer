@@ -48,21 +48,21 @@ def index():
         objective = db.session.query(Objectives).filter(Objectives.user_id == current_user.id).first()
         if objective:
             objective_distance = objective.get_distance()
+        
         #handling challenges
-        challenged_runs = db.session.query(Run).filter(current_user.id == Run.runner_id, Run.is_challenged == True)
-        if challenged_runs is not None or len(challenged_runs) > 1 :
-            challenged_run = challenged_runs[0]
-            after_challenge_run = db.session.query(Run).filter(current_user.id = Run.runner_id, Run.id > challenged_run.id)
-            challenge_to_render = []
+        yellow = []
+        red = []
+        green = []
+        challenged_run = db.session.query(Run).filter(current_user.id == Run.runner_id, Run.is_challenged == True).first()
+        if challenged_run:
+            after_challenge_run = db.session.query(Run).filter(current_user.id == Run.runner_id, Run.id > challenged_run.id).all()
             for run in after_challenge_run:
                 if run.average_speed > challenged_run.average_speed and run.distance > challenged_run.distance:
-                    challenge_to_render.insert({"id": run.id, "color": "green"})
+                    green.append(run)
                 elif run.average_speed <= challenged_run.average_speed and run.distance <= challenged_run.distance:
-                    challenge_to_render.insert({"id": run.id, "color": "red"})
+                    red.append(run)
                 else: 
-                    challenge_to_render.insert({"id": run.id, "color": "yellow"})
-        else:
-            challenge_to_render = []
+                    yellow.append(run)
         
     else:
         return redirect("/login")
@@ -86,8 +86,9 @@ def index():
         tot_distance = m2km(tot_distance),
         progress = m2km(progress),
         percentage = percentage,
-        challenge = challenge_to_render
-
+        challenge_yellow = yellow,
+        challenge_red = red,
+        challenge_green = green
     )
 
 
