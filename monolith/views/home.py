@@ -48,6 +48,22 @@ def index():
         objective = db.session.query(Objectives).filter(Objectives.user_id == current_user.id).first()
         if objective:
             objective_distance = objective.get_distance()
+        #handling challenges
+        challenged_runs = db.session.query(Run).filter(current_user.id == Run.runner_id, Run.is_challenged == True)
+        if challenged_runs is not None or len(challenged_runs) > 1 :
+            challenged_run = challenged_runs[0]
+            after_challenge_run = db.session.query(Run).filter(current_user.id = Run.runner_id, Run.id > challenged_run.id)
+            challenge_to_render = []
+            for run in after_challenge_run:
+                if run.average_speed > challenged_run.average_speed and run.distance > challenged_run.distance:
+                    challenge_to_render.insert({"id": run.id, "color": "red"})
+                elif run.average_speed <= challenged_run.average_speed and run.distance <= challenged_run.distance:
+                    challenge_to_render.insert({"id": run.id, "color": "red"})
+                else: 
+                    challenge_to_render.insert({"id": run.id, "color": "yellow"})
+        else:
+            challenge_to_render = []
+        
     else:
         return redirect("/login")
 
@@ -69,7 +85,8 @@ def index():
         objective_distance = m2km(objective_distance),
         tot_distance = m2km(tot_distance),
         progress = m2km(progress),
-        percentage = percentage
+        percentage = percentage,
+        challenge = challenge_to_render
     )
 
 
