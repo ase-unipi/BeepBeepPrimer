@@ -2,10 +2,12 @@ import pytest
 import os
 from monolith.app import create_testing_app
 from monolith.database import db
+import subprocess
 
 
 @pytest.fixture
 def app():
+    #subprocess.call(["./key.sh"])
     _app = create_testing_app()
     yield _app
     os.unlink('monolith/testdb.db')
