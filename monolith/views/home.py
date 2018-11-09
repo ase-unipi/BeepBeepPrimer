@@ -56,7 +56,7 @@ def index():
             challenge_to_render = []
             for run in after_challenge_run:
                 if run.average_speed > challenged_run.average_speed and run.distance > challenged_run.distance:
-                    challenge_to_render.insert({"id": run.id, "color": "red"})
+                    challenge_to_render.insert({"id": run.id, "color": "green"})
                 elif run.average_speed <= challenged_run.average_speed and run.distance <= challenged_run.distance:
                     challenge_to_render.insert({"id": run.id, "color": "red"})
                 else: 
@@ -87,6 +87,7 @@ def index():
         progress = m2km(progress),
         percentage = percentage,
         challenge = challenge_to_render
+
     )
 
 
