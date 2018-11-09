@@ -1,6 +1,7 @@
 from unittest import mock
 from monolith.database import User, Run
 from tests.conftest import mocked_result
+from stravalib import exc
 
 
 # Test that the index shows the correct page when not authenticated
@@ -35,7 +36,7 @@ def test_login_logout(client, background_app, celery_session_worker):
                                weight='1', max_hr='1', rest_hr='1', vo2max='1', ), follow_redirects=True)
     assert rv.data.decode('ascii').count('a a') == 1
 
-    rv = client.post('/login', data=dict(email='email',password='b'),follow_redirects=True)
+    rv = client.post('/login', data=dict(email='email', password='b'), follow_redirects=True)
 
     assert b'password' in rv.data
 
@@ -49,7 +50,7 @@ def test_login_logout(client, background_app, celery_session_worker):
     assert b'Hi Anonymous,' in rv.data
 
 
-def test_login_delete(client, db_instance, background_app,celery_session_worker):
+def test_login_delete(client, db_instance, background_app, celery_session_worker):
     rv = client.post('/create_user',
                      data=dict(submit='Publish', email='email', firstname='a', lastname='a', password='p', age='1',
                                weight='1', max_hr='1', rest_hr='1', vo2max='1', ), follow_redirects=True)
@@ -73,6 +74,31 @@ def test_login_delete(client, db_instance, background_app,celery_session_worker)
     assert b'Hi Anonymous, <a href="/login">Log in</a> <a href="/create_user">Create user</a>' in rv.data
 
 
+def test_fetch_with_no_valid_token(client, db_instance, background_app, celery_session_worker):
+    rv = client.post('/create_user',
+                     data=dict(submit='Publish', email='email', firstname='a', lastname='a', password='p',
+                               age='1',
+                               weight='1', max_hr='1', rest_hr='1', vo2max='1', ), follow_redirects=True)
+    assert rv.data.decode('ascii').count('a a') == 1
+
+    rv = client.post('/login', data=dict(email='email', password='p'), follow_redirects=True)
+    assert b'Hi email!' in rv.data
+    assert b'Authorize Strava Access' in rv.data
+    with mock.patch('monolith.views.auth.Client') as mocked:
+        mocked.return_value.exchange_code_for_token.return_value = "blablabla"
+
+        fun = mocked_result([])
+        with mock.patch('monolith.background.c.ApiV3', side_effect=fun):
+            client.get('/strava_auth')
+
+        r = db_instance.session.query(User)  # use the db_instance as in a normal not testing file (thx me later)
+        u = r.first()
+        assert u.strava_token == "blablabla"
+
+    client.get('/fetch')
+    assert db_instance.session.query(User).first().strava_token is None
+
+
 def test_login_delete_strava(client, db_instance, background_app, celery_session_worker):
     rv = client.post('/create_user',
                      data=dict(submit='Publish', email='email', firstname='a', lastname='a', password='p',
@@ -90,7 +116,7 @@ def test_login_delete_strava(client, db_instance, background_app, celery_session
         with mock.patch('monolith.background.c.ApiV3', side_effect=fun):
             client.get('/strava_auth')
         with mock.patch('monolith.views.auth.Client') as mocked:
-            client.post('/remove_user',data=dict(submit='Publish',password='p'),follow_redirects=True)
+            client.post('/remove_user', data=dict(submit='Publish', password='p'), follow_redirects=True)
             assert mocked.return_value.deauthorize.called
 
 
@@ -131,7 +157,6 @@ def test_create_runs(client, background_app, db_instance, celery_session_worker)
         rv = client.post('/login', data=dict(email='email', password='p'), follow_redirects=True)
         assert b'Hi email!' in rv.data
         assert b'Authorize Strava Access' in rv.data
-
 
         """
             Alright calling mocked_result from conftest.py
