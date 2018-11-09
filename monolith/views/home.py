@@ -1,7 +1,6 @@
 from flask import Blueprint, render_template, request, redirect
 
 from stravalib import Client
-
 from monolith.database import db, Run, User, Objectives, _setObjective
 from monolith.auth import current_user
 from monolith.forms import ObjectiveForm
@@ -25,6 +24,7 @@ def index():
         comparisonError = ""
     else:
         comparisonError = request.args.get('comparisonError')
+    
     if request.args.get('challengeError') is None:
         challengeError = ""
     else:
@@ -82,7 +82,8 @@ def index():
         percentage = 100
 
     return render_template(
-        "index.html", runs = runs,
+        "index.html",
+        runs = runs,
         strava_auth_url = strava_auth_url,
         avgSpeed = mh2kmh(avgSpeed),
         minutes = minutes,

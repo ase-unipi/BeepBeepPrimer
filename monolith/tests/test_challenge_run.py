@@ -1,4 +1,4 @@
-from monolith.database import User, Run
+from monolith.database import User, Run, db
 from monolith.forms import ChallengeForm
 from monolith.tests.utils import ensure_logged_in
 
@@ -40,5 +40,3 @@ def test_challenge_run(client, db_instance):
     challenged = db.session.query(Run).filter(Run.id==1, user.id == Run.runner_id).first()
     assert challenged
     assert challenged.is_challenged == True
-
-    
