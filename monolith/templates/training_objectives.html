@@ -6,21 +6,21 @@
     <h1>Set a training objective</h1>
     <form action="" method="POST">
       <table>
-        {{ form.hidden_tag() }}
+        {{ setter_form.hidden_tag() }}
         <thead>
           <tr>
-            {% for field in form.display %}
-                <th>{{ form[field].label }}</th>
+            {% for field in setter_form.display %}
+                <th>{{ setter_form[field].label }}</th>
             {% endfor %}
           </tr>
         </thead>
         <tbody>
           <tr>
-            {% for field in form.display %}
+            {% for field in setter_form.display %}
               <td  class="text-center" style="vertical-align: top;">
-                {{ form[field]() }}
-                {% if form[field].errors %}
-                  {% for e in form[field].errors %}
+                {{ setter_form[field]() }}
+                {% if setter_form[field].errors %}
+                  {% for e in setter_form[field].errors %}
                     <p class="help-block">{{ e }}</p>
                   {% endfor %}
                 {% endif %}
@@ -35,24 +35,47 @@
       </p>
     </form>
 
-    <h1>Your Training Objectives</h1>
+     <h1>Training Objectives</h1>
     <table>
       <thead>
         <tr>
-          {% for field in form.display %}
-            <th>{{ form[field].label }}</th>
+          {% for field in visualizer_form.display %}
+            <th>{{ visualizer_form[field].label }}</th>
           {% endfor %}
         </tr>
       </thead>
       <tbody>
-        {% for objective in objectives%}
-          <tr>
-          {% for field in form.display %}
-            <td class="text-center">{{ objective[field] }}</td>
-          {% endfor %}
-          </tr>
+        {% for to in list_of_tos %}
+        <tr>
+          <td>{{ to[0] }}</td>
+          <td>{{ to[1] }}</td>
+          <td>{{ to[2] }}</td>
+          <td>{{ to[3] }}</td>
+          <!--completed-->
+          {% if to[3] >= to[2] %}
+            <td>
+              <img class="icon" src="{{url_for('static', filename='check.png')}}"/>
+            </td>
+            <td>Wow! You are done!</td>
+          {% else %}
+            <!--active-->
+            {% if to[5] == 0 %}
+              <td>
+                <img class="icon" src="{{url_for('static', filename='circle.png')}}"/>
+              </td>
+              <td>You can do it! Just {{ to[4] }} km!</td>
+            <!--failed-->
+            {% else %}
+              <td>
+                <img class="icon" src="{{url_for('static', filename='cross.png')}}"/>
+              </td>
+              <td>You missed your goal by {{ to[4] }} km...</td>
+            {% endif %}
+          {% endif %}
+        </tr>
         {% endfor %}
       </tbody>
     </table>
+
   </body>
 </html>
