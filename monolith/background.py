@@ -1,8 +1,12 @@
 from celery import Celery
+#IMPORT SETTING FOR FETCH
 from stravalib import Client
-from datetime import datetime, timedelta
+# IMPORT SETTING FOR MAIL
+from datetime import time, datetime, timedelta
 from flask_mail import Mail, Message
-from monolith.database import db, User, Run
+
+#IMPORT SETTING FOR BOTH FETCH AND MAIL
+from monolith.database import db, User, Run, Report
 
 BACKEND = BROKER = 'redis://localhost:6379'
 celery = Celery(__name__, backend=BACKEND, broker=BROKER)
@@ -74,7 +78,7 @@ def fetch_runs(user):
     db.session.commit()
     return runs
 
-
+#CELERY TASK FOR MAIL
 @celery.task
 def send_all_mail():
     print('sending')
@@ -86,22 +90,24 @@ def send_all_mail():
         db.init_app(app)
     else:
         app = _APP
-    mail = Mail()
+    mail = Mail(app)
     mail.init_app(app=app)
     with app.app_context():
         users = db.session.query(User).filter()
         for user in users:
-            body = prepare_body(user, app)
-            if body:
-                msg = Message('Your BeepBeep Report', sender=app.config['MAIL_USERNAME'], recipients=[user.email])
-                msg.body = body
-                mail.send(msg)
+            mail = db.session.query(Mail).filter(Mail.id == user.id)
+            if time.time() - mail.timestamp >= mail.choice_time:        #check of the choice of the user
+                body = prepare_body(user,choice_time)
+                if body:
+                    msg = Message('Your BeepBeep Report', sender=app.config['MAIL_USERNAME'], recipients=[user.email])
+                    msg.body = body
+                    mail.send(msg)
 
 
-def prepare_body(user, app):
+def prepare_body(user,choice_time):
     body = ""
     with app.app_context():
-        runs = db.session.query(Run).filter(Run.runner == user, Run.start_date >= (datetime.now() - timedelta(days=15)))
+        runs = db.session.query(Run).filter(Run.runner == user, Run.start_date >= (datetime.now() - timedelta(hour=choice_time)))
     if runs.count() == 0:
         return None
     for run in runs:

@@ -22,7 +22,7 @@ dt{
   text-align: center;
 }
 
-.error, .help-block{
+.error, .help-block, .success{
   text-align: center;
   color: red;
 }

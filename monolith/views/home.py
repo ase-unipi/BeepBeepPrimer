@@ -1,8 +1,9 @@
-from flask import Blueprint, render_template
+from flask import Blueprint, render_template, request, flash
 from stravalib import Client
-from flask_login import current_user, LoginManager, fresh_login_required, confirm_login
-from monolith.database import db, Run
-
+from flask_login import current_user, LoginManager, login_required, confirm_login
+from monolith.database import db, Run, Report
+from monolith.forms import MailForm
+from datetime import time
 
 home = Blueprint('home', __name__)
 
@@ -38,3 +39,46 @@ def index():
     strava_auth_url = _strava_auth_url(home.app.config)
     return render_template("index.html", runs=runs,
                            strava_auth_url=strava_auth_url, total_average_speed=total_average_speed)
+
+#In this we specify the setting for the management of the report
+@home.route('/settingreport', methods=['GET', 'POST'])
+@login_required
+def settingreport():
+
+    form = MailForm()
+    if request.method == 'POST':
+        if form.validate_on_submit():
+            mail = db.session.query(Report).filter(Report.id_user==current_user.id).first()  
+            if mail is None:
+                new_mail = Report()
+                new_mail.set_user(current_user.id)
+                new_mail.set_timestamp()
+                option = request.form['setting_mail']
+                if option is None:
+                    flash('Select one category', category='error')
+                    return make_response(render_template('mail.html', form=form), 401)
+                else:
+                    new_mail.set_decision(option) 
+                    db.session.add(new_mail)
+                    #print(new_mail)
+                    #print(new_mail.id_user)
+                    #print(new_mail.timestamp)
+                    #print(new_mail.choice_time)
+                    db.session.commit()
+                    flash('Settings updated', category='success')
+            else:
+                mail.set_timestamp()
+                option = request.form['setting_mail']
+                if option is None:
+                    flash('Select one category', category='error')
+                    return make_response(render_template('mail.html', form=form), 401)
+                else:
+                    mail.set_decision(option)
+                    db.session.merge(mail)
+                    #print(mail)
+                    #print(mail.id_user)
+                    #print(mail.timestamp)
+                    #print(mail.choice_time)
+                    db.session.commit()
+                    flash('Settings updated', category='success')
+    return render_template('mail.html', form=form)

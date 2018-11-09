@@ -1,38 +1,45 @@
-from monolith.tests.utility import new_run, client, login, create_user, new_predefined_run
-from monolith.database import db, User
-from werkzeug.security import check_password_hash
-
+from monolith.tests.utility import client, login
+from monolith.database import db, User, Report
+from monolith.tests.utility import create_user
 
 def test_create_repo(client):
     tested_app, app = client
-    reply = tested_app.post('/create_user', data=dict(email='mcriucc@gmail.com', firstname='mariacristina', lastname='uccheddu',
-                                              password='ciao',
+    create_user(tested_app,email='mcriucc@gmail.com', firstname='mariacristina', lastname='uccheddu', password='ciao',
                                               age=23,
                                               weight=70,
                                               max_hr=120,
                                               rest_hr=60,
-                                              vo2max=99), follow_redirects=True)
-
-    assert reply.status_code == 200  # create_user success (it also redirect to login)
+                                              vo2max=99)
 
     assert login(tested_app, 'mcriucc@gmail.com', 'ciao').status_code == 200
 
-    # now andrea@prova.it is logged in
+    # now mcriucc@gmail.com is logged in
     with app.app_context():
         user = db.session.query(User).filter(User.email == 'mcriucc@gmail.com').first()
-        assert user is not None
-        assert user.email == 'mcriucc@gmail.com'
-        assert user.firstname == 'mariacristina'
-        assert user.lastname == 'uccheddu'
-        assert check_password_hash(user.password, 'ciao') is True
-        assert user.age == 23
-        assert user.weight == 70
-        assert user.max_hr == 120
-        assert user.rest_hr == 60
-        assert user.vo2max == 99
 
-    reply = tested_app.get('/report')
-    assert reply.status_code == 200
+        reply = tested_app.get('/settingreport')
+        assert reply.status_code == 200
 
+
+        reply = tested_app.post('/settingreport', data=dict(setting_mail='6'), follow_redirects=True)
+        mail = db.session.query(Report).filter(Report.id_user == user.id).first()
+        assert mail is not None
+        assert mail.id_user == user.id
+        assert mail.choice_time == 21600.0
+
+
+        reply = tested_app.post('/settingreport', data=dict(setting_mail='12'), follow_redirects=True)
+
+        mail = db.session.query(Report).filter(Report.id_user == user.id).first()
+        assert mail is not None
+        assert mail.id_user == user.id
+        assert mail.choice_time == 43200.0
+
+        reply = tested_app.post('/settingreport', data=dict(setting_mail='24'), follow_redirects=True)
+
+        mail = db.session.query(Report).filter(Report.id_user == user.id).first()
+        assert mail is not None
+        assert mail.id_user == user.id
+        assert mail.choice_time == 86400.0
 
 

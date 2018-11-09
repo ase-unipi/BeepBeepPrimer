@@ -6,8 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/floating-labels.css') }}">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <link rel="shortcut icon" href="#" />
 </head>
 <body>
   {% if current_user.is_authenticated %}
@@ -17,6 +16,8 @@
           <li class="active"><a href="main.html">Home</a></li>
           <li><a href="/objectives">Objective</a></li>
           <li><a href="/statistics">Statistics</a></li>
+          <li class="active"><a href="/">Home</a></li>
+          <li><a href="/settingreport">Setting Report</a></li>
           <li><a href="/delete_user"><span class="glyphicon glyphicon-user"></span>Delete User</a></li>
           <li><a href="/logout"><span class="glyphicon glyphicon-log-out"></span>Logout</a></li>
           {% if current_user.is_admin %}

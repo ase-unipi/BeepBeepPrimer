@@ -1,12 +1,12 @@
 import os
 from flask import Flask
-from monolith.database import db, User
 from monolith.views import blueprints
 from monolith.auth import login_manager
 from monolith.errors import render_error_page
 
+
 def create_app():
-    app = Flask(__name__)
+    app = Flask(__name__,static_url_path='/static',static_folder='static') #the new parameter are useful for setting the static of css
     # App
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False  # suppress pytest warning
     app.config['WTF_CSRF_SECRET_KEY'] = 'A SECRET KEY'
@@ -14,6 +14,8 @@ def create_app():
     app.config['STRAVA_CLIENT_ID'] = os.environ['STRAVA_CLIENT_ID']
     app.config['STRAVA_CLIENT_SECRET'] = os.environ['STRAVA_CLIENT_SECRET']
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///beepbeep.db'
+
+    STATIC_URL = '/static/' # for the CSS
     # Mail
     app.config['MAIL_SERVER'] = 'smtp.gmail.com'
     app.config['MAIL_PORT'] = 465
@@ -26,6 +28,7 @@ def create_app():
         app.register_blueprint(bp)
         bp.app = app
 
+    from monolith.database import db, User, Report
     db.init_app(app)
     login_manager.init_app(app)
     db.create_all(app=app)

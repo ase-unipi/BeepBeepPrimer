@@ -3,6 +3,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import enum
 from sqlalchemy.orm import relationship
 from flask_sqlalchemy import SQLAlchemy
+from datetime import time, datetime, timedelta
 import math
 
 
@@ -79,5 +80,24 @@ class Objective(db.Model):
                          .filter(Run.start_date > self.start_date) \
                          .filter(Run.start_date <= self.end_date) \
                          .filter(Run.runner_id == self.runner_id)
-        
+
         return min(round(100 * (sum([run.distance for run in runs]) / (self.target_distance)), 2), 100)
+
+# Database for the report (mail)
+# I change the name Mail because there was a conflict in background.py
+class Report(db.Model):
+    __tablename__ = 'mail'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    id_user = db.Column(db.Integer, db.ForeignKey('user.id'))
+    user = relationship('User', foreign_keys='Report.id_user')
+    timestamp = db.Column(db.DateTime)
+    choice_time = db.Column(db.Float)
+
+    def set_user(self,id_usr):
+        self.id_user = id_usr
+
+    def set_timestamp(self):
+        self.timestamp = datetime.now()
+
+    def set_decision(self,choice):
+        self.choice_time = (float(choice)*3600.0)
