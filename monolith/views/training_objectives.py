@@ -44,7 +44,7 @@ def _training_objectives():
         AND
         T.RUNNER_ID = R.RUNNER_ID
         AND
-        DATE(R.START_DATE) BETWEEN T.START_DATE AND T.END_date
+        DATE(R.START_DATE) BETWEEN T.START_DATE AND T.END_DATE
 
         GROUP BY T.ID
         -------------------------------------------------
