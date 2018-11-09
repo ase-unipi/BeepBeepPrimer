@@ -1,43 +1,80 @@
-<h1>Runnerly</h1>
+<html>
+<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='bootstrap.min.css') }}">
+<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='bootstrap.css') }}">
+<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='landing-page.css') }}">
+<link href="https://fonts.googleapis.com/css?family=Lato:300,400,700,300italic,400italic,700italic" rel="stylesheet"
+  type="text/css">
 
-{% if current_user.is_authenticated %}
-  Hi {{ current_user.email }}! <a href="/logout">Log out</a> <a href="/delete_user">Delete user</a>
 
-<p> <a href="/objective">Set your objective</a> </p>
+<body>
+  {% include 'header.html' %}
+  {% if current_user.is_authenticated %}
+  <div class="intro-header">
+    <div class="container">
+      <div class="row">
+        {% if not current_user.strava_token %}
+        <a href="{{strava_auth_url}}">Authorize Strava Access</a>
+        {% else %}
+        <h2>Your last 10 runs</h2>
+        <form action="/comparisons" method="post">
+          {% for run in runs%}
+          <div>
+            <input type="checkbox" name="runs" value="{{run.id}}">
+            <a href="/runs/{{run.id}}">{{run.name}}</a>
+          </div>
+          {% endfor %}
+          <br />
+          {% if comparisonError %}
+          <p style="color: red">
+            {{comparisonError}}
+          </p>
+          {% endif %}
+          <input type="submit" value="Compare" />
+        </form>
+        <button onclick="location.href='/objective'" type="button">Set Objective</button>
+      </div>
+    </div>
+  </div>
 
-  {% if not current_user.strava_token %}
-    <a href="{{strava_auth_url}}">Authorize Strava Access</a>
-  {% else %}
-    <h2>Your last 10 runs</h2>
-    <form action="/comparisons" method="post">
-      {% for run in runs%}
-        <div>
-        <input type="checkbox" name="runs" value="{{run.id}}"> 
-        <a href="/runs/{{run.id}}">{{run.name}}</a>
-        </div>
-      {% endfor %}
-      <br/>
-      {% if comparisonError %}
-        <p style="color: red">
-          {{comparisonError}}
-        </p>
+  <div class="content-section-b">
+    <div class="container">
+      <h2>Stats</h2>
+      <ul>
+        <li>Total average speed: {{avgSpeed}} km/h </li>
+        <li>Total running time: {{ '%0.0f' | format(minutes) }}' {{ '%0.0f' | format(sec)}}''</li>
+      </ul>
       {% endif %}
-      <input type="submit" value="Compare"/>
-    </form>
+    </div>
+  </div>
 
-    <h2>Stats</h2>
-    Total average speed: {{avgSpeed}}
+  <div class="content-section-a">
+    <div class="container">
+      <h2>Objective</h2>
+      Distance objective: {{objective_distance}} Km
+    </div>
+  </div>
+
+  <div class="content-section-b">
+    <div class="container">
+      <h2>Progress</h2>
+      Total distance achieved: {{ '%0.2f'| format(tot_distance)}} km<br>
+
+      Remaining: {{ '%0.2f'| format(progress)}} km<br>
+      Percentage: {{ '%0.2f'| format(percentage)}} %<br>
+    </div>
+  </div>
+  </div>
+
+  {% else %}
+  <div class="intro-header" style="height: 100%;">
+    <div class="container">
+      <div class="row">
+
+      </div>
+    </div>
+  </div>
+
   {% endif %}
+</body>
 
-    <h2>Objective</h2>
-    Distance objective: {{objective_distance}}
-
-    <h2>Progress</h2>
-    Total distance achieved: {{ '%0.2f'| format(tot_distance)}} <br>
-
-    Remaining: {{ '%0.2f'| format(progress)}} <br>
-    Percentage: {{ '%0.2f'| format(percentage)}} <br>
-
-{% else %}
-  Hi Anonymous, <a href="/login">Log in</a>
-{% endif %}
+</html>

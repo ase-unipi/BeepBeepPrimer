@@ -1,3 +1,6 @@
+# Pycharm
+.idea/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -112,3 +115,4 @@ dump.rdb
 variables.sh
 /.vscode/settings.json
 key.sh
+*.DS_Store
