@@ -3,7 +3,7 @@ import smtplib
 import datetime
 from email.utils import make_msgid
 from email.mime.multipart import MIMEMultipart
-from email.mime.text import MIMEText  # Added
+from email.mime.text import MIMEText
 from email.mime.image import MIMEImage
 from monolith.database import db, User, Run, REPORT_PERIODICITY
 from sqlalchemy import func, or_
@@ -15,9 +15,9 @@ _IMG_LOGO      = None
 _IMG_PARAMS    = None
 _IMG_GITHUB    = None
 
-_CID_LOGO    = make_msgid()
-_CID_PARAMS  = make_msgid()
-_CID_GITHUB  = make_msgid()
+_CID_LOGO    = make_msgid()[1:-1]
+_CID_PARAMS  = make_msgid()[1:-1]
+_CID_GITHUB  = make_msgid()[1:-1]
 
 
 website_name = os.environ['WEBSITE_NAME']
@@ -27,6 +27,26 @@ gmail_pass   = os.environ['GMAIL_PASS']
 
 mail_from    = website_name
 mail_subject = 'Go to run Bitch!'
+
+result_none_template = """
+    <td width="100%" valign="top" style="text-align: center;">
+        <h2 style="color: #4B8DD6"> You did not run in this period! </h2>
+    </td>
+    """
+
+result_template = """
+    <td width="260" valign="top" style="text-align: center;">
+        <h2 style="color: #4B8DD6">Total Distance</h2>
+        <h3 style="color: #F59A53">{total_distance}</h3>
+    </td>
+    <td style="font-size: 0; line-height: 0;" width="20">
+        &nbsp;
+    </td>
+    <td width="260" valign="top" style="text-align: center;">
+        <h2 style="color: #4B8DD6">Average Speed</h2>
+        <h3 style="color: #F59A53">{avg_speed}</h3>
+    </td>
+    """
 
 
 def loadMailTemplate():
@@ -40,7 +60,8 @@ def loadMailTemplate():
 def loadMIMEImage(filename):
     img = None
     with open('monolith/static/%s' % filename, 'rb') as fp:
-        img = MIMEImage(fp.read())
+        img = MIMEImage(fp.read(), 'png')
+
         fp.close()
     return img
 
@@ -48,13 +69,20 @@ def loadMIMEImage(filename):
 def loadImages():
     global _IMG_LOGO, _IMG_PARAMS, _IMG_GITHUB
 
-    _IMG_LOGO   = loadMIMEImage('logo.png')
-    _IMG_PARAMS = loadMIMEImage('params.png')
-    _IMG_GITHUB = loadMIMEImage('github.png')
+    filename_logo = 'logo.png'
+    filename_params = 'params.png'
+    filename_github = 'github.png'
+
+    _IMG_LOGO   = loadMIMEImage(filename_logo  )
+    _IMG_PARAMS = loadMIMEImage(filename_params)
+    _IMG_GITHUB = loadMIMEImage(filename_github)
 
     _IMG_LOGO.add_header('Content-ID', '<{}>'.format(_CID_LOGO))
+    _IMG_LOGO.add_header('Content-Disposition', 'inline', filename=filename_logo)
     _IMG_PARAMS.add_header('Content-ID', '<{}>'.format(_CID_PARAMS))
+    _IMG_PARAMS.add_header('Content-Disposition', 'inline', filename=filename_params)
     _IMG_GITHUB.add_header('Content-ID', '<{}>'.format(_CID_GITHUB))
+    _IMG_GITHUB.add_header('Content-Disposition', 'inline', filename=filename_github)
 
 
 def create_context():
@@ -91,7 +119,7 @@ def createContent(user):
     startDate = today - delta
     endDate   = today
 
-    runs = db.session.query(
+    result = db.session.query(
                             func.sum(Run.distance).label('total_distance'),
                             func.avg(Run.average_speed).label('avg_speed')
                         ).filter( 
@@ -100,12 +128,18 @@ def createContent(user):
                             Run.start_date <= endDate
                         ).first()
 
+    result_content = result_template.format(
+                                        total_distance = result.total_distance,
+                                        avg_speed      = result.avg_speed
+                                        )
+    if result.total_distance is None:
+        result_content = result_none_template
+
     return _MAIL_TEMPLATE.format(
                             website_name       = website_name,
                             group_name         = group_name,
                             report_periodicity = user.report_periodicity.value,
-                            total_distance     = runs.total_distance,
-                            avg_speed          = runs.avg_speed,
+                            report_result      = result_content,
                             cid_logo           = _CID_LOGO,
                             cid_params         = _CID_PARAMS,
                             cid_github         = _CID_GITHUB
@@ -116,7 +150,7 @@ def sendMail(mail_user, content):
     global _SERVER, _IMG_LOGO, _IMG_PARAMS, _IMG_GITHUB
     create_context()
 
-    msg = MIMEMultipart()
+    msg = MIMEMultipart('related')
 
     msg['Subject'] = mail_subject
     msg['From']    = mail_from

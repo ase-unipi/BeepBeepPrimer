@@ -10,7 +10,7 @@
       <tr>
         <td align="center" bgcolor="#4B8DD6" style="padding-bottom: 20px;">
           <h1 style="color:#FFFFFF">{website_name}</h1>
-          <img src="cid:{cid_logo}" alt="Creating Email Magic" width="256" style="display: block;" />
+          <img src="cid:{cid_logo}" width="256" style="display: block;" />
         </td>
       </tr>
       <tr>
@@ -30,17 +30,7 @@
                     </td>
                   </tr>
                   <tr>
-                    <td width="260" valign="top" style="text-align: center;">
-                      <h2 style="color: #4B8DD6">Total Distance</h2>
-                      <h3 style="color:#F59A53">{total_distance}</h3>
-                    </td>
-                    <td style="font-size: 0; line-height: 0;" width="20">
-                     &nbsp;
-                    </td>
-                    <td width="260" valign="top" style="text-align: center;">
-                      <h2 style="color: #4B8DD6">Average Speed</h2>
-                      <h3 style="color:#F59A53">{avg_speed}</h3>
-                    </td>
+                    {report_result}
                   </tr>
                 </table>
               </td>
