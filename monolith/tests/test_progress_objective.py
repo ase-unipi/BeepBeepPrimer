@@ -8,7 +8,7 @@ import random
 
 def test_objective(client, db_instance):
     
-    KILOMETERS = 1000
+    KILOMETERS = 2
 
     # simulate login
     user = ensure_logged_in(client, db_instance)
@@ -23,17 +23,31 @@ def test_objective(client, db_instance):
         run.name = "Run " + i
         run.average_speed = float(i)
         #distance in meters
-        run.distance = 2 * KILOMETERS
+        run.distance = KILOMETERS * 1000
         run.elapsed_time = float(i)*float(i)*1000
-
         runs.append(run)
 
         db_instance.session.add(run)
     db_instance.session.commit()
 
     
+    #Testing total total distance in "PROGRESS" field
     res = client.get("/")
     html=pq(res.data)
     total_distance = html("#tot_dist").html()
 
-    assert total_distance == 10000
+    assert float(total_distance) == float(len(runs) * KILOMETERS)
+
+
+    #Testing total remaining kilometers in "PROGRESS" field
+    user = db_instance.session.query(User).first()
+    _setObjective(user, 30000)
+    res = client.get("/")
+    html=pq(res.data)
+    rem_km = float(html("#rem_KM").html())
+    objective = float(html("#obj_dist").html())
+    total_distance = float(html("#tot_dist").html())
+
+
+    assert (rem_km >= 0.0)
+    assert rem_km == (objective - total_distance)
