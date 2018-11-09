@@ -1,197 +1,187 @@
 import os
 import smtplib
 import datetime
-from email.utils import make_msgid
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.mime.image import MIMEImage
+from email.utils import make_msgid
 from monolith.database import db, User, Run, REPORT_PERIODICITY
 from sqlalchemy import func, or_
 
+class MailService:
 
-_SERVER        = None
-_MAIL_TEMPLATE = None
-_IMG_LOGO      = None
-_IMG_PARAMS    = None
-_IMG_GITHUB    = None
+    def __init__(self):
+        
+        # Server config
+        self.__website        = os.environ['WEBSITE_NAME']
+        self.__group          = os.environ['GROUP_NAME']
+        self.__mail_subject   = os.environ['MAIL_REPORT_SUBJECT']
+        self.__message_no_run = os.environ['MAIL_MESSAGE_NO_RUN']
+        
+        # SMTP Server
+        gmail_user = os.environ['MAIL_GMAIL_USER']
+        gmail_pass = os.environ['MAIL_GMAIL_PASS']
+        self.__server = smtplib.SMTP('smtp.gmail.com', 587)
+        self.__server.ehlo()
+        self.__server.starttls()
+        self.__server.login(gmail_user, gmail_pass)
 
-_CID_LOGO    = make_msgid()[1:-1]
-_CID_PARAMS  = make_msgid()[1:-1]
-_CID_GITHUB  = make_msgid()[1:-1]
+        
+        self.__base_folder = 'monolith/static'
+        
+        # Templates
+        self.__content       = 'mail/content_template.html'
+        self.__report_no_run = 'mail/report_no_run_template.html'
+        self.__report_run    = 'mail/report_run_template.html'
+        templates_filenames  = [self.__content,
+                                self.__report_no_run,
+                                self.__report_run]
+        self.__templates     = dict.fromkeys(templates_filenames)
+        
+        # Images
+        self.__logo       = 'logo.png'
+        self.__params     = 'params.png'
+        self.__github     = 'github.png'
+        images_filenames  = [self.__logo,
+                             self.__params,
+                             self.__github]
+        self.__images     = dict.fromkeys(images_filenames)                    
+        self.__images_CID = dict.fromkeys(images_filenames)
 
-
-website_name = os.environ['WEBSITE_NAME']
-group_name   = os.environ['GROUP_NAME']
-gmail_user   = os.environ['GMAIL_USER']
-gmail_pass   = os.environ['GMAIL_PASS']
-
-mail_from    = website_name
-mail_subject = 'Go to run Bitch!'
-
-result_none_template = """
-    <td width="100%" valign="top" style="text-align: center;">
-        <h2 style="color: #4B8DD6"> You did not run in this period! </h2>
-    </td>
-    """
-
-result_template = """
-    <td width="260" valign="top" style="text-align: center;">
-        <h2 style="color: #4B8DD6">Total Distance</h2>
-        <h3 style="color: #F59A53">{total_distance}</h3>
-    </td>
-    <td style="font-size: 0; line-height: 0;" width="20">
-        &nbsp;
-    </td>
-    <td width="260" valign="top" style="text-align: center;">
-        <h2 style="color: #4B8DD6">Average Speed</h2>
-        <h3 style="color: #F59A53">{avg_speed}</h3>
-    </td>
-    """
-
-
-def loadMailTemplate():
-    global _MAIL_TEMPLATE
-
-    with open('monolith/static/mail_template.html', 'r') as fp:
-        _MAIL_TEMPLATE = fp.read().replace('\n', '')
-        fp.close()
+        self.__loadTemplates()
+        self.__loadImages()
+        self.__updateToday()
 
 
-def loadMIMEImage(filename):
-    img = None
-    with open('monolith/static/%s' % filename, 'rb') as fp:
-        img = MIMEImage(fp.read(), 'png')
-
-        fp.close()
-    return img
+    def __loadFile(self, filename, flags):
+        with open(self.__base_folder + '/' + filename, flags) as f:
+            data = f.read()
+            f.close()
+        return data        
 
 
-def loadImages():
-    global _IMG_LOGO, _IMG_PARAMS, _IMG_GITHUB
-
-    filename_logo = 'logo.png'
-    filename_params = 'params.png'
-    filename_github = 'github.png'
-
-    _IMG_LOGO   = loadMIMEImage(filename_logo  )
-    _IMG_PARAMS = loadMIMEImage(filename_params)
-    _IMG_GITHUB = loadMIMEImage(filename_github)
-
-    _IMG_LOGO.add_header('Content-ID', '<{}>'.format(_CID_LOGO))
-    _IMG_LOGO.add_header('Content-Disposition', 'inline', filename=filename_logo)
-    _IMG_PARAMS.add_header('Content-ID', '<{}>'.format(_CID_PARAMS))
-    _IMG_PARAMS.add_header('Content-Disposition', 'inline', filename=filename_params)
-    _IMG_GITHUB.add_header('Content-ID', '<{}>'.format(_CID_GITHUB))
-    _IMG_GITHUB.add_header('Content-Disposition', 'inline', filename=filename_github)
+    def __loadTemplates(self):
+        for filename in self.__templates.keys():
+            self.__templates[filename] = self.__loadFile(filename, 'r').replace('\n', '')
 
 
-def create_context():
-    global _SERVER
-
-    if _SERVER is None:
-        _SERVER = smtplib.SMTP('smtp.gmail.com', 587)
-        _SERVER.ehlo()
-        _SERVER.starttls()
-        _SERVER.login(gmail_user, gmail_pass)
-        loadMailTemplate()
-        loadImages()
+    def __loadMIMEImage(self, filename):
+        imageData = self.__loadFile(filename, 'rb')
+        imageCID  = make_msgid()[1:-1]
+        imageMIME = MIMEImage(imageData, 'png')
+        imageMIME.add_header('Content-ID', '<{}>'.format(imageCID))
+        imageMIME.add_header('Content-Disposition', 'inline', filename = filename)
+            
+        return imageMIME, imageCID
 
 
-def createContent(user):
-    global _MAIL_TEMPLATE
-    if not isinstance(user, User) or user is None:
-        raise TypeError
+    def __loadImages(self):
+        for filename in self.__images.keys():
+            self.__images[filename], self.__images_CID[filename] = self.__loadMIMEImage(filename)
 
-    today = datetime.date.today()
-    delta = datetime.timedelta(days = 0)
 
-    report_periodicity = user.report_periodicity.code
-    
-    if report_periodicity == REPORT_PERIODICITY[1][0]:
-        delta = datetime.timedelta(days = 1)
+    # TODO: refactoring
+    def __getDeltaFromPeriodicity(self, periodicity):
+        if periodicity == REPORT_PERIODICITY[1][0]:
+            return datetime.timedelta(days = 1)
 
-    if report_periodicity == REPORT_PERIODICITY[2][0]:
-        delta = datetime.timedelta(days = 7)
+        if periodicity == REPORT_PERIODICITY[2][0]:
+            return datetime.timedelta(days = 7)
 
-    if report_periodicity == REPORT_PERIODICITY[3][0]:
-        delta = datetime.timedelta(months = 1)
-    
-    startDate = today - delta
-    endDate   = today
+        if periodicity == REPORT_PERIODICITY[3][0]:
+            return datetime.timedelta(months = 1)
+        
+        return datetime.timedelta(seconds = 0)
 
-    result = db.session.query(
-                            func.sum(Run.distance).label('total_distance'),
-                            func.avg(Run.average_speed).label('avg_speed')
-                        ).filter( 
-                            Run.runner_id  == user.id,
-                            Run.start_date >= startDate,
-                            Run.start_date <= endDate
-                        ).first()
 
-    result_content = result_template.format(
+    def __getUserReportResult(self, user):
+        report_periodicity = user.report_periodicity.code
+
+        delta     = self.__getDeltaFromPeriodicity(report_periodicity)
+        endDate   = self.__today
+        startDate = endDate - delta
+        
+        result = db.session.query(
+                                func.sum(Run.distance).label('total_distance'),
+                                func.avg(Run.average_speed).label('avg_speed')
+                            ).filter( 
+                                Run.runner_id  == user.id,
+                                Run.start_date >= startDate,
+                                Run.start_date <= endDate
+                            ).first()
+        return result
+
+
+    def __createMIMEContent(self, user):
+        result = self.__getUserReportResult(user)
+
+        if result.total_distance is None:
+            template = self.__templates[self.__report_no_run]
+            result_content = template.format(
+                                        message = self.__message_no_run
+                                        )
+        else:
+            template = self.__templates[self.__report_run]
+            result_content = template.format(
                                         total_distance = result.total_distance,
                                         avg_speed      = result.avg_speed
                                         )
-    if result.total_distance is None:
-        result_content = result_none_template
 
-    return _MAIL_TEMPLATE.format(
-                            website_name       = website_name,
-                            group_name         = group_name,
-                            report_periodicity = user.report_periodicity.value,
-                            report_result      = result_content,
-                            cid_logo           = _CID_LOGO,
-                            cid_params         = _CID_PARAMS,
-                            cid_github         = _CID_GITHUB
+        template = self.__templates[self.__content]
+        content = template.format(
+                            website     = self.__website,
+                            group       = self.__group,
+                            periodicity = user.report_periodicity.value,
+                            result      = result_content,
+                            cid_logo    = self.__images_CID[self.__logo],
+                            cid_params  = self.__images_CID[self.__params],
+                            cid_github  = self.__images_CID[self.__github]
                             )
+        return MIMEText(content, 'html')
 
 
-def sendMail(mail_user, content):
-    global _SERVER, _IMG_LOGO, _IMG_PARAMS, _IMG_GITHUB
-    create_context()
+    def __sendMail(self, user):
+        msg = MIMEMultipart('related')
 
-    msg = MIMEMultipart('related')
+        msg['Subject'] = self.__mail_subject
+        msg['From']    = self.__website
+        msg['To']      = user.email
+       
+        contentMIME = self.__createMIMEContent(user)
+        msg.attach(contentMIME)
 
-    msg['Subject'] = mail_subject
-    msg['From']    = mail_from
-    msg['To']      = mail_user
-   
-    msg.attach(MIMEText(content, 'html'))
-    msg.attach(_IMG_LOGO)
-    msg.attach(_IMG_PARAMS)
-    msg.attach(_IMG_GITHUB)
+        for imageMIME in self.__images.values():
+            msg.attach(imageMIME)
 
-    try:
-        _SERVER.sendmail(msg['From'], msg['To'], msg.as_string())
-        print("Email sent to %s" % mail_user)
-    except Exception as exception:
-        print("Error: %s!\n\n" % exception)
-
-
-def isFirstDayOfWeek(today = datetime.date.today()):
-    return (today.isoweekday() == 1)
+        try:
+            self.__server.sendmail(
+                            msg['From'],
+                            msg['To'],
+                            msg.as_string()
+                            )
+            print("Email sent to %s" % msg['To'])
+        except Exception as exception:  
+            print("Error: %s!\n\n" % exception)
 
 
-def isFirstDayOfMonth(today = datetime.date.today()):
-    return (today.day == 1)
+    def __updateToday(self):
+        self.__today = datetime.datetime.today().replace(hour = 0, minute = 0, second = 0)
 
 
-def _send_reports():
-    create_context()
-    print("Sending reports...")
+    def sendReports(self):
+        print("Sending reports...")
 
-    filters = [User.report_periodicity == REPORT_PERIODICITY[1][0]]
+        self.__updateToday()
+        # Daily
+        filters = [User.report_periodicity == REPORT_PERIODICITY[1][0]]
+        # Weekly
+        if self.__today.isoweekday() == 1: # First day of the week
+            filters.append(User.report_periodicity == REPORT_PERIODICITY[2][0])
+        # Monthly
+        if self.__today.day == 1:          # First day of the month
+            filters.append(User.report_periodicity == REPORT_PERIODICITY[3][0])
 
-    if isFirstDayOfWeek():
-        filters.append(User.report_periodicity == REPORT_PERIODICITY[2][0])
-        
-    if isFirstDayOfMonth():
-        filters.append(User.report_periodicity == REPORT_PERIODICITY[3][0])
+        users = db.session.query(User).filter( or_(*filters) )
 
-    users = db.session.query(User).filter( or_(*filters) )
-
-    for u in users:
-        mail_user = u.email
-        content   = createContent(u)
-        print("Sending email to %s" % mail_user)
-        sendMail(mail_user, content)
+        for user in users:
+            self.__sendMail(user)

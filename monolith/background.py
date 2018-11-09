@@ -2,14 +2,15 @@ from celery import Celery
 from stravalib import client as c # Need to expose the ApiV3 import from stravalib.client (don't ask...)
 from monolith.database import db, User, Run
 from celery.schedules import crontab
-from monolith.mail_service import _send_reports
+from monolith.mail_service import MailService
 
-import datetime
 
 BACKEND = BROKER = 'redis://localhost:6379'
 celery = Celery(__name__, backend=BACKEND, broker=BROKER)
-celery.conf.timezone = 'Europe/Rome'
+__mail_service = MailService()
 
+
+celery.conf.timezone = 'Europe/Rome'
 celery.conf.beat_schedule = {
     'send_reports-every-midnight': {
         'task': 'monolith.background.send_reports',
@@ -77,28 +78,9 @@ def fetch_runs(user):
     db.session.commit()
     return runs
 
-# @celery.task()
-# def send_repo():
-#     print("ciao a tutti")
 
-# @celery.on_after_configure.connect
-# def setup_periodic_tasks(sender, **kwargs):
-#     sender.add_periodic_task(10.0, send_repo)
 @celery.task()
 def send_reports():
     app = create_context()
     with app.app_context():
-        _send_reports()
-
-# @celery.on_after_configure.connect
-# def setup_periodic_tasks(sender, **kwargs):
-
-#     # Execute every 10 seconds
-#     sender.add_periodic_task(10.0, send_reports)
-    
-#     # # Executes every day at 00:00 a.m.
-#     # sender.add_periodic_task(
-#     #     crontab(hour=0, minute=0),
-#     #     send_reports()
-#     # )
-
+        __mail_service.sendReports()
