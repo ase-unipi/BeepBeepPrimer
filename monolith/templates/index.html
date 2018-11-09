@@ -19,12 +19,14 @@
         <form action="/comparisons" method="post">
           {% for run in runs %}
           <div>
+            <div class="runs">           
             <input type="checkbox" name="runs" value="{{run.id}}">
-            <a href="/runs/{{run.id}}" {% if run.id in challenged_run %} style="color:yellow"
+              <a href="/runs/{{run.id}}" {% if run.id in challenged_run %} style="color:yellow"
                                        {% elif run.id in challenge_green %} style="color:green"
                                        {% elif run.id in challenge_red %} style="color:red"                                       
                                        {% elif run.id in challenge_grey %} style="color:grey"
                                        {% endif %}> {{run.name}} </a>
+            </div>
           </div>
           {% endfor %}
           <br />
