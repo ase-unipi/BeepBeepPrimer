@@ -4,12 +4,30 @@
  76 241 214 4B8DD6 Jeans Dark
 */
 
+:root {
+    --pumpkin-dark:  #F59A53;
+    --pumpkin-light: #FAB063;
+    --jeans-dark:    #4B8DD6;
+}
+
 *,
 *:before,
 *:after {
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
+}
+
+.textPumpkingDark {
+  color: var(--pumpkin-dark)
+}
+
+.textPumpkingLight {
+  color: var(--pumpkin-light)
+}
+
+.textJeansDark {
+  color: var(--jeans-dark)
 }
 
 body {
@@ -32,7 +50,7 @@ ul.navbar {
     margin: 0;
     padding: 0;
     overflow: hidden;
-    background-color: #4B8DD6;
+    background-color: var(--jeans-dark);
     position: fixed;
     top: 0;
     width: 100%;
@@ -53,12 +71,12 @@ ul.navbar li a {
 }
 
 ul.navbar li a:hover:not(.active) {
-    background-color: #F59A53;
+    background-color: var(--pumpkin-dark);
     color: white;
 }
 
 ul.navbar .active {
-    background-color: #F59A53;
+    background-color: var(--pumpkin-dark);
 }
 
 ul.navbar .float-right {
@@ -83,7 +101,7 @@ form {
 .formTitle {
   margin: 0 0 5px 0;
   text-align: center;
-  color: #F59A53;
+  color: var(--pumpkin-dark);
 }
 
 input {
@@ -98,23 +116,23 @@ input {
   background-color: #e8eeef;
   box-shadow: 0 1px 0 rgba(0, 0, 0, 0.03) inset;
   margin-bottom: 10px;
-  color: #F59A53;
+  color: var(--pumpkin-dark);
 }
 
 input[type="password"]::-webkit-input-placeholder {
-  color: #F59A53;
+  color: var(--pumpkin-dark);
   font-style: italic;
 }
 
 button {
   padding: 5px 0px 5px 0px;
   color: #FFF;
-  background-color: #4B8DD6;
+  background-color: var(--jeans-dark);
   font-size: 18px;
   text-align: center;
   border-radius: 5px;
   width: 100%;
-  border: 1px solid #4B8DD6;
+  border: 1px solid var(--jeans-dark);
   margin-bottom: 10px;
 }
 
@@ -126,7 +144,7 @@ label {
   display: block;
   margin-bottom: 2px;
   font-size: 12px;
-  color: #4B8DD6;
+  color: var(--jeans-dark);
 }
 
 
@@ -136,7 +154,7 @@ table, th, td {
 }
 
 thead {
-  background-color: #4B8DD6;
+  background-color: var(--jeans-dark);
   color: white;
 }
 
@@ -181,7 +199,7 @@ th {
 }
 
 .challengeTable th{
-    background-color: #4B8DD6;
+    background-color: var(--jeans-dark);
     color: white;    
 }
 
