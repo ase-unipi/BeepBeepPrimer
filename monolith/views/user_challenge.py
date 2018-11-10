@@ -50,7 +50,6 @@ def complete_challenge(id_challenge):
 	else:
 		run_challenger = db.session.query(Run).filter(Run.id == current_challenge.run_challenger_id).first()
 		return render_template("create_challenge.html", challenge_id=current_challenge.id, run_challenged=run_challenged, run_challenger=run_challenger)
-	return redirect(url_for('home.index'))
 
 @user_challenge.route('/terminate_challenge', methods=['GET','POST'])
 @login_required
