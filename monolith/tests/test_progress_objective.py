@@ -9,7 +9,6 @@ import random
 def test_objective(client, db_instance):
     
     KILOMETERS = 2
-    OBJ = 10000
 
     # simulate login
     user = ensure_logged_in(client, db_instance)
@@ -42,22 +41,13 @@ def test_objective(client, db_instance):
 
     #Testing remaining kilometers in "PROGRESS" field
     user = db_instance.session.query(User).first()
-    _setObjective(user, OBJ)
+    _setObjective(user, 30000)
     res = client.get("/")
     html=pq(res.data)
     rem_km = float(html("#rem_KM").html())
     objective = float(html("#obj_dist").html())
     total_distance = float(html("#tot_dist").html())
 
+
     assert (rem_km >= 0.0)
     assert rem_km == (objective - total_distance)
-
-
-    #Testing percentage in "PROGRESS" field
-    res = client.get("/")
-    html=pq(res.data)
-    percentage = float(html("#perc").html())
-    objective = float(html("#obj_dist").html())
-    total_distance = float(html("#tot_dist").html())
-
-    assert percentage == (total_distance / objective * 100)
