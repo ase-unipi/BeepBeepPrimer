@@ -11,7 +11,8 @@ challenge = Blueprint('challenge', __name__)
 def post_challenge():
 
     form = ChallengeForm()
-    #create_run()
+    #for i in range(15):
+    #    create_run(i)
     
     runIds = form.data['runs']
     if runIds is None or len(runIds) != 1:
@@ -36,7 +37,7 @@ def post_challenge():
     
     return redirect("/")
 
-def create_run():
+def create_run(id):
     
     dataRun = datetime.now()
     run = Run()
@@ -45,7 +46,7 @@ def create_run():
     run.average_speed = 7
     run.distance = 3000
     run.elapsed_time = 2300
-    run.name = 'run GREY'
+    run.name = 'run ' + str(id)
     run.runner = current_user
     run.runner_id = current_user.id
     run.start_date = dataRun
