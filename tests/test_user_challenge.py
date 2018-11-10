@@ -39,7 +39,7 @@ def createRun(
         elapsed_time = 3600,
         average_speed = 2):
 
-    challenge_count = db_instance.session.query(Run).count()
+    run_count = db_instance.session.query(Run).count()
 
     run = Run()
     run.id = id
@@ -54,7 +54,7 @@ def createRun(
     run.runner_id = runner_id
     db_instance.session.add(run)
 
-    assert db_instance.session.query(Run).count() == (challenge_count + 1)
+    assert db_instance.session.query(Run).count() == (run_count + 1)
 
 
 def test_create_challenge_with_non_authenticated_user(client, db_instance, celery_session_worker):
@@ -65,26 +65,6 @@ def test_create_challenge_with_non_authenticated_user(client, db_instance, celer
     assert response.status_code == 200
 
     assert b'Hi Anonymous, <a href="/login">Log in</a> <a href="/create_user">Create user</a>' in response.data
-    
-
-def test_create_challenge_with_non_existing_run(client, db_instance, celery_session_worker, make_and_login_user):
-    assert db_instance.session.query(Challenge).count() == 0
-
-    response = client.post('/create_challenge',
-        follow_redirects=True,
-        data=dict(id_run='1'))
-
-    assert response.status_code == 200
-
-    assert b'Hi Anonymous, <a href="/login">Log in</a> <a href="/create_user">Create user</a>' not in response.data
-    
-    assert db_instance.session.query(Challenge).count() == 0
-  
-
-def test_visualize_non_existing_challenge(client, db_instance, celery_session_worker, make_and_login_user):
-    
-    response = client.get('/create_challenge/1', follow_redirects=True)
-    assert b'Hi 1!' in response.data
 
 
 def test_visualize_existing_challenge(client, db_instance, celery_session_worker, make_and_login_user):
@@ -99,86 +79,69 @@ def test_visualize_existing_challenge(client, db_instance, celery_session_worker
     assert b'<h1>Challenge yourself!</h1>' in response.data
 
 
-def test_create_correct_challenge(client, db_instance, celery_session_worker, make_and_login_user):
+def test_create_challenge_get(client, db_instance, celery_session_worker, make_and_login_user):
+    response = client.get('/create_challenge', follow_redirects=True)
+    assert b'<h1>Challenge yourself!</h1>' in response.data
+
+
+def test_create_challenge_post_wrong_parameter(client, db_instance, celery_session_worker, make_and_login_user):
+    assert db_instance.session.query(Challenge).count() == 0
+
+    response = client.post('/create_challenge',
+        follow_redirects=True,
+        data=dict(id_run='1'))
+
+    assert response.status_code == 200
+
+    assert b'Hi Anonymous, <a href="/login">Log in</a> <a href="/create_user">Create user</a>' not in response.data
     
-    # test_create_correct_challenge
+    assert db_instance.session.query(Challenge).count() == 0
 
-    createRun(db_instance, id=1, runner_id=1, average_speed=2)
 
+def test_create_challenge_post_good_parameter(client, db_instance, celery_session_worker, make_and_login_user):
+    createRun(db_instance, id=1, runner_id=1)
+    createRun(db_instance, id=10, runner_id=1)
+
+    assert db_instance.session.query(Challenge).count() == 0
 
     client.post('/create_challenge',
         follow_redirects=True,
         data=dict(id_run='1'))
     assert db_instance.session.query(Challenge).count() == 1
+    assert db_instance.session.query(Challenge).filter(Challenge.run_challenged_id == 1).count() == 1
 
 
-    createRun(db_instance, id=2, runner_id=1, average_speed=3)
-
-    client.post('/terminate_challenge',
+    client.post('/create_challenge',
         follow_redirects=True,
-        data=dict(id_challenger='2', id_challenge=1))
-
-    ch1 = db_instance.session.query(Challenge).filter(Challenge.run_challenger_id == 2).first()
-    assert ch1.run_challenger_id == 2
-    assert ch1.result == True
-
-    createRun(db_instance, id=3, runner_id=1, average_speed=1)
-
-    client.post('/terminate_challenge',
-        follow_redirects=True,
-        data=dict(id_challenger='3', id_challenge=1))
-
-    ch1 = db_instance.session.query(Challenge).filter(Challenge.run_challenger_id == 3).first()
-    assert ch1.run_challenger_id == 3
-    assert ch1.result == False
-    
-    createRun(db_instance, id=4, runner_id=1, distance=2000)
-
-    client.post('/terminate_challenge',
-    follow_redirects=True,
-    data=dict(id_challenger='4', id_challenge=1))
-
-    ch1 = db_instance.session.query(Challenge).filter(Challenge.run_challenger_id == 4).first()
-    assert ch1.run_challenger_id == 4
-    assert ch1.result
-
-    createRun(db_instance, id=5, runner_id=1, distance=500)
-
-    client.post('/terminate_challenge',
-    follow_redirects=True,
-    data=dict(id_challenger='5', id_challenge=1))
-
-    ch1 = db_instance.session.query(Challenge).filter(Challenge.run_challenger_id == 5).first()
-    assert ch1.run_challenger_id == 5
-    assert ch1.result == False
-
-    createRun(db_instance, id=6, runner_id=1)
-
-    client.post('/terminate_challenge',
-    follow_redirects=True,
-    data=dict(id_challenger='5', id_challenge=1))
-
-    ch1 = db_instance.session.query(Challenge).filter(Challenge.run_challenger_id == 5).first()
-    assert ch1.run_challenger_id == 5
-    assert ch1.result == False
+        data=dict(id_run='10'))
+    assert db_instance.session.query(Challenge).count() == 2
+    assert db_instance.session.query(Challenge).filter(Challenge.run_challenged_id == 10).count() == 1
 
 
-def test_challenge_same_run(client, db_instance, celery_session_worker, make_and_login_user):
+def test_create_challenge_id_challenge_get_wrong_resource(client, db_instance, celery_session_worker, make_and_login_user):
+    response = client.get('/create_challenge/1', follow_redirects=True)
+    assert b'Hi 1!' in response.data
 
-        # test_create_correct_challenge
 
-    createRun(db_instance, id=1, runner_id=1, average_speed=2)
+def test_create_challenge_id_challenge_get_good_resource(client, db_instance, celery_session_worker, make_and_login_user):
+    createRun(db_instance, id=1, runner_id=1)
+    createRun(db_instance, id=2, runner_id=1)
 
     client.post('/create_challenge',
         follow_redirects=True,
         data=dict(id_run='1'))
-    assert db_instance.session.query(Challenge).count() == 1
 
-    client.post('/terminate_challenge',
+    r = client.post('/create_challenge',
         follow_redirects=True,
-        data=dict(id_challenger='1', id_challenge=1))
+        data=dict(id_run='2'))
+    print(r.data.decode('ascii'))
+    
 
-    assert db_instance.session.query(Challenge).count() == 1
+    response = client.get('/create_challenge/1', follow_redirects=True)
+    assert b'<h1>Challenge yourself!</h1>' in response.data
+
+    response = client.get('/create_challenge/2', follow_redirects=True)
+    assert b'<h1>Challenge yourself!</h1>' in response.data
 
 
 def test_terminate_challenge_get(client, db_instance, celery_session_worker, make_and_login_user):
@@ -217,3 +180,48 @@ def test_terminate_challenge_post_wrong_parameters(client, db_instance, celery_s
 
     assert db_instance.session.query(Challenge).count() == 1
 
+    #challenge same run
+    client.post('/terminate_challenge',
+        follow_redirects=True,
+        data=dict(id_challenger='1', id_challenge=1))
+
+    assert db_instance.session.query(Challenge).count() == 1
+
+
+def test_create_correct_challenge(client, db_instance, celery_session_worker, make_and_login_user):
+    createRun(db_instance, id=1, runner_id=1, average_speed=2)
+    createRun(db_instance, id=2, runner_id=1, average_speed=3)
+    createRun(db_instance, id=3, runner_id=1, average_speed=1)
+    createRun(db_instance, id=4, runner_id=1, distance=2000)
+    createRun(db_instance, id=5, runner_id=1, distance=500)
+    createRun(db_instance, id=6, runner_id=1)
+
+    for i in range(1, 6):
+        client.post('/create_challenge',
+            follow_redirects=True,
+            data=dict(id_run='1'))
+
+        client.post('/terminate_challenge',
+            follow_redirects=True,
+            data=dict(id_challenge=i, id_challenger=str(i+1)))
+
+
+    query_result = db_instance.session.query(Challenge).filter(Challenge.run_challenger_id == 2).first()
+    assert query_result.run_challenger_id == 2
+    assert query_result.result == True
+
+    query_result = db_instance.session.query(Challenge).filter(Challenge.run_challenger_id == 3).first()
+    assert query_result.run_challenger_id == 3
+    assert query_result.result == False
+    
+    query_result = db_instance.session.query(Challenge).filter(Challenge.run_challenger_id == 4).first()
+    assert query_result.run_challenger_id == 4
+    assert query_result.result
+
+    query_result = db_instance.session.query(Challenge).filter(Challenge.run_challenger_id == 5).first()
+    assert query_result.run_challenger_id == 5
+    assert query_result.result == False
+
+    query_result = db_instance.session.query(Challenge).filter(Challenge.run_challenger_id == 6).first()
+    assert query_result.run_challenger_id == 6
+    assert query_result.result == False
