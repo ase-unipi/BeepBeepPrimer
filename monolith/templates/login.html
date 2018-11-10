@@ -1,25 +1,27 @@
 <html>
 {% include 'header.html' %}
 
-<form action="" method="POST">
-  {{ form.hidden_tag() }}
-  <h2 class="formTitle">Login</h2>
+<div class="form">
+  <form action="" method="POST">
+    {{ form.hidden_tag() }}
+    <h2 class="formTitle">Login</h2>
 
-  <fieldset>
-    {% for field in form.display %}
-      <label for="{{ field }}">{{ form[field].label }}</label>
-      {{ form[field] }}
-      {% if form[field].errors %}
-        {% for e in form[field].errors %}
-          <p class="help-block">{{ e }}</p>
-        {% endfor %}
-      {% endif %}
-    {% endfor %}
+    <fieldset>
+      {% for field in form.display %}
+        <label for="{{ field }}">{{ form[field].label }}</label>
+        {{ form[field] }}
+        {% if form[field].errors %}
+          {% for e in form[field].errors %}
+            <p class="help-block">{{ e }}</p>
+          {% endfor %}
+        {% endif %}
+      {% endfor %}
 
-  </fieldset>
-  <button type="submit">Login</button>
+    </fieldset>
+    <button class="button buttonJeans" type="submit">Login</button>
 
-</form>
+  </form>
+</div>
 
 {% include 'footer.html' %}
 </html>
