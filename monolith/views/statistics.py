@@ -14,3 +14,4 @@ def get_statistics():
     using javascript"""
     runs = db.session.query(Run).filter(Run.runner_id == current_user.id)
     return render_template("statistics.html", runs=runs)
+

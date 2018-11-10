@@ -1,4 +1,4 @@
-from flask import make_response, render_template, redirect
+from flask import make_response, render_template
 from monolith.views.home import index
 
 
@@ -11,5 +11,3 @@ def render_error_page(e):
         return make_response(index(), e.code)
     elif e.code == 404:
         return make_response(render_template('not_found.html', exception=e), e.code)
-    elif e.code == 500:
-        return make_response(render_template('internal_error.html', exception=e), e.code)

@@ -13,7 +13,7 @@
     <br>
     <h2>Chose runs to compare</h2>
     {% for run in runs %}
-    <input class="runs" type="checkbox" name="run" value={{run.id}}> {{run.name}} of date {{run.start_date}}<br>
+    <input class="runs" type="checkbox" name="run" value={{run.id}}> <span id={{run.id}}>{{run.name}}</span><br>
     {% endfor %}
     <div>
 
