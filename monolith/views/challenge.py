@@ -38,9 +38,15 @@ def post_challenge():
         #found a previosly challenged run, gotta make it unchallenged and then challenge the next one
         if prev_challenged_run:
             prev_challenged_run.is_challenged = False
-        new_challenge = db.session.query(Run).filter(Run.runner_id == current_user.id, Run.id == runIds[0]).first()
-        new_challenge.is_challenged = True
-        db.session.commit()
+            if prev_challenged_run.id != int(runIds[0]):
+                # I'm not unchallenging a run, but challenging a new one
+                new_challenge = db.session.query(Run).filter(Run.runner_id == current_user.id, Run.id == runIds[0]).first()
+                new_challenge.is_challenged = True
+            db.session.commit()
+        else: # just challenge the new one
+            new_challenge = db.session.query(Run).filter(Run.runner_id == current_user.id, Run.id == runIds[0]).first()
+            new_challenge.is_challenged = True
+            db.session.commit()
     else:
         return redirect("/login")
     

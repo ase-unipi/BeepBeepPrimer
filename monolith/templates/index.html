@@ -24,7 +24,7 @@
               <a href="/runs/{{run.id}}" {% if run.id in challenged_run %} style="color:yellow"
                                        {% elif run.id in challenge_green %} style="color:green"
                                        {% elif run.id in challenge_red %} style="color:red"                                       
-                                       {% elif run.id in challenge_grey %} style="color:grey"
+                                       {% elif run.id in challenge_grey %} style="color:orangered"
                                        {% endif %}> {{run.name}} </a>
             </div>
           </div>
@@ -75,6 +75,18 @@
       Percentage: {{ '%0.2f'| format(percentage)}} %<br>
     </div>
   </div>
+  <div class="content-section-b">
+    <div class="container">
+      <h2>Challenge</h2>
+      {% if challenged_run %} Challenge Open! <br> {% else %} No Challenge <br> {% endif %}
+      The runs made after the challenged one will appear: <br>
+      <ul>
+        <li> yellow if it is the challenged run </li>
+        <li> green if it is better than the challenged one </li>
+        <li> red if it is worse than the challenged one </li>
+        <li> orange if they are not comparable </li>
+      </ul> 
+    </div>
   </div>
 
   {% else %}
