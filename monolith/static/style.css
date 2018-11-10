@@ -4,33 +4,27 @@
  76 241 214 4B8DD6 Jeans Dark
 */
 
-table, th, td {
-    border: 1px solid black;
-    border-collapse: collapse;
-}
-
-thead {
-  background-color: #4B8DD6;
-  color: white;
-}
-
-td {
-  padding-left: 10px;
-  padding-right: 10px;
-}
-
-th {
-  padding: 10px;
-}
-
-.icon {
-  width: 32px;
-  height: 32px;
+*,
+*:before,
+*:after {
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
 }
 
 body {
   margin:0;
   font-family: Helvetica;
+}
+
+.logo {
+  height: 100%;
+  padding-left: 10;
+}
+
+.icon {
+  width: 32px;
+  height: 32px;
 }
 
 ul.navbar {
@@ -77,43 +71,19 @@ ul.navbottom {
     height: 44px;
 }
 
-.body {
-  margin-top: 44px;
-  margin-bottom: 44px;
-  padding: 10px;
-}
-
-.text-right {
-  text-align: right;
-}
-
-.text-center {
-  text-align: center;
-}
-
-
-
-
-*,
-*:before,
-*:after {
-  -moz-box-sizing: border-box;
-  -webkit-box-sizing: border-box;
-  box-sizing: border-box;
-}
-
 form {
-  max-width: 340px;
+  min-width: 300px;
+  max-width: 400px;
   margin: 10px auto;
   padding: 10px 10px 0px 10px;
   background: #f4f7f8;
   border-radius: 8px;
 }
 
-h2 {
+.formTitle {
   margin: 0 0 5px 0;
   text-align: center;
-  color: #4B8DD6;
+  color: #F59A53;
 }
 
 input {
@@ -158,6 +128,50 @@ label {
   font-size: 12px;
   color: #4B8DD6;
 }
+
+
+table, th, td {
+    border: 1px solid black;
+    border-collapse: collapse;
+}
+
+thead {
+  background-color: #4B8DD6;
+  color: white;
+}
+
+td {
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+th {
+  padding: 10px;
+}
+
+.bodyContainer {
+  margin-top: 44px;
+  margin-bottom: 44px;
+  /*position: relative;*/
+}
+
+.bodyContent {
+  margin: 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+}
+
+.text-right {
+  text-align: right;
+}
+
+.text-center {
+  text-align: center;
+}
+
 
 .challengeTable table, 
 .challengeTable th, 

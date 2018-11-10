@@ -4,6 +4,7 @@
 </head>
 <body>
   <ul class="navbar">
+    <li><img src="{{url_for('static', filename='nav_logo.png')}}" class="logo" /></li>
     <li><a href="{{url_for('home.index')}}">Home</a></li>
     <li><a href="#">Training Objectives</a></li>
     <li><a href="#">Compare Run</a></li>
@@ -21,4 +22,5 @@
       <li class="float-right"><a href="{{url_for('auth.login')}}">Login</a></li>
     {% endif %}
   </ul>
-  <div class="body">
+  <div class="bodyContainer">
+    <div class="bodyContent">

@@ -5,8 +5,8 @@ from wtforms.validators import DataRequired, NumberRange
 from monolith.form_custom_models import UniqueMailValidator
 
 class LoginForm(FlaskForm):
-    email = f.StringField('email', validators=[DataRequired()])
-    password = f.PasswordField('password', validators=[DataRequired()])
+    email = f.StringField('Email', validators=[DataRequired()])
+    password = f.PasswordField('Password', validators=[DataRequired()])
     display = ['email', 'password']
 
 
