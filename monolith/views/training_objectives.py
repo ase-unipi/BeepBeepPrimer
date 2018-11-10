@@ -44,7 +44,7 @@ def _training_objectives():
         AND
         T.RUNNER_ID = R.RUNNER_ID
         AND
-        R.START_DATE BETWEEN T.START_DATE AND T.END_date
+        DATE(R.START_DATE) BETWEEN T.START_DATE AND T.END_DATE
 
         GROUP BY T.ID
         -------------------------------------------------
@@ -59,7 +59,7 @@ def _training_objectives():
         (
             SELECT T.ID
             FROM TRAINING_OBJECTIVE T LEFT JOIN RUN R ON
-            (T.RUNNER_ID = R.RUNNER_ID AND R.START_DATE BETWEEN T.START_DATE AND T.END_DATE)
+            (T.RUNNER_ID = R.RUNNER_ID AND DATE(R.START_DATE) BETWEEN T.START_DATE AND T.END_DATE)
             
             WHERE T.RUNNER_ID = {}
             

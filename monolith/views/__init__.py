@@ -7,5 +7,16 @@ from .training_objectives import training_objectives
 from .test import test
 from .user_challenge import user_challenge
 from .statistics import statistics
+from .profile import profile
 
-blueprints = [home, _auth, users, strava, runs, training_objectives, test, user_challenge, statistics]
+blueprints = [home,
+              _auth,
+              users,
+              strava,
+              runs,
+              training_objectives,
+              test,
+              user_challenge,
+              statistics,
+              profile
+              ]
