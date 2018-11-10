@@ -13,7 +13,7 @@ profile = Blueprint('profile', __name__)
 @login_required
 def _profile():
     form = ProfileForm(obj=current_user)
-    form.email.render_kw = {'disabled': 'disabled'}
+    # form.email.render_kw = {'disabled': 'disabled'}
     # form.password.render_kw = {'disabled': 'disabled'}
     form.password.render_kw = {'placeholder': 'YOUR OLD PASSWORD'}
 
