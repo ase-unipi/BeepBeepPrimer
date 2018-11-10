@@ -2,7 +2,7 @@ from flask import Blueprint, redirect, render_template, request
 from monolith.database import db
 from monolith.auth import current_user, login_required
 from monolith.views.auth import strava_deauth
-from monolith.forms import UserForm
+from monolith.forms import ProfileForm
 from werkzeug.security import generate_password_hash
 
 
@@ -12,7 +12,7 @@ profile = Blueprint('profile', __name__)
 @profile.route('/profile', methods=['GET', 'POST'])
 @login_required
 def _profile():
-    form = UserForm(obj=current_user)
+    form = ProfileForm(obj=current_user)
     form.email.render_kw = {'disabled': 'disabled'}
     # form.password.render_kw = {'disabled': 'disabled'}
     form.password.render_kw = {'placeholder': 'YOUR OLD PASSWORD'}
