@@ -132,7 +132,7 @@ class MailService:
         content = template.format(
                             website     = self.__website,
                             group       = self.__group,
-                            periodicity = user.report_periodicity.name,
+                            periodicity = user.report_periodicity.value,
                             result      = result_content,
                             cid_logo    = self.__images_CID[self.__logo],
                             cid_params  = self.__images_CID[self.__params],
