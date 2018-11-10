@@ -35,9 +35,9 @@ body {
   font-family: Helvetica;
 }
 
-.logo {
-  height: 100%;
-  padding-left: 10;
+div.nav {
+  width: 100%;
+  height: 44px;
 }
 
 .icon {
@@ -46,6 +46,7 @@ body {
 }
 
 ul.navbar {
+    z-index:1;
     list-style-type: none;
     margin: 0;
     padding: 0;
@@ -59,6 +60,11 @@ ul.navbar {
 
 ul.navbar li {
     float: left;
+}
+
+ul.navbar li .logo {
+  height: 100%;
+  padding-left: 10;
 }
 
 ul.navbar li a {
@@ -75,21 +81,21 @@ ul.navbar li a:hover:not(.active) {
     color: white;
 }
 
-ul.navbar .active {
+ul.navbar li.active {
     background-color: var(--pumpkin-dark);
 }
 
-ul.navbar .float-right {
+ul.navbar li.float-right {
     float: right;
 }
 
 ul.navbottom {
     top: auto;
-    bottom: 0;
+    bottom: 0px;
     height: 44px;
 }
 
-form {
+.form {
   min-width: 300px;
   max-width: 400px;
   margin: 10px auto;
@@ -104,7 +110,11 @@ form {
   color: var(--pumpkin-dark);
 }
 
-input {
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="email"]
+{
   background: rgba(255, 255, 255, 0.1);
   border: none;
   font-size: 12px;
@@ -124,6 +134,10 @@ input[type="password"]::-webkit-input-placeholder {
   font-style: italic;
 }
 
+/*input:-webkit-autofill {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+}*/
+
 button {
   padding: 5px 0px 5px 0px;
   color: #FFF;
@@ -140,7 +154,7 @@ fieldset {
   border: none;
 }
 
-label {
+.labelFor {
   display: block;
   margin-bottom: 2px;
   font-size: 12px;
@@ -168,9 +182,9 @@ th {
 }
 
 .bodyContainer {
-  margin-top: 44px;
-  margin-bottom: 44px;
-  /*position: relative;*/
+  width: 100%;
+  height: 100%;
+  position: relative;
 }
 
 .bodyContent {
@@ -182,12 +196,12 @@ th {
   transform: translate(-50%, -50%);
 }
 
-.text-right {
-  text-align: right;
-}
-
 .text-center {
   text-align: center;
+}
+
+.text-right {
+  text-align: right;
 }
 
 
@@ -210,4 +224,19 @@ th {
 
 .challengeTable th{
     padding: 10px;
+}
+
+@media (max-width: 600px) {
+    ul.navbar, ul.navbottom {
+        width: 100%;
+        height: auto;
+    }
+
+    ul.navbar li.float-right {
+      float: left;
+    }
+
+    ul.navbar li .logo {
+      display: none;
+    }
 }
