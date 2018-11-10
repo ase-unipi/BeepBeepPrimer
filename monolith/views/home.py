@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, request, redirect
 
 from stravalib import Client
-from monolith.database import db, Run, User, Objectives, _setObjective
+from monolith.database import db, Run, User, Objectives, _setObjective, Challenge
 from monolith.auth import current_user
 from monolith.forms import ObjectiveForm
 from monolith.views.auth import *
@@ -58,14 +58,19 @@ def index():
         red = []
         green = []
         orange = []
+<<<<<<< HEAD
+        challenged_run = db.session.query(Challenge).filter(current_user.id == Challenge.runner_id).first()
+=======
         challenged_run = db.session.query(Run).filter(current_user.id == Run.runner_id, Run.is_challenged == True).first()
+>>>>>>> bae66df531fa16e4ce9adc97cb168408f548c9f1
         if challenged_run:
-            yellow.append(challenged_run.id)
-            after_challenge_run = db.session.query(Run).filter(current_user.id == Run.runner_id, Run.id >= challenged_run.id).all()
+            yellow.append(challenged_run.run_id)
+            after_challenge_run = db.session.query(Run).filter(current_user.id == Run.runner_id, Run.id > challenged_run.latest_run_id).all()
+            print (challenged_run.latest_run_id)
             for run in after_challenge_run:                
-                if run.average_speed > challenged_run.average_speed and run.distance > challenged_run.distance:
+                if run.average_speed > challenged_run.run.average_speed and run.distance > challenged_run.run.distance:
                     green.append(run.id)
-                elif run.average_speed <= challenged_run.average_speed and run.distance <= challenged_run.distance:
+                elif run.average_speed <= challenged_run.run.average_speed and run.distance <= challenged_run.run.distance:
                     red.append(run.id)
                 else: 
                     orange.append(run.id)
