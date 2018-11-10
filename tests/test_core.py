@@ -147,7 +147,7 @@ def test_average_speed_two_runs(client, db_instance, background_app, celery_sess
     db_instance.session.commit()
     rv = client.get("/")
     print(rv.data.decode('ascii'))
-    assert b'18.65 m/s' in rv.data
+    assert b'18.66 m/s' in rv.data
 
 
 def test_average_speed_periodic(client, db_instance, background_app, celery_session_worker):
@@ -176,7 +176,7 @@ def test_average_speed_periodic(client, db_instance, background_app, celery_sess
     db_instance.session.commit()
     rv = client.get("/")
     print(rv.data.decode('ascii'))
-    assert b'13.14 m/s' in rv.data
+    assert b'13.15 m/s' in rv.data
 
 
 # Test that checks if the create_user page permits to create 2 user with the same email
