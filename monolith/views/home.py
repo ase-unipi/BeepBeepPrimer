@@ -23,6 +23,7 @@ def index():
         runs = db.session.query(Run).filter(Run.runner_id == current_user.id)
         if runs.count():
             total_average_speed = sum(run.average_speed for run in runs) / runs.count()
+            total_average_speed = float('%.2f' % total_average_speed)
 
     else:
         runs = None
