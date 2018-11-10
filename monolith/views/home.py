@@ -58,11 +58,7 @@ def index():
         red = []
         green = []
         orange = []
-<<<<<<< HEAD
         challenged_run = db.session.query(Challenge).filter(current_user.id == Challenge.runner_id).first()
-=======
-        challenged_run = db.session.query(Run).filter(current_user.id == Run.runner_id, Run.is_challenged == True).first()
->>>>>>> bae66df531fa16e4ce9adc97cb168408f548c9f1
         if challenged_run:
             yellow.append(challenged_run.run_id)
             after_challenge_run = db.session.query(Run).filter(current_user.id == Run.runner_id, Run.id > challenged_run.latest_run_id).all()

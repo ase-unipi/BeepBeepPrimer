@@ -12,13 +12,7 @@ challenge = Blueprint('challenge', __name__)
 def post_challenge():
 
     form = ChallengeForm()
-<<<<<<< HEAD
   
-=======
-    #for i in range(15):
-    #    create_run(i)
-    
->>>>>>> bae66df531fa16e4ce9adc97cb168408f548c9f1
     runIds = form.data['runs']
     if runIds is None or len(runIds) != 1:
         return redirect('/?challengeError=Please select exactly one run to challenge')
