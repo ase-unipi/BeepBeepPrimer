@@ -1,26 +1,16 @@
 <html>
-  <head>
-    <link rel="stylesheet" href="{{url_for('static', filename='style.css')}}">
-  </head>
-
-  <body>
-    <h1>Runnerly</h1>
+{% include 'header.html' %}
 
     {% if current_user.is_authenticated %}
-        Hi {{ current_user.email }}! <a href="/logout">Log out</a> <a href="/remove_user">Delete Account</a>
-        <div>
-          <a href="/training_objectives">Set a training objective</a>
-        </div>
 
       {% if not current_user.strava_token %}
-        <a href="{{strava_auth_url}}">Authorize Strava Access</a>
       {% else %}
         {% if total_average_speed %}
-          <h2>Average speed of all your run</h2>
-          <p>{{total_average_speed}} m/s</p>
+          <h2 class="textJeansDark">Average speed of all your run</h2>
+          <h3 class="textPumpkingDark">{{total_average_speed}} m/s</h3>
         {% endif %}
 
-        <h2>Your last 10 runs</h2>
+        <h2 class="textJeansDark">Your last 10 runs</h2>
         <table>
           <thead>
             <tr>
@@ -48,7 +38,11 @@
       {% endif %}
 
     {% else %}
-      Hi Anonymous, <a href="/login">Log in</a> <a href="/create_user">Create user</a>
+      <h1 class="textPumpkingDark"> Hi Anonymous</h1>
+      <h3 class="textJeansDark"> Please Login or Register </h3>
     {% endif %}
-  </body>
+    </div>
+  </div>
+{% include 'footer.html' %}
 </html>
+
