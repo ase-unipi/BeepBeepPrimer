@@ -39,8 +39,8 @@ def test_objective(client, db_instance):
     res = client.get('/')
     html = pq(res.data)
 
-    objective_view = km2m(html("#obj_dist").html())
+
+    objective_view = km2m(float(html("#obj_dist").html()))    
 
     #check the view converting the distance to km
     assert objective_view == objective_distance
-

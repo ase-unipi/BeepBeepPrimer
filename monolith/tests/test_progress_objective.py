@@ -17,7 +17,6 @@ def test_objective(client, db_instance):
     runs = []
     for i in ['1', '2']:
         run = Run()
-
         run.runner = user
         run.strava_id = i
         run.name = "Run " + i
@@ -26,8 +25,8 @@ def test_objective(client, db_instance):
         run.distance = KILOMETERS * 1000
         run.elapsed_time = float(i)*float(i)*1000
         runs.append(run)
-
         db_instance.session.add(run)
+        
     db_instance.session.commit()
 
     
