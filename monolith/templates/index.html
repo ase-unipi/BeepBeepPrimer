@@ -8,6 +8,9 @@
 
     {% if current_user.is_authenticated %}
         Hi {{ current_user.email }}! <a href="/logout">Log out</a> <a href="/remove_user">Delete Account</a>
+        <div>
+          <a href="/training_objectives">Set a training objective</a>
+        </div>
 
       {% if not current_user.strava_token %}
         <a href="{{strava_auth_url}}">Authorize Strava Access</a>
@@ -30,12 +33,18 @@
             <tr>
               <td> {{run.name}} </td>
               <td class="text-center"> <a href="{{url_for('runs.run', id=run.id)}}""> <img class="icon" src="{{url_for('static', filename='view.png')}}"/> </a> </td>
-              <td class="text-center"> <a> <img class="icon" src="{{url_for('static', filename='challenge.png')}}"/> </a> </td>
+              <form action="{{ url_for('user_challenge.create_challenge') }}" method="post">
+              <td> 
+                <input type="hidden" name="id_run" value={{run.id}} />
+                <a href="#" onclick="document.forms[{{loop.index}}-1].submit()"> 
+                <img class="icon" src="{{url_for('static', filename='challenge.png')}}"/> </a> </td> </form> 
             </tr>
             {% endfor %}
           </tbody>
         </table>
         
+        <h2> <a href="/create_challenge"> Check your challenges </a></h2> 
+
       {% endif %}
 
     {% else %}

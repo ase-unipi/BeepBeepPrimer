@@ -1,5 +1,5 @@
 from celery import Celery
-from stravalib import Client
+from stravalib import client as c # Need to expose the ApiV3 import from stravalib.client (don't ask...)
 from monolith.database import db, User, Run
 
 BACKEND = BROKER = 'redis://localhost:6379'
@@ -8,28 +8,27 @@ celery = Celery(__name__, backend=BACKEND, broker=BROKER)
 _APP = None
 
 
-@celery.task
-def fetch_all_runs():
+def create_context():
     global _APP
     # lazy init
+    print(_APP) #for testing shows what kind of app we use
     if _APP is None:
         from monolith.app import create_app
         app = create_app()
         db.init_app(app)
+        _APP = app
     else:
         app = _APP
+    return app
 
-    runs_fetched = {}
 
+@celery.task
+def fetch_runs_for_user(id_):
+    app = create_context()
     with app.app_context():
-        q = db.session.query(User)
-        for user in q:
-            if user.strava_token is None:
-                continue
-            print('Fetching Strava for %s' % user.email)
-            runs_fetched[user.id] = fetch_runs(user)
-
-    return runs_fetched
+        q = db.session.query(User).filter(User.id == id_)
+        user = q.first()
+        return fetch_runs(user)
 
 
 def activity2run(user, activity):
@@ -49,15 +48,16 @@ def activity2run(user, activity):
 
 
 def fetch_runs(user):
-    client = Client(access_token=user.strava_token)
+    client = c.Client(access_token=user.strava_token)
+    print(client.protocol)
     runs = 0
 
-    for activity in client.get_activities(limit=10):
+    for activity in client.get_activities():
+        print(activity)
         if activity.type != 'Run':
             continue
         q = db.session.query(Run).filter(Run.strava_id == activity.id)
         run = q.first()
-
         if run is None:
             db.session.add(activity2run(user, activity))
             runs += 1
