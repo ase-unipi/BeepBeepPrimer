@@ -54,15 +54,19 @@ def index():
             objective_distance = objective.get_distance()
         
         #handling challenges
+        #colored lists for runs to be challenged
         yellow = []
         red = []
         green = []
         orange = []
+        #fetch the run selected for the challenge
         challenged_run = db.session.query(Challenge).filter(current_user.id == Challenge.runner_id).first()
         if challenged_run:
+            #the challenged run is print in yellow
             yellow.append(challenged_run.run_id)
+            #fetching runs stored only after the selection of the challenged run
             after_challenge_run = db.session.query(Run).filter(current_user.id == Run.runner_id, Run.id > challenged_run.latest_run_id).all()
-            print (challenged_run.latest_run_id)
+            #fills appropriate lists depending on run performances
             for run in after_challenge_run:                
                 if run.average_speed > challenged_run.run.average_speed and run.distance > challenged_run.run.distance:
                     green.append(run.id)

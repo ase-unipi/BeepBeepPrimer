@@ -4,7 +4,6 @@ from sqlalchemy import func
 from monolith.auth import admin_required
 from monolith.forms import UserForm, ChallengeForm
 from flask_login import current_user, logout_user
-from datetime import datetime
 
 challenge = Blueprint('challenge', __name__)
 
@@ -12,7 +11,6 @@ challenge = Blueprint('challenge', __name__)
 def post_challenge():
 
     form = ChallengeForm()
-  
     runIds = form.data['runs']
     if runIds is None or len(runIds) != 1:
         return redirect('/?challengeError=Please select exactly one run to challenge')
@@ -51,24 +49,3 @@ def post_challenge():
         return redirect("/login")
     
     return redirect("/")
-
-def create_run(id):
-    
-    dataRun = datetime.now()
-    run = Run()
-    
-    run.average_heartrate = 140
-    run.average_speed = 7
-    run.distance = 3000
-    run.elapsed_time = 2300
-    run.name = 'run ' + str(id)
-    run.runner = current_user
-    run.runner_id = current_user.id
-    run.start_date = dataRun
-    run.strava_id = 1
-    run.total_elevation_gain = 80.5
-    
-    db.session.add(run)
-    db.session.commit()
-    
-

@@ -19,8 +19,9 @@
         <form action="/comparisons" method="post">
           {% for run in runs %}
           <div>
-            <div class="runs">           
+            <div class="runs">
             <input type="checkbox" name="runs" value="{{run.id}}">
+              <!--coloring the fetched runs checking their id in the lists-->
               <a href="/runs/{{run.id}}" {% if run.id in challenged_run %} style="color:yellow"
                                        {% elif run.id in challenge_green %} style="color:green"
                                        {% elif run.id in challenge_red %} style="color:red"                                       
@@ -35,6 +36,7 @@
             {{comparisonError}}
           </p>
           {% endif %}
+          <!--to display in case of an error while challenging-->
           {% if challengeError %}
           <p style="color: red">
             {{challengeError}}
