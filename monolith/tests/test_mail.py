@@ -8,6 +8,9 @@ def test_create_repo(client):
 
     assert create_user(tested_app, email='mcriucc@gmail.com', password='ciao').status_code == 200
 
+    reply = tested_app.get('/settingreport')
+    assert reply.status_code == 401
+
     assert login(tested_app, 'mcriucc@gmail.com', 'ciao').status_code == 200
 
     # now mcriucc@gmail.com is logged in
