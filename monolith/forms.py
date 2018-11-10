@@ -18,8 +18,8 @@ class RemoveUserForm(FlaskForm):
 
 
 class UserForm(FlaskForm):
-    email = f.StringField('Email', validators=[DataRequired(),
-                                               UniqueMailValidator()])
+    email     = f.StringField('Email', validators=[DataRequired(),
+                                                   UniqueMailValidator()])
     firstname = f.StringField('Firstname')
     lastname  = f.StringField('Lastname')
     password  = f.PasswordField('Password', validators=[DataRequired()])
@@ -38,6 +38,14 @@ class UserForm(FlaskForm):
                'max_hr',
                'rest_hr',
                'vo2max']
+
+class ProfileForm(UserForm):
+  def __init__(self, **kwargs):
+        UserForm.__init__(self, **kwargs)
+        self['email'].validators = [DataRequired()]
+        self['password'].validators = []
+        self['password'].flags.required = False
+        
    
 class TrainingObjectiveSetterForm(FlaskForm):
     start_date = f.DateField('Start date',
