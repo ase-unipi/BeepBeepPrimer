@@ -1,101 +1,78 @@
 from unittest import mock
 from monolith.database import User, Run
 from tests.conftest import mocked_result
+from tests.test_core import *
 
 
-# Test that the index shows the correct page when not authenticated
-def test_index(client):  # client is the yield variable in client function from conftest.py
-    rv = client.get('/')  # send a get request for '/'
-    assert b'Hi Anonymous, <a href="/login">Log in</a> <a href="/create_user">Create user</a>' in rv.data
-    # b'' converts the string in binary
+
+#test that no runs are returned if accessing /runs before logging in
+def test_empty_run(client):  # client is the yield variable in client function from conftest.py
+    rv = client.get('/runs')
+
+    #check if a 404 is indeed returned
+    assert b'<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">\n<title>404 Not Found</title>\n<h1>Not Found</h1>\n<p>The requested URL was not found on the server.  If you entered the URL manually please check your spelling and try again.</p>\n' in rv.data;
 
 
-# Test that checks if the create_user page permits to create 2 user with the same email
-def test_create_same_user(client, db_instance):
-    rv = client.post('/create_user', data=dict(submit='Publish', email='email', firstname='a', lastname='a',
-                                               password='p', age='1',
-                                               weight='1', max_hr='1', rest_hr='1', vo2max='1'),
-                     follow_redirects=True)
-    # follow_redirects parameter to follow the enormous number of redirect that we have
-    # data=dict to pass data as a form, different syntax to pass json or others
-    assert rv.data.decode('ascii').count('a a') == 1
-    rv = client.post('/create_user', data=dict(email='email', firstname='a', lastname='a', password='p', age='1',
-                                               weight='1', max_hr='1', rest_hr='1', vo2max='1'),
-                     follow_redirects=True)
-    r = db_instance.session.query(User)
-
-    assert r.count() == 1
 
 
-# test the login and logout features now the login make a call to celery so we need celery_session_worker
-# tested with only celery_worker but got stuck after the execution of this function
-def test_login_logout(client, background_app, celery_session_worker):
-    rv = client.post('/create_user',
-                     data=dict(submit='Publish', email='email', firstname='a', lastname='a', password='p', age='1',
-                               weight='1', max_hr='1', rest_hr='1', vo2max='1', ), follow_redirects=True)
-    assert rv.data.decode('ascii').count('a a') == 1
+#testing if every single field of the 'run' page is created and populated correctly, with the values contained in the DB
+def test_single_functionalities_set(client, app, db_instance, celery_session_worker):
+    test_create_runs(client=client, background_app=app, db_instance=db_instance,
+                     celery_session_worker=celery_session_worker)
 
-    rv = client.post('/login', data=dict(email='email',password='b'),follow_redirects=True)
+    #daniele: login and created runs, now let's see if we actualy manage to see our nice runs
+    rv = client.get('/runs/3')
 
-    assert b'password' in rv.data
+    #Check that header is correctly generated
+    assert b'<html>\n  <head>\n    <link rel="stylesheet" href="/static/style.css">\n  </head>\n\n  <body>\n' in rv.data
 
-    rv = client.post('/login', data=dict(email='email', password='p'), follow_redirects=True)
+    #run header properly generated
+    assert b'<h1>Run</h1>' in rv.data
 
-    assert b'Hi email!' in rv.data
-    assert b'Authorize Strava Access' in rv.data
+    #run name properly set
+    assert b'<h3>Name: Happy Friday</h3>' in rv.data
 
-    rv = client.get('/logout', follow_redirects=True)
+    #distance properly set
+    assert b'<td class="text-center">24931.4</td>' in rv.data
 
-    assert b'Hi Anonymous,' in rv.data
+    #average speed properly set
+    assert b'<td class="text-center">5.54</td>' in rv.data
 
+    #duration properly set
+    assert b'<td class="text-center">4500.0</td>' in rv.data
 
-def test_login_delete(client, db_instance, background_app,celery_session_worker):
-    rv = client.post('/create_user',
-                     data=dict(submit='Publish', email='email', firstname='a', lastname='a', password='p', age='1',
-                               weight='1', max_hr='1', rest_hr='1', vo2max='1', ), follow_redirects=True)
-    assert rv.data.decode('ascii').count('a a') == 1
-
-    rv = client.post('/login', data=dict(email='email', password='p'), follow_redirects=True)
-
-    assert b'Hi email!' in rv.data
-    assert b'Authorize Strava Access' in rv.data
-
-    rv = client.get('/remove_user')
-    assert b'Click on Remove to remove your account' in rv.data
-    assert db_instance.session.query(User).count() == 1
-    rv = client.post('/remove_user', data=dict(submit='Publish'), follow_redirects=True)
-    assert b'Click on Remove to remove your account' in rv.data
-    assert db_instance.session.query(User).count() == 1
-    rv = client.post('/remove_user', data=dict(submit='Publish', password='b'), follow_redirects=True)
-    assert b'Click on Remove to remove your account' in rv.data
-    assert db_instance.session.query(User).count() == 1
-    rv = client.post('/remove_user', data=dict(submit='Publish', password='p'), follow_redirects=True)
-    assert b'Hi Anonymous, <a href="/login">Log in</a> <a href="/create_user">Create user</a>' in rv.data
+    #elevation gain properly set
+    assert b'<td class="text-center">0.0</td>' in rv.data
 
 
-def test_login_delete_strava(client, db_instance, background_app, celery_session_worker):
-    rv = client.post('/create_user',
-                     data=dict(submit='Publish', email='email', firstname='a', lastname='a', password='p',
-                               age='1',
-                               weight='1', max_hr='1', rest_hr='1', vo2max='1', ), follow_redirects=True)
-    assert rv.data.decode('ascii').count('a a') == 1
-
-    rv = client.post('/login', data=dict(email='email', password='p'), follow_redirects=True)
-    assert b'Hi email!' in rv.data
-    assert b'Authorize Strava Access' in rv.data
-    with mock.patch('monolith.views.auth.Client') as mocked:
-        mocked.return_value.exchange_code_for_token.return_value = "blablabla"
-
-        fun = mocked_result([])
-        with mock.patch('monolith.background.c.ApiV3', side_effect=fun):
-            client.get('/strava_auth')
-        with mock.patch('monolith.views.auth.Client') as mocked:
-            client.post('/remove_user',data=dict(submit='Publish',password='p'),follow_redirects=True)
-            assert mocked.return_value.deauthorize.called
+    #and finally, check the whole page generation
+    assert b'<html>\n  <head>\n    <link rel="stylesheet" href="/static/style.css">\n  </head>\n\n  <body>\n    \n    <h1>Run</h1>\n    <h3>Name: Happy Friday</h3>\n    <h3>Date: Wednesday 02/05/18 at 12:15</h3>\n    <table>\n      <thead>\n        <tr>\n           <th>Distance (m)</th>  <th>AVG Speed (m/s)</th>  <th>Elapsed Time (s)</th>  <th>Elevation (m)</th> \n          <th>Actions</th>\n        </tr>\n      </thead>\n      <tbody>\n        <tr>\n           <td class="text-center">24931.4</td>  <td class="text-center">5.54</td>  <td class="text-center">4500.0</td>  <td class="text-center">0.0</td> \n            <form action="/create_challenge" method="post">\n            <td>\n               <input type="hidden" name="id_run" value=3 />\n                <a href="#" onclick="document.forms[0].submit()"> \n                <img class="icon" src="/static/challenge.png"/> </a> </td> </form> \n        </tr>\n      </tbody>\n    </table>\n    \n  </body>\n</html>' in rv.data
 
 
-# this is the interesting one test the /fetch with fake token and fake response
-def test_create_runs(client, background_app, db_instance, celery_session_worker):
+#now check if the whole page is generated properly with the data of the runs contained in the DB
+def test_full_page_generation(client, app, db_instance, celery_session_worker):
+    test_create_runs(client=client, background_app=app, db_instance=db_instance,
+                     celery_session_worker=celery_session_worker)
+
+    # daniele: login is fine, now let's see if we actualy manage to see our nice runs
+    rv = client.get('/runs/3')
+
+    #the whole page generation for run with ID = 3
+    assert b'<html>\n  <head>\n    <link rel="stylesheet" href="/static/style.css">\n  </head>\n\n  <body>\n    \n    <h1>Run</h1>\n    <h3>Name: Happy Friday</h3>\n    <h3>Date: Wednesday 02/05/18 at 12:15</h3>\n    <table>\n      <thead>\n        <tr>\n           <th>Distance (m)</th>  <th>AVG Speed (m/s)</th>  <th>Elapsed Time (s)</th>  <th>Elevation (m)</th> \n          <th>Actions</th>\n        </tr>\n      </thead>\n      <tbody>\n        <tr>\n           <td class="text-center">24931.4</td>  <td class="text-center">5.54</td>  <td class="text-center">4500.0</td>  <td class="text-center">0.0</td> \n            <form action="/create_challenge" method="post">\n            <td>\n               <input type="hidden" name="id_run" value=3 />\n                <a href="#" onclick="document.forms[0].submit()"> \n                <img class="icon" src="/static/challenge.png"/> </a> </td> </form> \n        </tr>\n      </tbody>\n    </table>\n    \n  </body>\n</html>' in rv.data
+
+    #the whole page generation for run with ID = 4
+    rv2 = client.get('runs/4')
+
+    assert b'<html>\n  <head>\n    <link rel="stylesheet" href="/static/style.css">\n  </head>\n\n  <body>\n    \n    <h1>Run</h1>\n    <h3>Name: Bondcliff</h3>\n    <h3>Date: Monday 30/04/18 at 12:35</h3>\n    <table>\n      <thead>\n        <tr>\n           <th>Distance (m)</th>  <th>AVG Speed (m/s)</th>  <th>Elapsed Time (s)</th>  <th>Elevation (m)</th> \n          <th>Actions</th>\n        </tr>\n      </thead>\n      <tbody>\n        <tr>\n           <td class="text-center">23676.5</td>  <td class="text-center">4.385</td>  <td class="text-center">5400.0</td>  <td class="text-center">0.0</td> \n            <form action="/create_challenge" method="post">\n            <td>\n               <input type="hidden" name="id_run" value=4 />\n                <a href="#" onclick="document.forms[0].submit()"> \n                <img class="icon" src="/static/challenge.png"/> </a> </td> </form> \n        </tr>\n      </tbody>\n    </table>\n    \n  </body>\n</html>' in rv2.data
+
+
+#try to access an invalid run ( that doens't exist yet)
+def test_invalid_run_accesses(client, app, db_instance, celery_session_worker):
+    rv = client.get('/runs/100')
+    assert b'!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">\n<title>Redirecting...</title>\n<h1>Redirecting...</h1>\n<p>You should be redirected automatically to target URL: <a href="/">/</a>.  If not click the link.' in rv.data
+
+
+def test_page_generation_after_logout(client, app, db_instance, celery_session_worker):
     """
 
     we use client app and db_instance celery_worker creates a celery worker instance for this test so we don't need to
@@ -131,7 +108,6 @@ def test_create_runs(client, background_app, db_instance, celery_session_worker)
         rv = client.post('/login', data=dict(email='email', password='p'), follow_redirects=True)
         assert b'Hi email!' in rv.data
         assert b'Authorize Strava Access' in rv.data
-
 
         """
             Alright calling mocked_result from conftest.py
@@ -261,14 +237,14 @@ def test_create_runs(client, background_app, db_instance, celery_session_worker)
         """
             I've read the fucking source code of stravalib to see that client has this import ApiV3
             and that when we call get_activities will be called ApiV3 get method...
-            
+
             So now we are mocking ApiV3 with fun which is the result from mocked_result
             fun is a function which when called returns an object with a get method...
             so when i call client.get('/fetch')
             a call to fetch_all_runs will be made which creates an object of type
             stravalib.Client which creates inside of him an object ApiV3 which is a moked
             object with just the get method.
-            
+
             I've lost my mind yesterday to figure it out,
             ApiV3.get is masked from visibility rules so we need to mask it directly furthermore
             get_activities returns an iterator over an object of the stravalib library
@@ -279,7 +255,8 @@ def test_create_runs(client, background_app, db_instance, celery_session_worker)
             client.get('/strava_auth')
             # calling strava_auth with the mocked instance of stravalib.client which set the token then make a call to
             # fetch_runs_for_user
-            r = db_instance.session.query(User)  # use the db_instance as in a normal not testing file (thx me later)
+            r = db_instance.session.query(
+                User)  # use the db_instance as in a normal not testing file (thx me later)
             u = r.first()
             assert u.strava_token == 'blablabla'  # this assert prove the usage of the mocked client
             rv = client.get('/fetch')
@@ -417,3 +394,15 @@ def test_create_runs(client, background_app, db_instance, celery_session_worker)
             assert r.count() == 2  # but only just 2 run for the user with email == emaill
             # nice so we created 2 user given then a fake token given them 2 fake runs each fetched 'directly'
             # from strava
+
+            #now check that, after logging out from the first user, you can no longer visualize the runs
+            #of the first user (like run 1) --> i.e: you get a 404 error
+
+            rv = client.get('/runs/1')
+
+            assert b'<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">\n<title>404 Not Found</title>\n<h1>Not Found</h1>\n<p>The requested URL was not found on the server.  If you entered the URL manually please check your spelling and try again.</p>\n' in rv.data
+
+
+
+
+

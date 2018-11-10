@@ -22,15 +22,16 @@ def create_challenge():
 	if request.method == 'POST':
 		id_run = request.form['id_run']
 		current_run = db.session.query(Run).filter(Run.id == id_run).first()
-		new_challenge = Challenge()
-		new_challenge.challenged = current_run
-		new_challenge.start_date = datetime.datetime.utcnow()
-		new_challenge.runner = current_user
-		db.session.add(new_challenge)
-		db.session.commit()
-		runs = db.session.query(Run).filter(Run.runner_id == new_challenge.runner_id).\
+		if current_run is not None:
+			new_challenge = Challenge()
+			new_challenge.challenged = current_run
+			new_challenge.start_date = datetime.datetime.utcnow()
+			new_challenge.runner = current_user
+			db.session.add(new_challenge)
+			db.session.commit()
+			runs = db.session.query(Run).filter(Run.runner_id == new_challenge.runner_id).\
 							filter(Run.start_date > new_challenge.start_date)
-		return render_template("create_challenge.html", challenge_id=new_challenge.id, runs=runs, run_challenged=current_run, run_challenger=None)
+			return render_template("create_challenge.html", challenge_id=new_challenge.id, runs=runs, run_challenged=current_run, run_challenger=None)
 	return redirect(url_for('home.index'))
 	
 
@@ -60,10 +61,11 @@ def terminate_challenge():
 		id_challenge = request.form['id_challenge']
 		current_challenge = db.session.query(Challenge).filter(Challenge.id == id_challenge).first()
 		current_run = db.session.query(Run).filter(Run.id == id_challenger).first()
-		current_challenge.challenger = current_run
-		current_challenge.result = determine_result(current_challenge, current_run)
-		db.session.commit()
-		return redirect(url_for('user_challenge.complete_challenge', id_challenge=id_challenge))
+		if current_run is not None and current_challenge is not None:
+			current_challenge.challenger = current_run
+			current_challenge.result = determine_result(current_challenge, current_run)
+			db.session.commit()
+			return redirect(url_for('user_challenge.complete_challenge', id_challenge=id_challenge))
 	return redirect('/create_challenge')
 
 def determine_result(current_challenge, current_run):

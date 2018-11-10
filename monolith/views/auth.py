@@ -20,7 +20,6 @@ def _strava_auth():
                       client_secret=auth.app.config['STRAVA_CLIENT_SECRET'],
                       code=code)
     current_user.strava_token = access_token
-    db.session.add(current_user)
     db.session.commit()
     res = fetch_runs_for_user.delay(current_user.id)
     res.wait()
