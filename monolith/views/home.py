@@ -57,7 +57,7 @@ def index():
         yellow = []
         red = []
         green = []
-        grey = []
+        orange = []
         challenged_run = db.session.query(Run).filter(current_user.id == Run.runner_id, Run.is_challenged == True).first()
         if challenged_run:
             yellow.append(challenged_run.id)
@@ -68,7 +68,7 @@ def index():
                 elif run.average_speed <= challenged_run.average_speed and run.distance <= challenged_run.distance:
                     red.append(run.id)
                 else: 
-                    grey.append(run.id)
+                    orange.append(run.id)
     
     else:
         return redirect("/login")
@@ -94,7 +94,7 @@ def index():
         tot_distance = m2km(tot_distance),
         progress = m2km(progress),
         percentage = percentage,
-        challenge_grey = grey,
+        challenge_orange = orange,
         challenge_red = red,
         challenge_green = green,
         challenged_run = yellow

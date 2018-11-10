@@ -11,24 +11,8 @@ challenge = Blueprint('challenge', __name__)
 def post_challenge():
 
     form = ChallengeForm()
-    '''
-    dataRun = datetime.now()
-    run = Run()
+    #create_run()
     
-    run.average_heartrate = 140
-    run.average_speed = 7
-    run.distance = 3000
-    run.elapsed_time = 2300
-    run.name = 'run GREY'
-    run.runner = current_user
-    run.runner_id = current_user.id
-    run.start_date = dataRun
-    run.strava_id = 1
-    run.total_elevation_gain = 80.5
-    
-    db.session.add(run)
-    db.session.commit()
-    '''
     runIds = form.data['runs']
     if runIds is None or len(runIds) != 1:
         return redirect('/?challengeError=Please select exactly one run to challenge')
@@ -51,3 +35,24 @@ def post_challenge():
         return redirect("/login")
     
     return redirect("/")
+
+def create_run():
+    
+    dataRun = datetime.now()
+    run = Run()
+    
+    run.average_heartrate = 140
+    run.average_speed = 7
+    run.distance = 3000
+    run.elapsed_time = 2300
+    run.name = 'run GREY'
+    run.runner = current_user
+    run.runner_id = current_user.id
+    run.start_date = dataRun
+    run.strava_id = 1
+    run.total_elevation_gain = 80.5
+    
+    db.session.add(run)
+    db.session.commit()
+    
+
