@@ -105,7 +105,7 @@ ul.navbottom {
 }
 
 .formTitle {
-  margin: 0 0 5px 0;
+  margin: 0;
   text-align: center;
   color: var(--pumpkin-dark);
 }
@@ -121,11 +121,11 @@ input[type="email"]
   height: auto;
   margin: 0;
   outline: 0;
-  padding: 5px;
+  padding: 4px;
   width: 100%;
-  background-color: #e8eeef;
+  background-color: #E8EEEF;
   box-shadow: 0 1px 0 rgba(0, 0, 0, 0.03) inset;
-  margin-bottom: 10px;
+  margin-bottom: 6px;
   color: var(--pumpkin-dark);
 }
 
@@ -138,16 +138,26 @@ input[type="password"]::-webkit-input-placeholder {
     background-color: rgba(255, 255, 255, 0.1) !important;
 }*/
 
-button {
+.button {
   padding: 5px 0px 5px 0px;
-  color: #FFF;
+  color: #FFFFFF;
   background-color: var(--jeans-dark);
+  border: 1px solid var(--jeans-dark);
+  border-radius: 5px;
   font-size: 18px;
   text-align: center;
-  border-radius: 5px;
   width: 100%;
-  border: 1px solid var(--jeans-dark);
   margin-bottom: 10px;
+}
+
+.buttonJeans {
+  background-color: var(--jeans-dark);
+  border: 1px solid var(--jeans-dark);
+}
+
+.buttonPumpkinDark {
+  background-color: var(--pumpkin-dark);
+  border: 1px solid var(--pumpkin-dark);
 }
 
 fieldset {
