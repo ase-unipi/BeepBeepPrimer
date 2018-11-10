@@ -1,5 +1,10 @@
-BeepBeep Skeleton
+BeepBeep |travis| |coveralls|
 ==================
+
+.. |travis| image:: https://travis-ci.org/MFranceschi6/BeepBeepPrimer.svg?branch=master 
+    :target: https://travis-ci.org/MFranceschi6/BeepBeepPrimer 
+.. |coveralls| image:: https://coveralls.io/repos/github/MFranceschi6/BeepBeepPrimer/badge.svg?branch=master
+     :target: https://coveralls.io/github/MFranceschi6/BeepBeepPrimer?branch=master
 
 How to run the app
 -------------------
