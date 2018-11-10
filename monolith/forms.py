@@ -5,23 +5,26 @@ from wtforms.validators import DataRequired, NumberRange, Email
 from monolith.form_custom_models import UniqueMailValidator
 from wtforms.fields.html5 import EmailField
 
+
 class LoginForm(FlaskForm):
-    email = f.StringField('Email', validators=[DataRequired()])
+    email    = EmailField('Email', validators=[DataRequired(),
+                                               Email()])
     password = f.PasswordField('Password', validators=[DataRequired()])
-    display = ['email', 'password']
+    
+    display  = ['email',
+                'password']
 
 
 class RemoveUserForm(FlaskForm):
-    # email = f.StringField('email', validators=[DataRequired()])
-    password = f.PasswordField('password', validators=[DataRequired()])
-    # display = ['email', 'password']
-    display = ['password']
+    password = f.PasswordField('Password', validators=[DataRequired()])
+    
+    display  = ['password']
 
 
 class UserForm(FlaskForm):
-    email = EmailField('Email', validators=[DataRequired(),
-                                            Email(),
-                                            UniqueMailValidator()])
+    email     = EmailField('Email', validators=[DataRequired(),
+                                                Email(),
+                                                UniqueMailValidator()])
     firstname = f.StringField('Firstname',       validators=[DataRequired()])
     lastname  = f.StringField('Lastname',        validators=[DataRequired()])
     password  = f.PasswordField('Password',      validators=[DataRequired()])
@@ -40,6 +43,7 @@ class UserForm(FlaskForm):
                'max_hr',
                'rest_hr',
                'vo2max']
+
 
 class ProfileForm(UserForm):
   def __init__(self, **kwargs):
@@ -65,7 +69,10 @@ class TrainingObjectiveSetterForm(FlaskForm):
                                      widget=fc.FloatInput(step='any', min_='0'),
                                      filters=[lambda value: float('%.3f' % float(value)) if value is not None else value])
 
-    display = ['start_date', 'end_date', 'kilometers_to_run']
+    display = ['start_date',
+               'end_date',
+               'kilometers_to_run']
+
 
 class TrainingObjectiveVisualizerForm(FlaskForm):
     start_date = f.DateField('Start date')
@@ -75,4 +82,9 @@ class TrainingObjectiveVisualizerForm(FlaskForm):
     status = f.StringField('Status')
     description = f.StringField('Description')
 
-    display = ['start_date', 'end_date', 'kilometers_to_run', 'traveled_kilometers', 'status', 'description']
+    display = ['start_date',
+               'end_date',
+               'kilometers_to_run',
+               'traveled_kilometers', 
+               'status',
+               'description']
