@@ -8,22 +8,20 @@ import datetime
 
 @pytest.fixture
 def make_and_login_user(client, db_instance):
-    response = client.post('/create_user', follow_redirects=True,
-        data=dict(
-            submit='Publish',
-            email='1',
-            firstname='1',
-            lastname='1',
-            password='1',
-            age='1',
-            weight='1',
-            max_hr='1',
-            rest_hr='1',
-            vo2max='1'
-        ))
+    response = client.post('/create_user', follow_redirects=True, data=dict(
+        submit='Publish',
+        email='1',
+        firstname='1',
+        lastname='1',
+        password='1',
+        age='1',
+        weight='1',
+        max_hr='1',
+        rest_hr='1',
+        vo2max='1'))
 
     assert response.status_code == 200
-    
+
     response = client.post('/login', follow_redirects=True, data=dict(email='1', password='1'))
 
     assert response.status_code == 200
