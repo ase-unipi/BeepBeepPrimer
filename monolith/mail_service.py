@@ -5,7 +5,7 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.mime.image import MIMEImage
 from email.utils import make_msgid
-from monolith.database import db, User, Run, REPORT_PERIODICITY
+from monolith.database import db, User, Run, ReportPeriodicity
 from sqlalchemy import func, or_
 
 class MailService:
@@ -27,21 +27,21 @@ class MailService:
         self.__server.login(gmail_user, gmail_pass)
 
         
-        self.__base_folder = 'monolith/static'
+        self.__base_folder = 'monolith/static/mail'
         
         # Templates
-        self.__content       = 'mail/content_template.html'
-        self.__report_no_run = 'mail/report_no_run_template.html'
-        self.__report_run    = 'mail/report_run_template.html'
+        self.__content       = 'content_template.html'
+        self.__report_no_run = 'report_no_run_template.html'
+        self.__report_run    = 'report_run_template.html'
         templates_filenames  = [self.__content,
                                 self.__report_no_run,
                                 self.__report_run]
         self.__templates     = dict.fromkeys(templates_filenames)
         
         # Images
-        self.__logo       = 'logo.png'
-        self.__params     = 'params.png'
-        self.__github     = 'github.png'
+        self.__logo       = '_logo.png'
+        self.__params     = '_params.png'
+        self.__github     = '_github.png'
         images_filenames  = [self.__logo,
                              self.__params,
                              self.__github]
@@ -82,20 +82,21 @@ class MailService:
 
     # TODO: refactoring
     def __getDeltaFromPeriodicity(self, periodicity):
-        if periodicity == REPORT_PERIODICITY[1][0]:
-            return datetime.timedelta(days = 1)
 
-        if periodicity == REPORT_PERIODICITY[2][0]:
-            return datetime.timedelta(days = 7)
+        delta = datetime.timedelta(seconds = 0)
 
-        if periodicity == REPORT_PERIODICITY[3][0]:
-            return datetime.timedelta(months = 1)
+        if periodicity   == ReportPeriodicity.daily:
+            delta = datetime.timedelta(days = 1)
+        elif periodicity == ReportPeriodicity.weekly:
+            delta = datetime.timedelta(days = 7)
+        elif periodicity == ReportPeriodicity.monthly:
+            delta = datetime.timedelta(months = 1)
         
-        return datetime.timedelta(seconds = 0)
+        return delta
 
 
     def __getUserReportResult(self, user):
-        report_periodicity = user.report_periodicity.code
+        report_periodicity = user.report_periodicity
 
         delta     = self.__getDeltaFromPeriodicity(report_periodicity)
         endDate   = self.__today
@@ -131,7 +132,7 @@ class MailService:
         content = template.format(
                             website     = self.__website,
                             group       = self.__group,
-                            periodicity = user.report_periodicity.value,
+                            periodicity = user.report_periodicity.name,
                             result      = result_content,
                             cid_logo    = self.__images_CID[self.__logo],
                             cid_params  = self.__images_CID[self.__params],
@@ -173,13 +174,13 @@ class MailService:
 
         self.__updateToday()
         # Daily
-        filters = [User.report_periodicity == REPORT_PERIODICITY[1][0]]
+        filters = [User.report_periodicity == ReportPeriodicity.daily.name]
         # Weekly
         if self.__today.isoweekday() == 1: # First day of the week
-            filters.append(User.report_periodicity == REPORT_PERIODICITY[2][0])
+            filters.append(User.report_periodicity == ReportPeriodicity.weekly.name)
         # Monthly
         if self.__today.day == 1:          # First day of the month
-            filters.append(User.report_periodicity == REPORT_PERIODICITY[3][0])
+            filters.append(User.report_periodicity == ReportPeriodicity.montly.name)
 
         users = db.session.query(User).filter( or_(*filters) )
 

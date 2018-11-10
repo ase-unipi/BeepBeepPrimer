@@ -1,6 +1,7 @@
 # encoding: utf8
 from werkzeug.security import generate_password_hash, check_password_hash
 import enum
+from sqlalchemy import Enum
 from sqlalchemy.orm import relationship
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy_utils.types.choice import ChoiceType
@@ -8,11 +9,11 @@ from sqlalchemy_utils.types.choice import ChoiceType
 
 db = SQLAlchemy()
 
-REPORT_PERIODICITY = [(u'none',   u'None'  ),
-                      (u'daily',  u'Daily' ),
-                      (u'weekly', u'Weekly'),
-                      (u'montly', u'Montly')
-                      ]
+class ReportPeriodicity(enum.Enum):
+    no     = 'No'
+    daily  = 'Daily'
+    weekly = 'Weekly'
+    montly = 'Montly'
 
 class User(db.Model):
     __tablename__ = 'user'
@@ -29,7 +30,7 @@ class User(db.Model):
     vo2max = db.Column(db.Numeric(4, 2))
     is_active = db.Column(db.Boolean, default=True)
     is_admin = db.Column(db.Boolean, default=False)
-    report_periodicity = db.Column(ChoiceType(REPORT_PERIODICITY), default=REPORT_PERIODICITY[0][0])
+    report_periodicity = db.Column(Enum(ReportPeriodicity), default=ReportPeriodicity.no)
 
     run = relationship('Run', cascade='delete')
     objective = relationship('Training_Objective', cascade='delete')
