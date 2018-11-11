@@ -10,4 +10,17 @@ from .statistics import statistics
 from .periodic_report import periodic_report
 
 
-blueprints = [home, _auth, users, strava, runs, training_objectives, test, user_challenge, statistics, periodic_report]
+from .profile import profile
+
+blueprints = [home,
+              _auth,
+              users,
+              strava,
+              runs,
+              training_objectives,
+              test,
+              user_challenge,
+              statistics,
+              profile,
+              periodic_report
+              ]

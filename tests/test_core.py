@@ -1,6 +1,7 @@
 from unittest import mock
 from monolith.database import User, Run
 from tests.conftest import mocked_result
+from datetime import date
 
 
 # Test that the index shows the correct page when not authenticated
@@ -10,38 +11,246 @@ def test_index(client):  # client is the yield variable in client function from 
     # b'' converts the string in binary
 
 
+def test_list_of_runs(client, db_instance, background_app, celery_session_worker):
+    rv = client.post('/create_user', data=dict(submit='Publish', email='email@email.com', firstname='a', lastname='a',
+                                               password='p', age='1',
+                                               weight='1', max_hr='1', rest_hr='1', vo2max='1'),
+                     follow_redirects=True)
+    assert rv.data.decode('ascii').count('a a') == 1
+    client.post('/login', data=dict(email='email@email.com', password='p'), follow_redirects=True)
+    with mock.patch('monolith.views.auth.Client') as mocked:
+        mocked.return_value.exchange_code_for_token.return_value = "blablabla"
+        fun = mocked_result([])
+        with mock.patch('monolith.background.c.ApiV3', side_effect=fun):
+            client.get('/strava_auth')
+    r = Run(name='run', strava_id=1, distance=2000, start_date=date.today(), elapsed_time=1000 * 50,
+            average_speed=20.121, average_heartrate=0, runner_id=1)
+    db_instance.session.add(r)
+    db_instance.session.commit()
+    r = Run(name='run', strava_id=2, distance=2000, start_date=date.today(), elapsed_time=1000 * 50,
+            average_speed=3.211, average_heartrate=0, runner_id=1)
+    db_instance.session.add(r)
+    db_instance.session.commit()
+    r = Run(name='run', strava_id=3, distance=3000, start_date=date.today(), elapsed_time=1000 * 50,
+            average_speed=17.19, average_heartrate=0, runner_id=1)
+    db_instance.session.add(r)
+    db_instance.session.commit()
+    rv = client.get('/')
+    print(repr(rv.data.decode('ascii')))
+    assert b' <tr>\n              <td> run </td>\n              <td class="text-center"> <a href="/runs/1"">' \
+           b' <img class="icon" src="/static/view.png"/> </a> </td>\n              ' \
+           b'<form action="/create_challenge" method="post">\n              <td> \n                ' \
+           b'<input type="hidden" name="id_run" value=1 />\n                ' \
+           b'<a href="#" onclick="document.forms[1-1].submit()"> \n                ' \
+           b'<img class="icon" src="/static/challenge.png"/> </a> </td>' in rv.data
+    assert b' <tr>\n              <td> run </td>\n              <td class="text-center"> <a href="/runs/2"">' \
+           b' <img class="icon" src="/static/view.png"/> </a> </td>\n              ' \
+           b'<form action="/create_challenge" method="post">\n              <td> \n                ' \
+           b'<input type="hidden" name="id_run" value=2 />\n                ' \
+           b'<a href="#" onclick="document.forms[2-1].submit()"> \n                ' \
+           b'<img class="icon" src="/static/challenge.png"/> </a> </td>' in rv.data
+    assert b' <tr>\n              <td> run </td>\n              <td class="text-center"> <a href="/runs/3"">' \
+           b' <img class="icon" src="/static/view.png"/> </a> </td>\n              ' \
+           b'<form action="/create_challenge" method="post">\n              <td> \n                ' \
+           b'<input type="hidden" name="id_run" value=3 />\n                ' \
+           b'<a href="#" onclick="document.forms[3-1].submit()"> \n                ' \
+           b'<img class="icon" src="/static/challenge.png"/> </a> </td>' in rv.data
+
+
+def test_list_of_run_more_users(client, db_instance, background_app, celery_session_worker):
+    rv = client.post('/create_user', data=dict(submit='Publish', email='email@email.com', firstname='a', lastname='a',
+                                               password='p', age='1',
+                                               weight='1', max_hr='1', rest_hr='1', vo2max='1'),
+                     follow_redirects=True)
+    assert rv.data.decode('ascii').count('a a') == 1
+    client.post('/create_user', data=dict(submit='Publish', email='emaill@email.com', firstname='a', lastname='a',
+                                          password='p', age='1',
+                                          weight='1', max_hr='1', rest_hr='1', vo2max='1'),
+                follow_redirects=True)
+    client.post('/login', data=dict(email='emaill@email.com', password='p'), follow_redirects=True)
+    with mock.patch('monolith.views.auth.Client') as mocked:
+        mocked.return_value.exchange_code_for_token.return_value = "blablabla"
+        fun = mocked_result([])
+        with mock.patch('monolith.background.c.ApiV3', side_effect=fun):
+            client.get('/strava_auth')
+    r = Run(name='run', strava_id=1, distance=2000, start_date=date.today(), elapsed_time=1000 * 50,
+            average_speed=20.121, average_heartrate=0, runner_id=1)
+    db_instance.session.add(r)
+    db_instance.session.commit()
+    r = Run(name='run', strava_id=2, distance=2000, start_date=date.today(), elapsed_time=1000 * 50,
+            average_speed=3.211, average_heartrate=0, runner_id=2)
+    db_instance.session.add(r)
+    db_instance.session.commit()
+    r = Run(name='run', strava_id=3, distance=3000, start_date=date.today(), elapsed_time=1000 * 50,
+            average_speed=17.19, average_heartrate=0, runner_id=2)
+    db_instance.session.add(r)
+    db_instance.session.commit()
+    rv = client.get('/')
+    print(repr(rv.data.decode('ascii')))
+    assert b' <tr>\n              <td> run </td>\n              <td class="text-center"> <a href="/runs/2"">' \
+           b' <img class="icon" src="/static/view.png"/> </a> </td>\n              ' \
+           b'<form action="/create_challenge" method="post">\n              <td> \n                ' \
+           b'<input type="hidden" name="id_run" value=2 />\n                ' \
+           b'<a href="#" onclick="document.forms[1-1].submit()"> \n                ' \
+           b'<img class="icon" src="/static/challenge.png"/> </a> </td>' in rv.data
+    assert b' <tr>\n              <td> run </td>\n              <td class="text-center"> <a href="/runs/3"">' \
+           b' <img class="icon" src="/static/view.png"/> </a> </td>\n              ' \
+           b'<form action="/create_challenge" method="post">\n              <td> \n                ' \
+           b'<input type="hidden" name="id_run" value=3 />\n                ' \
+           b'<a href="#" onclick="document.forms[2-1].submit()"> \n                ' \
+           b'<img class="icon" src="/static/challenge.png"/> </a> </td>' in rv.data
+
+
+def test_average_speed_single_run(client, db_instance, background_app, celery_session_worker):
+    rv = client.post('/create_user', data=dict(submit='Publish', email='email@email.com', firstname='a', lastname='a',
+                                               password='p', age='1',
+                                               weight='1', max_hr='1', rest_hr='1', vo2max='1'),
+                     follow_redirects=True)
+    assert rv.data.decode('ascii').count('a a') == 1
+    client.post('/login', data=dict(email='email@email.com', password='p'), follow_redirects=True)
+    with mock.patch('monolith.views.auth.Client') as mocked:
+        mocked.return_value.exchange_code_for_token.return_value = "blablabla"
+        fun = mocked_result([])
+        with mock.patch('monolith.background.c.ApiV3', side_effect=fun):
+            client.get('/strava_auth')
+    r = Run(name='run', strava_id=1, distance=2000, start_date=date.today(), elapsed_time=1000 * 50,
+            average_speed=20.12, average_heartrate=0, runner_id=1)
+    db_instance.session.add(r)
+    db_instance.session.commit()
+    rv = client.get("/")
+    assert b'20.12 m/s' in rv.data
+
+
+def test_average_speed_multiple_users(client, db_instance, background_app, celery_session_worker):
+    pass
+
+
+def test_average_speed_two_runs(client, db_instance, background_app, celery_session_worker):
+    rv = client.post('/create_user', data=dict(submit='Publish', email='email@email.com', firstname='a', lastname='a',
+                                               password='p', age='1',
+                                               weight='1', max_hr='1', rest_hr='1', vo2max='1'),
+                     follow_redirects=True)
+    assert rv.data.decode('ascii').count('a a') == 1
+    client.post('/login', data=dict(email='email@email.com', password='p'), follow_redirects=True)
+    with mock.patch('monolith.views.auth.Client') as mocked:
+        mocked.return_value.exchange_code_for_token.return_value = "blablabla"
+        fun = mocked_result([])
+        with mock.patch('monolith.background.c.ApiV3', side_effect=fun):
+            client.get('/strava_auth')
+    r = Run(name='run', strava_id=1, distance=2000, start_date=date.today(), elapsed_time=1000 * 50,
+            average_speed=20.12, average_heartrate=0, runner_id=1)
+    db_instance.session.add(r)
+    db_instance.session.commit()
+    r = Run(name='run', strava_id=2, distance=3000, start_date=date.today(), elapsed_time=1000 * 50,
+            average_speed=17.19, average_heartrate=0, runner_id=1)
+    db_instance.session.add(r)
+    db_instance.session.commit()
+    rv = client.get("/")
+    print(rv.data.decode('ascii'))
+    assert b'18.66 m/s' in rv.data
+
+
+def test_average_speed_periodic(client, db_instance, background_app, celery_session_worker):
+    rv = client.post('/create_user', data=dict(submit='Publish', email='email@email.com', firstname='a', lastname='a',
+                                               password='p', age='1',
+                                               weight='1', max_hr='1', rest_hr='1', vo2max='1'),
+                     follow_redirects=True)
+    assert rv.data.decode('ascii').count('a a') == 1
+    rv = client.post('/login', data=dict(email='email@email.com', password='p'), follow_redirects=True)
+    with mock.patch('monolith.views.auth.Client') as mocked:
+        mocked.return_value.exchange_code_for_token.return_value = "blablabla"
+        fun = mocked_result([])
+        with mock.patch('monolith.background.c.ApiV3', side_effect=fun):
+            client.get('/strava_auth')
+    r = Run(name='run', strava_id=1, distance=2000, start_date=date.today(), elapsed_time=1000 * 50,
+            average_speed=20.12, average_heartrate=0, runner_id=1)
+    db_instance.session.add(r)
+    db_instance.session.commit()
+    r = Run(name='run', strava_id=2, distance=3000, start_date=date.today(), elapsed_time=1000 * 50,
+            average_speed=17.19, average_heartrate=0, runner_id=1)
+    db_instance.session.add(r)
+    db_instance.session.commit()
+    r = Run(name='run', strava_id=3, distance=3000, start_date=date.today(), elapsed_time=1000 * 50,
+            average_speed=2.13, average_heartrate=0, runner_id=1)
+    db_instance.session.add(r)
+    db_instance.session.commit()
+    rv = client.get("/")
+    print(rv.data.decode('ascii'))
+    assert b'13.15 m/s' in rv.data
+
+
 # Test that checks if the create_user page permits to create 2 user with the same email
 def test_create_same_user(client, db_instance):
-    rv = client.post('/create_user', data=dict(submit='Publish', email='email', firstname='a', lastname='a',
+    rv = client.post('/create_user', data=dict(submit='Publish', email='email@email.com', firstname='a', lastname='a',
                                                password='p', age='1',
                                                weight='1', max_hr='1', rest_hr='1', vo2max='1'),
                      follow_redirects=True)
     # follow_redirects parameter to follow the enormous number of redirect that we have
     # data=dict to pass data as a form, different syntax to pass json or others
     assert rv.data.decode('ascii').count('a a') == 1
-    rv = client.post('/create_user', data=dict(email='email', firstname='a', lastname='a', password='p', age='1',
-                                               weight='1', max_hr='1', rest_hr='1', vo2max='1'),
+    rv = client.post('/create_user',
+                     data=dict(email='email@email.com', firstname='a', lastname='a', password='p', age='1',
+                               weight='1', max_hr='1', rest_hr='1', vo2max='1'),
                      follow_redirects=True)
     r = db_instance.session.query(User)
 
     assert r.count() == 1
 
 
+def test_create_bad_email_user(client, db_instance):
+    rv = client.post('/create_user', data=dict(submit='Publish', email='emailemail.com', firstname='a', lastname='a',
+                                               password='p', age='1',
+                                               weight='1', max_hr='1', rest_hr='1', vo2max='1'),
+                     follow_redirects=True)
+
+    assert b'Invalid email address.' in rv.data
+    r = db_instance.session.query(User)
+    assert r.count() == 0
+
+    rv = client.post('/create_user', data=dict(submit='Publish', email='@email.com', firstname='a', lastname='a',
+                                               password='p', age='1',
+                                               weight='1', max_hr='1', rest_hr='1', vo2max='1'),
+                     follow_redirects=True)
+
+    assert b'Invalid email address.' in rv.data
+    r = db_instance.session.query(User)
+    assert r.count() == 0
+
+    rv = client.post('/create_user', data=dict(submit='Publish', email='email@', firstname='a', lastname='a',
+                                               password='p', age='1',
+                                               weight='1', max_hr='1', rest_hr='1', vo2max='1'),
+                     follow_redirects=True)
+
+    assert b'Invalid email address.' in rv.data
+    r = db_instance.session.query(User)
+    assert r.count() == 0
+
+    rv = client.post('/create_user', data=dict(submit='Publish', email='email@emailcom', firstname='a', lastname='a',
+                                               password='p', age='1',
+                                               weight='1', max_hr='1', rest_hr='1', vo2max='1'),
+                     follow_redirects=True)
+
+    assert b'Invalid email address.' in rv.data
+    r = db_instance.session.query(User)
+    assert r.count() == 0
+
+
 # test the login and logout features now the login make a call to celery so we need celery_session_worker
 # tested with only celery_worker but got stuck after the execution of this function
 def test_login_logout(client, background_app, celery_session_worker):
     rv = client.post('/create_user',
-                     data=dict(submit='Publish', email='email', firstname='a', lastname='a', password='p', age='1',
+                     data=dict(submit='Publish', email='email@email.com', firstname='a', lastname='a', password='p',
+                               age='1',
                                weight='1', max_hr='1', rest_hr='1', vo2max='1', ), follow_redirects=True)
     assert rv.data.decode('ascii').count('a a') == 1
 
-    rv = client.post('/login', data=dict(email='email',password='b'),follow_redirects=True)
+    rv = client.post('/login', data=dict(email='email@email.com', password='b'), follow_redirects=True)
 
     assert b'password' in rv.data
 
-    rv = client.post('/login', data=dict(email='email', password='p'), follow_redirects=True)
+    rv = client.post('/login', data=dict(email='email@email.com', password='p'), follow_redirects=True)
 
-    assert b'Hi email!' in rv.data
+    assert b'Hi email@email.com!' in rv.data
     assert b'Authorize Strava Access' in rv.data
 
     rv = client.get('/logout', follow_redirects=True)
@@ -49,15 +258,16 @@ def test_login_logout(client, background_app, celery_session_worker):
     assert b'Hi Anonymous,' in rv.data
 
 
-def test_login_delete(client, db_instance, background_app,celery_session_worker):
+def test_login_delete(client, db_instance, background_app, celery_session_worker):
     rv = client.post('/create_user',
-                     data=dict(submit='Publish', email='email', firstname='a', lastname='a', password='p', age='1',
+                     data=dict(submit='Publish', email='email@email.com', firstname='a', lastname='a', password='p',
+                               age='1',
                                weight='1', max_hr='1', rest_hr='1', vo2max='1', ), follow_redirects=True)
     assert rv.data.decode('ascii').count('a a') == 1
 
-    rv = client.post('/login', data=dict(email='email', password='p'), follow_redirects=True)
+    rv = client.post('/login', data=dict(email='email@email.com', password='p'), follow_redirects=True)
 
-    assert b'Hi email!' in rv.data
+    assert b'Hi email@email.com!' in rv.data
     assert b'Authorize Strava Access' in rv.data
 
     rv = client.get('/remove_user')
@@ -73,15 +283,40 @@ def test_login_delete(client, db_instance, background_app,celery_session_worker)
     assert b'Hi Anonymous, <a href="/login">Log in</a> <a href="/create_user">Create user</a>' in rv.data
 
 
-def test_login_delete_strava(client, db_instance, background_app, celery_session_worker):
+def test_fetch_with_no_valid_token(client, db_instance, background_app, celery_session_worker):
     rv = client.post('/create_user',
-                     data=dict(submit='Publish', email='email', firstname='a', lastname='a', password='p',
+                     data=dict(submit='Publish', email='email@email.com', firstname='a', lastname='a', password='p',
                                age='1',
                                weight='1', max_hr='1', rest_hr='1', vo2max='1', ), follow_redirects=True)
     assert rv.data.decode('ascii').count('a a') == 1
 
-    rv = client.post('/login', data=dict(email='email', password='p'), follow_redirects=True)
-    assert b'Hi email!' in rv.data
+    rv = client.post('/login', data=dict(email='email@email.com', password='p'), follow_redirects=True)
+    assert b'Hi email@email.com!' in rv.data
+    assert b'Authorize Strava Access' in rv.data
+    with mock.patch('monolith.views.auth.Client') as mocked:
+        mocked.return_value.exchange_code_for_token.return_value = "blablabla"
+
+        fun = mocked_result([])
+        with mock.patch('monolith.background.c.ApiV3', side_effect=fun):
+            client.get('/strava_auth')
+
+        r = db_instance.session.query(User)  # use the db_instance as in a normal not testing file (thx me later)
+        u = r.first()
+        assert u.strava_token == "blablabla"
+
+    client.get('/fetch')
+    assert db_instance.session.query(User).first().strava_token is None
+
+
+def test_login_delete_strava(client, db_instance, background_app, celery_session_worker):
+    rv = client.post('/create_user',
+                     data=dict(submit='Publish', email='email@email.com', firstname='a', lastname='a', password='p',
+                               age='1',
+                               weight='1', max_hr='1', rest_hr='1', vo2max='1', ), follow_redirects=True)
+    assert rv.data.decode('ascii').count('a a') == 1
+
+    rv = client.post('/login', data=dict(email='email@email.com', password='p'), follow_redirects=True)
+    assert b'Hi email@email.com!' in rv.data
     assert b'Authorize Strava Access' in rv.data
     with mock.patch('monolith.views.auth.Client') as mocked:
         mocked.return_value.exchange_code_for_token.return_value = "blablabla"
@@ -90,7 +325,7 @@ def test_login_delete_strava(client, db_instance, background_app, celery_session
         with mock.patch('monolith.background.c.ApiV3', side_effect=fun):
             client.get('/strava_auth')
         with mock.patch('monolith.views.auth.Client') as mocked:
-            client.post('/remove_user',data=dict(submit='Publish',password='p'),follow_redirects=True)
+            client.post('/remove_user', data=dict(submit='Publish', password='p'), follow_redirects=True)
             assert mocked.return_value.deauthorize.called
 
 
@@ -118,20 +353,20 @@ def test_create_runs(client, background_app, db_instance, celery_session_worker)
         mocked.return_value.exchange_code_for_token.return_value = "blablabla"
         # create an user with email
         rv = client.post('/create_user',
-                         data=dict(submit='Publish', email='email', firstname='a', lastname='a', password='p',
+                         data=dict(submit='Publish', email='email@email.com', firstname='a', lastname='a', password='p',
                                    age='1',
                                    weight='1', max_hr='1', rest_hr='1', vo2max='1', ), follow_redirects=True)
         assert rv.data.decode('ascii').count('a a') == 1
         # create an user with emaill
         rv = client.post('/create_user',
-                         data=dict(submit='Publish', email='emaill', firstname='a', lastname='a', password='p',
+                         data=dict(submit='Publish', email='emaill@email.com', firstname='a', lastname='a',
+                                   password='p',
                                    age='1',
                                    weight='1', max_hr='1', rest_hr='1', vo2max='1', ), follow_redirects=True)
 
-        rv = client.post('/login', data=dict(email='email', password='p'), follow_redirects=True)
-        assert b'Hi email!' in rv.data
+        rv = client.post('/login', data=dict(email='email@email.com', password='p'), follow_redirects=True)
+        assert b'Hi email@email.com!' in rv.data
         assert b'Authorize Strava Access' in rv.data
-
 
         """
             Alright calling mocked_result from conftest.py
@@ -259,7 +494,7 @@ def test_create_runs(client, background_app, db_instance, celery_session_worker)
         }])
 
         """
-            I've read the fucking source code of stravalib to see that client has this import ApiV3
+            I've read the fudging source code of stravalib to see that client has this import ApiV3
             and that when we call get_activities will be called ApiV3 get method...
             
             So now we are mocking ApiV3 with fun which is the result from mocked_result
@@ -407,12 +642,12 @@ def test_create_runs(client, background_app, db_instance, celery_session_worker)
             "suffer_score": 162
         }])
         # log in with the other user
-        rv = client.post('/login', data=dict(email='emaill', password='p'), follow_redirects=True)
+        rv = client.post('/login', data=dict(email='emaill@email.com', password='p'), follow_redirects=True)
         with mock.patch('monolith.background.c.ApiV3', side_effect=fun):
             client.get('/strava_auth')
             r = db_instance.session.query(Run)
             assert r.count() == 4  # I should have 4 runs
-            u = db_instance.session.query(User).filter(User.email == 'emaill').first()
+            u = db_instance.session.query(User).filter(User.email == 'emaill@email.com').first()
             r = db_instance.session.query(Run).filter(Run.runner == u)
             assert r.count() == 2  # but only just 2 run for the user with email == emaill
             # nice so we created 2 user given then a fake token given them 2 fake runs each fetched 'directly'

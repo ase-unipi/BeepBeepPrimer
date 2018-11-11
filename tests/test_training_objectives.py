@@ -97,24 +97,24 @@ def test_create_training_negative_km(client, background_app, db_instance):
 
 def test_correct_assigning_training_runner(client, background_app, db_instance):
     client.post('/create_user', data=dict(
-    										submit='Publish', 
-    										email='peppino@giro.it', 
-    										firstname='peppino', 
-    										lastname='p',
-    										password='peppino', 
-    										age='1',
-    										weight='1', 
-    										max_hr='1', 
-    										rest_hr='1', 
-    										vo2max='1'))
+                                            submit='Publish', 
+                                            email='peppino@giro.it', 
+                                            firstname='peppino', 
+                                            lastname='p',
+                                            password='peppino', 
+                                            age='1',
+                                            weight='1', 
+                                            max_hr='1', 
+                                            rest_hr='1', 
+                                            vo2max='1'))
 
     client.post('/login', data=dict(email='peppino@giro.it', password='peppino'), follow_redirects=True)
     client.post('/training_objectives', data=dict(
-    												submit='Publish', 
-    												start_date=start_end_date, 
-    												end_date=start_end_date, 
-    												kilometers_to_run='1'),
-    									follow_redirects=True)
+                                                    submit='Publish', 
+                                                    start_date=start_end_date, 
+                                                    end_date=start_end_date, 
+                                                    kilometers_to_run='1'),
+                                        follow_redirects=True)
     client.get('/logout', follow_redirects=True)
     make_and_login_user(client)
     rv = create_training_objective(client, db_instance, start_end_date, start_end_date)

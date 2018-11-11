@@ -35,23 +35,21 @@ def create_challenge():
 	return redirect(url_for('home.index'))
 	
 
-@user_challenge.route('/create_challenge/<id_challenge>', methods=['GET'])
+@user_challenge.route('/create_challenge/<id_challenge>')
 @login_required
 def complete_challenge(id_challenge):
-	if request.method == 'GET':
-		current_challenge = db.session.query(Challenge).filter(Challenge.id == id_challenge).first()
-		try:
-			run_challenged = db.session.query(Run).filter(Run.id == current_challenge.run_challenged_id).first()
-		except AttributeError as e:
-			return redirect(url_for('home.index'))
-		if current_challenge.run_challenger_id is None:
-			runs = db.session.query(Run).filter(Run.runner_id == current_challenge.runner_id).\
-							filter(Run.start_date > current_challenge.start_date)
-			return render_template("create_challenge.html", challenge_id=current_challenge.id, runs=runs, run_challenged=run_challenged, run_challenger=None)
-		else:
-			run_challenger = db.session.query(Run).filter(Run.id == current_challenge.run_challenger_id).first()
-			return render_template("create_challenge.html", challenge_id=current_challenge.id, run_challenged=run_challenged, run_challenger=run_challenger)
-	return redirect(url_for('home.index'))
+	current_challenge = db.session.query(Challenge).filter(Challenge.id == id_challenge).first()
+	try:
+		run_challenged = db.session.query(Run).filter(Run.id == current_challenge.run_challenged_id).first()
+	except AttributeError as e:
+		return redirect(url_for('home.index'))
+	if current_challenge.run_challenger_id is None:
+		runs = db.session.query(Run).filter(Run.runner_id == current_challenge.runner_id).\
+						filter(Run.start_date > current_challenge.start_date)
+		return render_template("create_challenge.html", challenge_id=current_challenge.id, runs=runs, run_challenged=run_challenged, run_challenger=None)
+	else:
+		run_challenger = db.session.query(Run).filter(Run.id == current_challenge.run_challenger_id).first()
+		return render_template("create_challenge.html", challenge_id=current_challenge.id, run_challenged=run_challenged, run_challenger=run_challenger)
 
 @user_challenge.route('/terminate_challenge', methods=['GET','POST'])
 @login_required
@@ -62,10 +60,11 @@ def terminate_challenge():
 		current_challenge = db.session.query(Challenge).filter(Challenge.id == id_challenge).first()
 		current_run = db.session.query(Run).filter(Run.id == id_challenger).first()
 		if current_run is not None and current_challenge is not None:
-			current_challenge.challenger = current_run
-			current_challenge.result = determine_result(current_challenge, current_run)
-			db.session.commit()
-			return redirect(url_for('user_challenge.complete_challenge', id_challenge=id_challenge))
+			if current_run.start_date > current_challenge.start_date:
+				current_challenge.challenger = current_run
+				current_challenge.result = determine_result(current_challenge, current_run)
+				db.session.commit()
+				return redirect(url_for('user_challenge.complete_challenge', id_challenge=id_challenge))
 	return redirect('/create_challenge')
 
 def determine_result(current_challenge, current_run):
