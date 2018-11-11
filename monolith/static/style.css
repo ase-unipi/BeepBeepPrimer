@@ -18,15 +18,27 @@
   box-sizing: border-box;
 }
 
-.textPumpkingDark {
+.textPumpkingDark,
+.textPumpkingDark a:link,
+.textPumpkingDark a:visited,
+.textPumpkingDark a:hover,
+.textPumpkingDark a:active {
   color: var(--pumpkin-dark)
 }
 
-.textPumpkingLight {
+.textPumpkingLight,
+.textPumpkingLight a:link,
+.textPumpkingLight a:visited,
+.textPumpkingLight a:hover,
+.textPumpkingLight a:active {
   color: var(--pumpkin-light)
 }
 
-.textJeansDark {
+.textJeansDark,
+.textPumpkingLight a:link,
+.textPumpkingLight a:visited,
+.textPumpkingLight a:hover,
+.textPumpkingLight a:active {
   color: var(--jeans-dark)
 }
 
@@ -97,7 +109,6 @@ ul.navbottom {
 
 .content {
   min-width: 300px;
-  max-width: 400px;
   margin: 10px;
   padding: 10px;
   background: #F4F7f8;
@@ -225,28 +236,6 @@ th {
 
 .text-right {
   text-align: right;
-}
-
-
-.challengeTable table, 
-.challengeTable th, 
-.challengeTable td{
-    border: 1px solid black;
-    border-collapse: collapse;
-}
-
-.challengeTable th{
-    background-color: var(--jeans-dark);
-    color: white;    
-}
-
-.challengeTable td {
-    padding-left: 10px;
-    padding-right: 10px;
-}
-
-.challengeTable th{
-    padding: 10px;
 }
 
 @media (max-width: 600px) {
