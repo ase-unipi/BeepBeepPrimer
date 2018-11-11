@@ -1,21 +1,26 @@
 <html>
- <body>
-    Hi {{ current_user.email }}! Click on Remove to remove your account
-    <form action="" method="POST">
-        {{ form.hidden_tag() }}
-        <dl>
-        {% for field in form.display %}
-          <dt>{{ form[field].label }}</dt>
-          <dd>{{ form[field]() }}</dd>
-          {% if form[field].errors %}
-              {% for e in form[field].errors %}
-                <p class="help-block">{{ e }}</p>
-              {% endfor %}
-          {% endif %}
-        {% endfor %}
-        </dl>
-        <input type=submit value="Remove">
-    </form>
-  
- </body>
+{% include 'header.html' %}
+
+  <div class="form">
+  <form action="" method="POST" style="margin: 0">
+    {{ form.hidden_tag() }}
+    <h2 class="formTitle">Delete Profile</h2>
+
+    <fieldset>
+      {% for field in form.display %}
+        <label class="labelFor" for="{{ field }}">{{ form[field].label }}</label>
+        {{ form[field]() }}
+        {% if form[field].errors %}
+          {% for e in form[field].errors %}
+            <p class="help-block">{{ e }}</p>
+          {% endfor %}
+        {% endif %}
+      {% endfor %}
+
+    </fieldset>
+    <button class="button buttonPumpkinDark" type="submit">Delete Profile</button>
+  </form>
+</div>
+
+{% include 'footer.html' %}
 </html>

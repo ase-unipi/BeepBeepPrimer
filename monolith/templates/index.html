@@ -1,54 +1,50 @@
 <html>
-  <head>
-    <link rel="stylesheet" href="{{url_for('static', filename='style.css')}}">
-  </head>
+{% include 'header.html' %}
 
-  <body>
-    <h1>Runnerly</h1>
-
+  <div class="content">
     {% if current_user.is_authenticated %}
-        Hi {{ current_user.email }}! <a href="/logout">Log out</a> <a href="/remove_user">Delete Account</a>
-        <div>
-          <a href="/training_objectives">Set a training objective</a>
-        </div>
 
-      {% if not current_user.strava_token %}
-        <a href="{{strava_auth_url}}">Authorize Strava Access</a>
-      {% else %}
-        {% if total_average_speed %}
-          <h2>Average speed of all your run</h2>
-          <p>{{total_average_speed}} m/s</p>
-        {% endif %}
-
-        <h2>Your last 10 runs</h2>
-        <table>
-          <thead>
-            <tr>
-              <th>Run name</th>
-              <th colspan="2">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for run in runs%}
-            <tr>
-              <td> {{run.name}} </td>
-              <td class="text-center"> <a href="{{url_for('runs.run', id=run.id)}}""> <img class="icon" src="{{url_for('static', filename='view.png')}}"/> </a> </td>
-              <form action="{{ url_for('user_challenge.create_challenge') }}" method="post">
-              <td> 
-                <input type="hidden" name="id_run" value={{run.id}} />
-                <a href="#" onclick="document.forms[{{loop.index}}-1].submit()"> 
-                <img class="icon" src="{{url_for('static', filename='challenge.png')}}"/> </a> </td> </form> 
-            </tr>
-            {% endfor %}
-          </tbody>
-        </table>
-        
-        <h2> <a href="/create_challenge"> Check your challenges </a></h2> 
-
+      {% if total_average_speed %}
+        <h2 class="textJeansDark text-center">Average speed of all your run</h2>
+        <h3 class="textPumpkingDark text-center">{{total_average_speed}} m/s</h3>
       {% endif %}
 
+      <h2 class="textJeansDark text-center">Your last 10 runs</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Run name</th>
+            <th colspan="2">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for run in runs%}
+          <tr>
+            <td> {{run.name}} </td>
+            <td class="text-center">
+              <a href="{{url_for('runs.run', id=run.id)}}"">
+                <img class="icon" src="{{url_for('static', filename='view.png')}}"/>
+              </a>
+            </td>
+            <form action="{{ url_for('user_challenge.create_challenge') }}" method="post">
+              <input type="hidden" name="id_run" value={{run.id}} />
+              <td class="text-center">
+                <a href="#" onclick="document.forms[{{loop.index}}-1].submit()">
+                  <img class="icon" src="{{url_for('static', filename='challenge.png')}}"/>
+                </a>
+              </td>
+            </form> 
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+
     {% else %}
-      Hi Anonymous, <a href="/login">Log in</a> <a href="/create_user">Create user</a>
+      <h1 class="textPumpkingDark text-center"> Hi Anonymous</h1>
+      <h3 class="textJeansDark text-center"> Please Login or Register </h3>
     {% endif %}
-  </body>
+  </div>
+
+{% include 'footer.html' %}
 </html>
+

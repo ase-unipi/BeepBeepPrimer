@@ -32,7 +32,7 @@ def test_create_training_with_non_authenticated_user(client, celery_session_work
     r = db_instance.session.query(Training_Objective).filter(Training_Objective.id == 1)
     assert r.count() == 0
     assert rv.status_code == 200
-    assert b'Hi Anonymous, <a href="/login">Log in</a> <a href="/create_user">Create user</a>' in rv.data
+    assert rv.data.decode('ascii').count('Anonymous') == 1
 
 def test_create_training(client, background_app, db_instance):
     make_and_login_user(client)
@@ -40,8 +40,6 @@ def test_create_training(client, background_app, db_instance):
     r = db_instance.session.query(Training_Objective).filter(Training_Objective.id == 1)
     assert r.count() == 1
     assert rv.data.decode('ascii').count(str(start_end_date)) == 4
-    converted_date = (str(start_end_date)).encode('ascii', 'ignore')
-    assert b'          <td>%s</td>\n          <td>%s</td>' %(converted_date, converted_date)  in rv.data
 
 def test_create_twice_same_training(client, background_app, db_instance):
     make_and_login_user(client)
@@ -51,8 +49,6 @@ def test_create_twice_same_training(client, background_app, db_instance):
     r = db_instance.session.query(Training_Objective).filter(Training_Objective.start_date == str(start_end_date))
     assert r.count() == 2
     assert rv.data.decode('ascii').count(str(start_end_date)) == 6
-    converted_date = (str(start_end_date)).encode('ascii', 'ignore')
-    assert rv.data.decode('ascii').count('          <td>%s</td>\n          <td>%s</td>' % (str(start_end_date), str(start_end_date))) == 2
 
 def test_create_training_starts_yesterday(client, background_app, db_instance):
     make_and_login_user(client)
@@ -73,7 +69,7 @@ def test_create_training_opposite_date(client, background_app, db_instance):
     assert rv.data.decode('ascii').count(str(end_date)) == 1
     r = db_instance.session.query(Training_Objective).filter(Training_Objective.id == 1)
     assert r.count() == 0
-    assert b'<p class="help-block">End date must not be less than Start date</p>' in rv.data
+    assert b'<p class="help-block">Cannot be before Start date</p>' in rv.data
 
 def test_create_training_ends_yesterday(client, background_app, db_instance):
     make_and_login_user(client)
@@ -84,8 +80,7 @@ def test_create_training_ends_yesterday(client, background_app, db_instance):
     assert rv.data.decode('ascii').count(str(yesterday)) == 1
     r = db_instance.session.query(Training_Objective).filter(Training_Objective.id == 1)
     assert r.count() == 0
-    assert b'<p class="help-block">End date must not be less than Start date</p>' in rv.data
-    assert b'<p class="help-block">End date must not be less than Start date</p>' in rv.data
+    assert b'<p class="help-block">Cannot be before Start date</p>' in rv.data
 
 def test_create_training_negative_km(client, background_app, db_instance):
     make_and_login_user(client)

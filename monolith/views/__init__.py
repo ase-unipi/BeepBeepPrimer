@@ -4,13 +4,11 @@ from .users import users
 from .strava import strava
 from .runs import runs
 from .training_objectives import training_objectives
-from .test import test
 from .user_challenge import user_challenge
 from .statistics import statistics
-from .periodic_report import periodic_report
-
-
 from .profile import profile
+from .test import test
+
 
 blueprints = [home,
               _auth,
@@ -18,9 +16,8 @@ blueprints = [home,
               strava,
               runs,
               training_objectives,
-              test,
               user_challenge,
               statistics,
               profile,
-              periodic_report
+              test
               ]
