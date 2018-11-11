@@ -11,25 +11,25 @@
 <body>
   <form class="form-app" action="" method="POST">
     {{ form.hidden_tag() }}
-    <div class="text-center mb-4">
-      <h1 class="h3 mb-3 font-weight-normal">Beep Beep Login</h1>
-    </div>
-    <dl>
-     {% for field in form.display %}
-     <dt>{{ form[field].label }}</dt>
-     <dd>{{ form[field](class="form-control") }}</dd>
-       {% if form[field].errors %}
-          {% for e in form[field].errors %}
-           <p class="help-block">{{ e }}</p>
-          {% endfor %}
-       {% endif %}
-     {% endfor %}
-    </dl>
-    <input class="btn btn-lg btn-primary btn-block" type=submit value="Publish">
-    <p class="error">
-    {% for errmess in get_flashed_messages(False,['error']) %}
-                <br>{{ errmess }}
- 	  {% endfor%}</p>
+        <div class="text-center mb-4">
+          <h1 class="h3 mb-3 font-weight-normal">Beep Beep Login</h1>
+        </div>
+        <dl>
+         {% for field in form.display %}
+         <dt>{{ form[field].label }}</dt>
+         <dd>{{ form[field](class="form-control") }}</dd>
+           {% if form[field].errors %}
+              {% for e in form[field].errors %}
+               <p class="help-block">{{ e }}</p>
+              {% endfor %}
+           {% endif %}
+         {% endfor %}
+        </dl>
+        <input class="btn btn-lg btn-primary btn-block" type=submit value="Publish">
+        <p class="error">
+        {% for errmess in get_flashed_messages(False,['error']) %}
+                    <br>{{ errmess }}
+          {% endfor%}</p>
   </form>
  </body>
 </html>
