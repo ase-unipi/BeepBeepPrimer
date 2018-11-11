@@ -88,3 +88,8 @@ class TrainingObjectiveVisualizerForm(FlaskForm):
                'traveled_kilometers', 
                'status',
                'description']
+
+class PeriodicReportForm(FlaskForm):
+    periodicity = f.SelectField('Report Periodicity')
+    display     = ['periodicity']
+        
