@@ -7,7 +7,8 @@ from datetime import date
 # Test that the index shows the correct page when not authenticated
 def test_index(client):  # client is the yield variable in client function from conftest.py
     rv = client.get('/')  # send a get request for '/'
-    assert b'Hi Anonymous, <a href="/login">Log in</a> <a href="/create_user">Create user</a>' in rv.data
+    assert b'<h1 class="textPumpkingDark text-center"> Hi Anonymous</h1>' in rv.data
+    assert b'<h3 class="textJeansDark text-center"> Please Login or Register </h3>' in rv.data
     # b'' converts the string in binary
 
 
@@ -37,24 +38,27 @@ def test_list_of_runs(client, db_instance, background_app, celery_session_worker
     db_instance.session.commit()
     rv = client.get('/')
     print(repr(rv.data.decode('ascii')))
-    assert b' <tr>\n              <td> run </td>\n              <td class="text-center"> <a href="/runs/1"">' \
-           b' <img class="icon" src="/static/view.png"/> </a> </td>\n              ' \
-           b'<form action="/create_challenge" method="post">\n              <td> \n                ' \
-           b'<input type="hidden" name="id_run" value=1 />\n                ' \
-           b'<a href="#" onclick="document.forms[1-1].submit()"> \n                ' \
-           b'<img class="icon" src="/static/challenge.png"/> </a> </td>' in rv.data
-    assert b' <tr>\n              <td> run </td>\n              <td class="text-center"> <a href="/runs/2"">' \
-           b' <img class="icon" src="/static/view.png"/> </a> </td>\n              ' \
-           b'<form action="/create_challenge" method="post">\n              <td> \n                ' \
-           b'<input type="hidden" name="id_run" value=2 />\n                ' \
-           b'<a href="#" onclick="document.forms[2-1].submit()"> \n                ' \
-           b'<img class="icon" src="/static/challenge.png"/> </a> </td>' in rv.data
-    assert b' <tr>\n              <td> run </td>\n              <td class="text-center"> <a href="/runs/3"">' \
-           b' <img class="icon" src="/static/view.png"/> </a> </td>\n              ' \
-           b'<form action="/create_challenge" method="post">\n              <td> \n                ' \
-           b'<input type="hidden" name="id_run" value=3 />\n                ' \
-           b'<a href="#" onclick="document.forms[3-1].submit()"> \n                ' \
-           b'<img class="icon" src="/static/challenge.png"/> </a> </td>' in rv.data
+    assert b' <tr>\n            <td> run </td>\n            <td class="text-center">\n             ' \
+           b' <a href="/runs/1"">\n                <img class="icon" src="/static/view.png"/>\n             ' \
+           b' </a>\n            </td>\n            <form action="/create_challenge" method="post">\n             ' \
+           b' <input type="hidden" name="id_run" value=1 />\n              <td class="text-center">\n              ' \
+           b'  <a href="#" onclick="document.forms[1-1].submit()">\n                 ' \
+           b' <img class="icon" src="/static/challenge.png"/>\n                </a>\n              </td>\n          ' \
+           b'  </form> \n          </tr>\n' in rv.data
+    assert b' <tr>\n            <td> run </td>\n            <td class="text-center">\n             ' \
+           b' <a href="/runs/2"">\n                <img class="icon" src="/static/view.png"/>\n             ' \
+           b' </a>\n            </td>\n            <form action="/create_challenge" method="post">\n             ' \
+           b' <input type="hidden" name="id_run" value=2 />\n              <td class="text-center">\n              ' \
+           b'  <a href="#" onclick="document.forms[2-1].submit()">\n                 ' \
+           b' <img class="icon" src="/static/challenge.png"/>\n                </a>\n              </td>\n          ' \
+           b'  </form> \n          </tr>\n' in rv.data
+    assert b' <tr>\n            <td> run </td>\n            <td class="text-center">\n             ' \
+           b' <a href="/runs/3"">\n                <img class="icon" src="/static/view.png"/>\n             ' \
+           b' </a>\n            </td>\n            <form action="/create_challenge" method="post">\n             ' \
+           b' <input type="hidden" name="id_run" value=3 />\n              <td class="text-center">\n              ' \
+           b'  <a href="#" onclick="document.forms[3-1].submit()">\n                 ' \
+           b' <img class="icon" src="/static/challenge.png"/>\n                </a>\n              </td>\n          ' \
+           b'  </form> \n          </tr>\n' in rv.data
 
 
 def test_list_of_run_more_users(client, db_instance, background_app, celery_session_worker):
@@ -87,18 +91,20 @@ def test_list_of_run_more_users(client, db_instance, background_app, celery_sess
     db_instance.session.commit()
     rv = client.get('/')
     print(repr(rv.data.decode('ascii')))
-    assert b' <tr>\n              <td> run </td>\n              <td class="text-center"> <a href="/runs/2"">' \
-           b' <img class="icon" src="/static/view.png"/> </a> </td>\n              ' \
-           b'<form action="/create_challenge" method="post">\n              <td> \n                ' \
-           b'<input type="hidden" name="id_run" value=2 />\n                ' \
-           b'<a href="#" onclick="document.forms[1-1].submit()"> \n                ' \
-           b'<img class="icon" src="/static/challenge.png"/> </a> </td>' in rv.data
-    assert b' <tr>\n              <td> run </td>\n              <td class="text-center"> <a href="/runs/3"">' \
-           b' <img class="icon" src="/static/view.png"/> </a> </td>\n              ' \
-           b'<form action="/create_challenge" method="post">\n              <td> \n                ' \
-           b'<input type="hidden" name="id_run" value=3 />\n                ' \
-           b'<a href="#" onclick="document.forms[2-1].submit()"> \n                ' \
-           b'<img class="icon" src="/static/challenge.png"/> </a> </td>' in rv.data
+    assert b' <tr>\n            <td> run </td>\n            <td class="text-center">\n             ' \
+           b' <a href="/runs/2"">\n                <img class="icon" src="/static/view.png"/>\n             ' \
+           b' </a>\n            </td>\n            <form action="/create_challenge" method="post">\n             ' \
+           b' <input type="hidden" name="id_run" value=2 />\n              <td class="text-center">\n              ' \
+           b'  <a href="#" onclick="document.forms[1-1].submit()">\n                 ' \
+           b' <img class="icon" src="/static/challenge.png"/>\n                </a>\n              </td>\n          ' \
+           b'  </form> \n          </tr>\n' in rv.data
+    assert b' <tr>\n            <td> run </td>\n            <td class="text-center">\n             ' \
+           b' <a href="/runs/3"">\n                <img class="icon" src="/static/view.png"/>\n             ' \
+           b' </a>\n            </td>\n            <form action="/create_challenge" method="post">\n             ' \
+           b' <input type="hidden" name="id_run" value=3 />\n              <td class="text-center">\n              ' \
+           b'  <a href="#" onclick="document.forms[2-1].submit()">\n                 ' \
+           b' <img class="icon" src="/static/challenge.png"/>\n                </a>\n              </td>\n          ' \
+           b'  </form> \n          </tr>\n' in rv.data
 
 
 def test_average_speed_single_run(client, db_instance, background_app, celery_session_worker):
@@ -250,12 +256,12 @@ def test_login_logout(client, background_app, celery_session_worker):
 
     rv = client.post('/login', data=dict(email='email@email.com', password='p'), follow_redirects=True)
 
-    assert b'Hi email@email.com!' in rv.data
+    assert b'Hi email@email.com' in rv.data
     assert b'Authorize Strava Access' in rv.data
 
     rv = client.get('/logout', follow_redirects=True)
 
-    assert b'Hi Anonymous,' in rv.data
+    assert b'Hi Anonymous' in rv.data
 
 
 def test_login_delete(client, db_instance, background_app, celery_session_worker):
@@ -267,20 +273,31 @@ def test_login_delete(client, db_instance, background_app, celery_session_worker
 
     rv = client.post('/login', data=dict(email='email@email.com', password='p'), follow_redirects=True)
 
-    assert b'Hi email@email.com!' in rv.data
+    assert b'Hi email@email.com' in rv.data
     assert b'Authorize Strava Access' in rv.data
 
     rv = client.get('/remove_user')
-    assert b'Click on Remove to remove your account' in rv.data
+    assert b'<h2 class="formTitle">Delete Profile</h2>\n\n    <fieldset>\n      \n       ' \
+           b' <label class="labelFor" for="password"><label for="password">Password</label></label>\n       ' \
+           b' <input id="password" name="password" required type="password" value="">\n        \n      \n\n    ' \
+           b'</fieldset>\n    <button class="button buttonPumpkinDark" type="submit">Delete Profile</button>' in rv.data
     assert db_instance.session.query(User).count() == 1
     rv = client.post('/remove_user', data=dict(submit='Publish'), follow_redirects=True)
-    assert b'Click on Remove to remove your account' in rv.data
+    print(repr(rv.data.decode('ascii')))
+    assert b'<h2 class="formTitle">Delete Profile</h2>\n\n    <fieldset>\n      \n        ' \
+           b'<label class="labelFor" for="password"><label for="password">Password</label></label>\n        ' \
+           b'<input id="password" name="password" required type="password" value="">\n        \n          \n         ' \
+           b'   <p class="help-block">This field is required.</p>\n          \n        \n      \n\n    </fieldset>\n' \
+           b'    <button class="button buttonPumpkinDark" type="submit">Delete Profile</button>' in rv.data
     assert db_instance.session.query(User).count() == 1
     rv = client.post('/remove_user', data=dict(submit='Publish', password='b'), follow_redirects=True)
-    assert b'Click on Remove to remove your account' in rv.data
+    assert b'<h2 class="formTitle">Delete Profile</h2>\n\n    <fieldset>\n      \n       ' \
+           b' <label class="labelFor" for="password"><label for="password">Password</label></label>\n       ' \
+           b' <input id="password" name="password" required type="password" value="">\n        \n      \n\n    ' \
+           b'</fieldset>\n    <button class="button buttonPumpkinDark" type="submit">Delete Profile</button>' in rv.data
     assert db_instance.session.query(User).count() == 1
     rv = client.post('/remove_user', data=dict(submit='Publish', password='p'), follow_redirects=True)
-    assert b'Hi Anonymous, <a href="/login">Log in</a> <a href="/create_user">Create user</a>' in rv.data
+    assert b'Hi Anonymous' in rv.data
 
 
 def test_fetch_with_no_valid_token(client, db_instance, background_app, celery_session_worker):
@@ -291,7 +308,7 @@ def test_fetch_with_no_valid_token(client, db_instance, background_app, celery_s
     assert rv.data.decode('ascii').count('a a') == 1
 
     rv = client.post('/login', data=dict(email='email@email.com', password='p'), follow_redirects=True)
-    assert b'Hi email@email.com!' in rv.data
+    assert b'Hi email@email.com' in rv.data
     assert b'Authorize Strava Access' in rv.data
     with mock.patch('monolith.views.auth.Client') as mocked:
         mocked.return_value.exchange_code_for_token.return_value = "blablabla"
@@ -316,7 +333,7 @@ def test_login_delete_strava(client, db_instance, background_app, celery_session
     assert rv.data.decode('ascii').count('a a') == 1
 
     rv = client.post('/login', data=dict(email='email@email.com', password='p'), follow_redirects=True)
-    assert b'Hi email@email.com!' in rv.data
+    assert b'Hi email@email.com' in rv.data
     assert b'Authorize Strava Access' in rv.data
     with mock.patch('monolith.views.auth.Client') as mocked:
         mocked.return_value.exchange_code_for_token.return_value = "blablabla"
@@ -365,7 +382,7 @@ def test_create_runs(client, background_app, db_instance, celery_session_worker)
                                    weight='1', max_hr='1', rest_hr='1', vo2max='1', ), follow_redirects=True)
 
         rv = client.post('/login', data=dict(email='email@email.com', password='p'), follow_redirects=True)
-        assert b'Hi email@email.com!' in rv.data
+        assert b'Hi email@email.com' in rv.data
         assert b'Authorize Strava Access' in rv.data
 
         """
@@ -496,14 +513,14 @@ def test_create_runs(client, background_app, db_instance, celery_session_worker)
         """
             I've read the fudging source code of stravalib to see that client has this import ApiV3
             and that when we call get_activities will be called ApiV3 get method...
-            
+
             So now we are mocking ApiV3 with fun which is the result from mocked_result
             fun is a function which when called returns an object with a get method...
             so when i call client.get('/fetch')
             a call to fetch_all_runs will be made which creates an object of type
             stravalib.Client which creates inside of him an object ApiV3 which is a moked
             object with just the get method.
-            
+
             I've lost my mind yesterday to figure it out,
             ApiV3.get is masked from visibility rules so we need to mask it directly furthermore
             get_activities returns an iterator over an object of the stravalib library
