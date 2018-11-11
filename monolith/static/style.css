@@ -205,9 +205,10 @@ fieldset {
 table {
   margin: 20px auto;
   min-width: 300px;
+  border-collapse: collapse;
 }
 
-table, th, td {
+th, td {
     border: 1px solid black;
     border-collapse: collapse;
 }
@@ -224,6 +225,16 @@ td {
 
 th {
   padding: 10px;
+}
+
+td.header {
+  background-color: var(--jeans-dark);
+  color: white;
+}
+
+td.empty {
+  background-color: inherit;
+  border: 0px #FFFFFF;
 }
 
 .bodyContainer {
