@@ -3,8 +3,7 @@ from monolith.database import db, User, Objective
 from datetime import datetime, timedelta
 from monolith.tests.id_parser import get_element_by_id
 
-
-def test_set_objective(client):
+def test_create_objective(client):
     tested_app, app = client
 
     # test for create_objective having not logged in
@@ -18,12 +17,58 @@ def test_set_objective(client):
     reply = login(tested_app, email='marco@prova.it', password='123456')
     assert reply.status_code == 200
 
-    # test for create_objective logged in
+    # test for create_objective logged in but without data
     reply = tested_app.post('/create_objective')
+    assert reply.status_code == 400
+
+    # test for create_objective logged in with wrong data
+    reply = tested_app.post('/create_objective', data=dict(
+            start_date="asd",
+            name="Wrong test1"
+    ))
+    assert reply.status_code == 400
+
+    reply = tested_app.post('/create_objective', data=dict(
+            end_date="asd",
+            name="Wrong test2"
+    ))
+    assert reply.status_code == 400
+
+    reply = tested_app.post('/create_objective', data=dict(
+            target_distance=-20,
+            name="Wrong test3"
+    ))
+    assert reply.status_code == 400
+
+    # end date before start date
+    reply = tested_app.post('/create_objective', data=dict(
+            start_date="2018-07-04",
+            end_date="2017-07-04",
+            name="Wrong test3"
+    ))
+    assert reply.status_code == 400
+
+    # test for create_objective logged in with wrong data
+    reply = tested_app.post('/create_objective', data=dict(
+            start_date="2018-07-04",
+            end_date="2018-07-05",
+            target_distance=22,
+            name="Test OK"
+    ))
     assert reply.status_code == 200
 
-    # retrieve the user object
+def test_view_objectives(client):
+    tested_app, app = client
+
     with app.app_context():
+        # create a new user
+        reply = create_user(tested_app)
+        assert reply.status_code == 200
+
+        reply = login(tested_app, email='marco@prova.it', password='123456')
+        assert reply.status_code == 200
+
+        # retrieve the user object
         q = db.session.query(User).filter(User.email == 'marco@prova.it')
         user = q.first()
         
@@ -32,7 +77,7 @@ def test_set_objective(client):
         new_objective(user, name="Test2")
         new_objective(user, name="Test3")
         new_objective(user, name="Test4")
-                
+
         # retrieve the objective table
         objectives = db.session.query(Objective) 
 
@@ -47,7 +92,7 @@ def test_set_objective(client):
             assert get_element_by_id("objective_%s_completion"%(o.id), str(reply.data)) == str(o.completion)
 
 
-def test_check_objective(client):
+def test_check_objective_completion(client):
     tested_app, app = client
 
     # create a new user
