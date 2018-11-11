@@ -46,12 +46,29 @@ class UserForm(FlaskForm):
 
 
 class ProfileForm(UserForm):
-  def __init__(self, **kwargs):
-        UserForm.__init__(self, **kwargs)
-        self['email'].validators = [DataRequired()]
-        self['password'].validators = []
-        self['password'].flags.required = False
-        
+  email       = EmailField('Email', validators=[DataRequired(),
+                                                Email()])
+  firstname   = f.StringField('Firstname',       validators=[DataRequired()])
+  lastname    = f.StringField('Lastname',        validators=[DataRequired()])
+  password    = f.PasswordField('Password',      validators=[])
+  age         = f.IntegerField('Age',            validators=[DataRequired()])
+  weight      = f.FloatField('Weight',           validators=[DataRequired()])
+  max_hr      = f.IntegerField('Max Heartrate',  validators=[DataRequired()])
+  rest_hr     = f.IntegerField('Rest Heartrate', validators=[DataRequired()])
+  vo2max      = f.FloatField('VO2 Max',          validators=[DataRequired()])
+  periodicity = f.SelectField('Report Periodicity')
+  
+  display = ['email',
+             'firstname',
+             'lastname',
+             'password',
+             'age',
+             'weight',
+             'max_hr',
+             'rest_hr',
+             'vo2max',
+             'periodicity']
+
    
 class TrainingObjectiveSetterForm(FlaskForm):
     start_date = f.DateField('Start date',
@@ -88,3 +105,5 @@ class TrainingObjectiveVisualizerForm(FlaskForm):
                'traveled_kilometers', 
                'status',
                'description']
+
+        
