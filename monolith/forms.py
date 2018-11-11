@@ -1,8 +1,9 @@
 from flask_wtf import FlaskForm
 import wtforms as f
 import monolith.form_custom_models as fc
-from wtforms.validators import DataRequired, NumberRange
+from wtforms.validators import DataRequired, NumberRange, Email
 from monolith.form_custom_models import UniqueMailValidator
+from wtforms.fields.html5 import EmailField
 
 class LoginForm(FlaskForm):
     email = f.StringField('email', validators=[DataRequired()])
@@ -18,16 +19,17 @@ class RemoveUserForm(FlaskForm):
 
 
 class UserForm(FlaskForm):
-    email = f.StringField('Email', validators=[DataRequired(),
-                                               UniqueMailValidator()])
-    firstname = f.StringField('Firstname')
-    lastname  = f.StringField('Lastname')
-    password  = f.PasswordField('Password', validators=[DataRequired()])
-    age       = f.IntegerField('Age')
-    weight    = f.FloatField('Weight')
-    max_hr    = f.IntegerField('Max Heartrate')
-    rest_hr   = f.IntegerField('Rest Heartrate')
-    vo2max    = f.FloatField('VO2 Max')
+    email = EmailField('Email', validators=[DataRequired(),
+                                            Email(),
+                                            UniqueMailValidator()])
+    firstname = f.StringField('Firstname',       validators=[DataRequired()])
+    lastname  = f.StringField('Lastname',        validators=[DataRequired()])
+    password  = f.PasswordField('Password',      validators=[DataRequired()])
+    age       = f.IntegerField('Age',            validators=[DataRequired()])
+    weight    = f.FloatField('Weight',           validators=[DataRequired()])
+    max_hr    = f.IntegerField('Max Heartrate',  validators=[DataRequired()])
+    rest_hr   = f.IntegerField('Rest Heartrate', validators=[DataRequired()])
+    vo2max    = f.FloatField('VO2 Max',          validators=[DataRequired()])
 
     display = ['email',
                'firstname',
@@ -38,6 +40,14 @@ class UserForm(FlaskForm):
                'max_hr',
                'rest_hr',
                'vo2max']
+
+class ProfileForm(UserForm):
+  def __init__(self, **kwargs):
+        UserForm.__init__(self, **kwargs)
+        self['email'].validators = [DataRequired()]
+        self['password'].validators = []
+        self['password'].flags.required = False
+        
    
 class TrainingObjectiveSetterForm(FlaskForm):
     start_date = f.DateField('Start date',

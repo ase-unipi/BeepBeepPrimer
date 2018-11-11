@@ -95,18 +95,18 @@ def test_page_generation_after_logout(client, app, db_instance, celery_session_w
         mocked.return_value.exchange_code_for_token.return_value = "blablabla"
         # create an user with email
         rv = client.post('/create_user',
-                         data=dict(submit='Publish', email='email', firstname='a', lastname='a', password='p',
+                         data=dict(submit='Publish', email='email@email.com', firstname='a', lastname='a', password='p',
                                    age='1',
                                    weight='1', max_hr='1', rest_hr='1', vo2max='1', ), follow_redirects=True)
         assert rv.data.decode('ascii').count('a a') == 1
         # create an user with emaill
         rv = client.post('/create_user',
-                         data=dict(submit='Publish', email='emaill', firstname='a', lastname='a', password='p',
+                         data=dict(submit='Publish', email='emaill@email.com', firstname='a', lastname='a', password='p',
                                    age='1',
                                    weight='1', max_hr='1', rest_hr='1', vo2max='1', ), follow_redirects=True)
 
-        rv = client.post('/login', data=dict(email='email', password='p'), follow_redirects=True)
-        assert b'Hi email!' in rv.data
+        rv = client.post('/login', data=dict(email='email@email.com', password='p'), follow_redirects=True)
+        assert b'Hi email@email.com!' in rv.data
         assert b'Authorize Strava Access' in rv.data
 
         """
@@ -384,12 +384,12 @@ def test_page_generation_after_logout(client, app, db_instance, celery_session_w
             "suffer_score": 162
         }])
         # log in with the other user
-        rv = client.post('/login', data=dict(email='emaill', password='p'), follow_redirects=True)
+        rv = client.post('/login', data=dict(email='emaill@email.com', password='p'), follow_redirects=True)
         with mock.patch('monolith.background.c.ApiV3', side_effect=fun):
             client.get('/strava_auth')
             r = db_instance.session.query(Run)
             assert r.count() == 4  # I should have 4 runs
-            u = db_instance.session.query(User).filter(User.email == 'emaill').first()
+            u = db_instance.session.query(User).filter(User.email == 'emaill@email.com').first()
             r = db_instance.session.query(Run).filter(Run.runner == u)
             assert r.count() == 2  # but only just 2 run for the user with email == emaill
             # nice so we created 2 user given then a fake token given them 2 fake runs each fetched 'directly'
