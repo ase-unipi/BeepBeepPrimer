@@ -18,6 +18,19 @@ You need to export them as environment variables::
     export STRAVA_CLIENT_ID=<ID>
     export STRAVA_CLIENT_SECRET=<SECRET>
 
+    export WEBSITE_NAME="Butter BeepBeep"
+    export GROUP_NAME="Butter Group"
+
+    export MAIL_GMAIL_USER=<GMAIL_EMAIL>
+    export MAIL_GMAIL_PASS=<GMAIL_PASSWORD>
+    export MAIL_REPORT_SUBJECT="Report"
+    export MAIL_MESSAGE_NO_RUN="You did not run in this period!"
+
+## Note:
+Google is not allowing you to log in via smtplib because it has flagged this
+sort of login as "less secure", so you have to allow the access. To do so,
+click on this link: https://www.google.com/settings/security/lesssecureapps
+
 It is a good idea to create a file (and add it to .gitignore) that contains both commands. You can 
 then run it via::
 
@@ -56,7 +69,7 @@ Make sure you have a redis server running locally on port 6379 by running::
 
 Then, open another shell and run::
 
-    $ celery worker -A monolith.background
+    $ celery worker -A monolith.background -E -l info
 
 This will run a celery microservice that can fetch runs.
 To invoke it, visit http://127.0.0.1:5000/fetch.
