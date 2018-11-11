@@ -30,6 +30,10 @@
         {% for success in get_flashed_messages(False,['success']) %}
                     <br>{{ success }}
         {% endfor%}</p>
+          {% for error in get_flashed_messages(False,['error']) %}
+                    <br>{{ error }}
+        {% endfor%}</p>
+
       </form>
 
     </div>

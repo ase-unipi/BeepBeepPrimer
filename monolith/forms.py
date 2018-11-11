@@ -42,4 +42,3 @@ class ObjectiveForm(FlaskForm):
 class MailForm(FlaskForm):
     setting_mail = RadioField('setting', choices=[('6', '6 hours'), ('12', '12 hours'), ('24','24 hours')])
     display = ['setting']
-    #setting = RadioField('setting', choices=['6 hours','12 hours','24 hours'])

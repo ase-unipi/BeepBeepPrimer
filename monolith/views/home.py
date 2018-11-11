@@ -21,8 +21,6 @@ def strava_auth_url(config):
     return _strava_auth_url(config)
 
 
-## In this case I don't specify the type required because:
-## In the code there is the control of the current user
 @home.route('/')
 def index():
     if hasattr(current_user, 'is_authenticated') and current_user.is_authenticated:
