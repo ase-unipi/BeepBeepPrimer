@@ -4,21 +4,29 @@
 </head>
 <body>
   <ul class="navbar">
+    <li><img src="{{url_for('static', filename='nav_logo.png')}}" class="logo" /></li>
     <li><a href="{{url_for('home.index')}}">Home</a></li>
-    <li><a href="#">Training Objectives</a></li>
-    <li><a href="#">Compare Run</a></li>
-    <li><a href="#">Statistics</a></li>
+    
     {% if current_user.is_authenticated %}
+      <li><a href="{{url_for('user_challenge.create_challenge')}}">Challenges</a></li>
+      <li><a href="{{url_for('training_objectives._training_objectives')}}">Training Objectives</a></li>
+      <li><a href="{{url_for('statistics.stats')}}">Statistics</a></li>
       <li class="float-right"><a href="{{url_for('auth.logout')}}">Logout</a></li>
+      
       {% if not current_user.strava_token %}
         <li class="float-right"><a href="{{strava_auth_url}}">Authorize Strava Access</a></li>
       {% else %}
-        <li class="float-right"><a href="{{url_for('strava.fetch_runs')}}">Fetch new Runs</a></li>
+        <li class="float-right"><a href="{{url_for('strava.fetch')}}">Fetch new Runs</a></li>
       {% endif %}
-      <li class="float-right"><a>Hi {{current_user.email}}, GO TO RUN BITCH ! </a></li>
+      
+      <li class="float-right"><a href="{{url_for('profile._profile')}}">Hi {{current_user.email}} </a></li>
+    
     {% else %}
       <li class="float-right"><a href="{{url_for('users.create_user')}}">Register</a></li>
       <li class="float-right"><a href="{{url_for('auth.login')}}">Login</a></li>
     {% endif %}
+  
   </ul>
-  <div class="body">
+  <section>
+    <div class="bodyContainer">
+      <div class="bodyContent">

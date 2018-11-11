@@ -5,23 +5,26 @@ from wtforms.validators import DataRequired, NumberRange, Email
 from monolith.form_custom_models import UniqueMailValidator
 from wtforms.fields.html5 import EmailField
 
+
 class LoginForm(FlaskForm):
-    email = f.StringField('email', validators=[DataRequired()])
-    password = f.PasswordField('password', validators=[DataRequired()])
-    display = ['email', 'password']
+    email    = EmailField('Email', validators=[DataRequired(),
+                                               Email()])
+    password = f.PasswordField('Password', validators=[DataRequired()])
+    
+    display  = ['email',
+                'password']
 
 
 class RemoveUserForm(FlaskForm):
-    # email = f.StringField('email', validators=[DataRequired()])
-    password = f.PasswordField('password', validators=[DataRequired()])
-    # display = ['email', 'password']
-    display = ['password']
+    password = f.PasswordField('Password', validators=[DataRequired()])
+    
+    display  = ['password']
 
 
 class UserForm(FlaskForm):
-    email = EmailField('Email', validators=[DataRequired(),
-                                            Email(),
-                                            UniqueMailValidator()])
+    email     = EmailField('Email', validators=[DataRequired(),
+                                                Email(),
+                                                UniqueMailValidator()])
     firstname = f.StringField('Firstname',       validators=[DataRequired()])
     lastname  = f.StringField('Lastname',        validators=[DataRequired()])
     password  = f.PasswordField('Password',      validators=[DataRequired()])
@@ -41,22 +44,40 @@ class UserForm(FlaskForm):
                'rest_hr',
                'vo2max']
 
+
 class ProfileForm(UserForm):
-  def __init__(self, **kwargs):
-        UserForm.__init__(self, **kwargs)
-        self['email'].validators = [DataRequired()]
-        self['password'].validators = []
-        self['password'].flags.required = False
-        
+  email       = EmailField('Email', validators=[DataRequired(),
+                                                Email()])
+  firstname   = f.StringField('Firstname',       validators=[DataRequired()])
+  lastname    = f.StringField('Lastname',        validators=[DataRequired()])
+  password    = f.PasswordField('Password',      validators=[])
+  age         = f.IntegerField('Age',            validators=[DataRequired()])
+  weight      = f.FloatField('Weight',           validators=[DataRequired()])
+  max_hr      = f.IntegerField('Max Heartrate',  validators=[DataRequired()])
+  rest_hr     = f.IntegerField('Rest Heartrate', validators=[DataRequired()])
+  vo2max      = f.FloatField('VO2 Max',          validators=[DataRequired()])
+  periodicity = f.SelectField('Report Periodicity')
+  
+  display = ['email',
+             'firstname',
+             'lastname',
+             'password',
+             'age',
+             'weight',
+             'max_hr',
+             'rest_hr',
+             'vo2max',
+             'periodicity']
+
    
 class TrainingObjectiveSetterForm(FlaskForm):
     start_date = f.DateField('Start date',
-                             validators=[DataRequired(message='Not a valid date format'), 
+                             validators=[DataRequired(message='Not a valid date'), 
                                          fc.NotLessThenToday()],
                              widget=f.widgets.Input(input_type="date"))
     end_date = f.DateField('End date',
-                           validators=[DataRequired(message='Not a valid date format'),
-                                       fc.NotLessThan('start_date', message='End date must not be less than Start date'),
+                           validators=[DataRequired(message='Not a valid date'),
+                                       fc.NotLessThan('start_date', message='Cannot be before Start date'),
                                        fc.NotLessThenToday()],
                            widget=f.widgets.Input(input_type="date"))
     kilometers_to_run = f.FloatField('Kilometers to run',
@@ -65,20 +86,24 @@ class TrainingObjectiveSetterForm(FlaskForm):
                                      widget=fc.FloatInput(step='any', min_='0'),
                                      filters=[lambda value: float('%.3f' % float(value)) if value is not None else value])
 
-    display = ['start_date', 'end_date', 'kilometers_to_run']
+    display = ['start_date',
+               'end_date',
+               'kilometers_to_run']
+
 
 class TrainingObjectiveVisualizerForm(FlaskForm):
-    start_date = f.DateField('Start date')
-    end_date = f.DateField('End date')
-    kilometers_to_run = f.FloatField('Kilometers to run')
-    traveled_kilometers = f.FloatField('Traveled kilometers')
-    status = f.StringField('Status')
-    description = f.StringField('Description')
+    start_date  = f.DateField('Start')
+    end_date    = f.DateField('End')
+    kilometers_to_run   = f.FloatField('Km to Run')
+    traveled_kilometers = f.FloatField('Traveled Km')
+    status              = f.StringField('Status')
+    description         = f.StringField('Description')
 
-    display = ['start_date', 'end_date', 'kilometers_to_run', 'traveled_kilometers', 'status', 'description']
+    display = ['start_date',
+               'end_date',
+               'kilometers_to_run',
+               'traveled_kilometers', 
+               'status',
+               'description']
 
-class PeriodicReportForm(FlaskForm):
-    periodicity = f.SelectField('Report Periodicity')
-    display     = ['periodicity']
         
-
