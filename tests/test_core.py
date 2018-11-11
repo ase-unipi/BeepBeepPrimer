@@ -12,12 +12,12 @@ def test_index(client):  # client is the yield variable in client function from 
 
 
 def test_list_of_runs(client, db_instance, background_app, celery_session_worker):
-    rv = client.post('/create_user', data=dict(submit='Publish', email='email', firstname='a', lastname='a',
+    rv = client.post('/create_user', data=dict(submit='Publish', email='email@email.com', firstname='a', lastname='a',
                                                password='p', age='1',
                                                weight='1', max_hr='1', rest_hr='1', vo2max='1'),
                      follow_redirects=True)
     assert rv.data.decode('ascii').count('a a') == 1
-    client.post('/login', data=dict(email='email', password='p'), follow_redirects=True)
+    client.post('/login', data=dict(email='email@email.com', password='p'), follow_redirects=True)
     with mock.patch('monolith.views.auth.Client') as mocked:
         mocked.return_value.exchange_code_for_token.return_value = "blablabla"
         fun = mocked_result([])
@@ -58,16 +58,16 @@ def test_list_of_runs(client, db_instance, background_app, celery_session_worker
 
 
 def test_list_of_run_more_users(client, db_instance, background_app, celery_session_worker):
-    rv = client.post('/create_user', data=dict(submit='Publish', email='email', firstname='a', lastname='a',
+    rv = client.post('/create_user', data=dict(submit='Publish', email='email@email.com', firstname='a', lastname='a',
                                                password='p', age='1',
                                                weight='1', max_hr='1', rest_hr='1', vo2max='1'),
                      follow_redirects=True)
     assert rv.data.decode('ascii').count('a a') == 1
-    rv = client.post('/create_user', data=dict(submit='Publish', email='emaill', firstname='a', lastname='a',
-                                               password='p', age='1',
-                                               weight='1', max_hr='1', rest_hr='1', vo2max='1'),
-                     follow_redirects=True)
-    client.post('/login', data=dict(email='emaill', password='p'), follow_redirects=True)
+    client.post('/create_user', data=dict(submit='Publish', email='emaill@email.com', firstname='a', lastname='a',
+                                          password='p', age='1',
+                                          weight='1', max_hr='1', rest_hr='1', vo2max='1'),
+                follow_redirects=True)
+    client.post('/login', data=dict(email='emaill@email.com', password='p'), follow_redirects=True)
     with mock.patch('monolith.views.auth.Client') as mocked:
         mocked.return_value.exchange_code_for_token.return_value = "blablabla"
         fun = mocked_result([])
@@ -102,12 +102,12 @@ def test_list_of_run_more_users(client, db_instance, background_app, celery_sess
 
 
 def test_average_speed_single_run(client, db_instance, background_app, celery_session_worker):
-    rv = client.post('/create_user', data=dict(submit='Publish', email='email', firstname='a', lastname='a',
+    rv = client.post('/create_user', data=dict(submit='Publish', email='email@email.com', firstname='a', lastname='a',
                                                password='p', age='1',
                                                weight='1', max_hr='1', rest_hr='1', vo2max='1'),
                      follow_redirects=True)
     assert rv.data.decode('ascii').count('a a') == 1
-    client.post('/login', data=dict(email='email', password='p'), follow_redirects=True)
+    client.post('/login', data=dict(email='email@email.com', password='p'), follow_redirects=True)
     with mock.patch('monolith.views.auth.Client') as mocked:
         mocked.return_value.exchange_code_for_token.return_value = "blablabla"
         fun = mocked_result([])
@@ -126,12 +126,12 @@ def test_average_speed_multiple_users(client, db_instance, background_app, celer
 
 
 def test_average_speed_two_runs(client, db_instance, background_app, celery_session_worker):
-    rv = client.post('/create_user', data=dict(submit='Publish', email='email', firstname='a', lastname='a',
+    rv = client.post('/create_user', data=dict(submit='Publish', email='email@email.com', firstname='a', lastname='a',
                                                password='p', age='1',
                                                weight='1', max_hr='1', rest_hr='1', vo2max='1'),
                      follow_redirects=True)
     assert rv.data.decode('ascii').count('a a') == 1
-    client.post('/login', data=dict(email='email', password='p'), follow_redirects=True)
+    client.post('/login', data=dict(email='email@email.com', password='p'), follow_redirects=True)
     with mock.patch('monolith.views.auth.Client') as mocked:
         mocked.return_value.exchange_code_for_token.return_value = "blablabla"
         fun = mocked_result([])
@@ -151,12 +151,12 @@ def test_average_speed_two_runs(client, db_instance, background_app, celery_sess
 
 
 def test_average_speed_periodic(client, db_instance, background_app, celery_session_worker):
-    rv = client.post('/create_user', data=dict(submit='Publish', email='email', firstname='a', lastname='a',
+    rv = client.post('/create_user', data=dict(submit='Publish', email='email@email.com', firstname='a', lastname='a',
                                                password='p', age='1',
                                                weight='1', max_hr='1', rest_hr='1', vo2max='1'),
                      follow_redirects=True)
     assert rv.data.decode('ascii').count('a a') == 1
-    rv = client.post('/login', data=dict(email='email', password='p'), follow_redirects=True)
+    rv = client.post('/login', data=dict(email='email@email.com', password='p'), follow_redirects=True)
     with mock.patch('monolith.views.auth.Client') as mocked:
         mocked.return_value.exchange_code_for_token.return_value = "blablabla"
         fun = mocked_result([])
@@ -181,36 +181,76 @@ def test_average_speed_periodic(client, db_instance, background_app, celery_sess
 
 # Test that checks if the create_user page permits to create 2 user with the same email
 def test_create_same_user(client, db_instance):
-    rv = client.post('/create_user', data=dict(submit='Publish', email='email', firstname='a', lastname='a',
+    rv = client.post('/create_user', data=dict(submit='Publish', email='email@email.com', firstname='a', lastname='a',
                                                password='p', age='1',
                                                weight='1', max_hr='1', rest_hr='1', vo2max='1'),
                      follow_redirects=True)
     # follow_redirects parameter to follow the enormous number of redirect that we have
     # data=dict to pass data as a form, different syntax to pass json or others
     assert rv.data.decode('ascii').count('a a') == 1
-    rv = client.post('/create_user', data=dict(email='email', firstname='a', lastname='a', password='p', age='1',
-                                               weight='1', max_hr='1', rest_hr='1', vo2max='1'),
+    rv = client.post('/create_user',
+                     data=dict(email='email@email.com', firstname='a', lastname='a', password='p', age='1',
+                               weight='1', max_hr='1', rest_hr='1', vo2max='1'),
                      follow_redirects=True)
     r = db_instance.session.query(User)
 
     assert r.count() == 1
 
 
+def test_create_bad_email_user(client, db_instance):
+    rv = client.post('/create_user', data=dict(submit='Publish', email='emailemail.com', firstname='a', lastname='a',
+                                               password='p', age='1',
+                                               weight='1', max_hr='1', rest_hr='1', vo2max='1'),
+                     follow_redirects=True)
+
+    assert b'Invalid email address.' in rv.data
+    r = db_instance.session.query(User)
+    assert r.count() == 0
+
+    rv = client.post('/create_user', data=dict(submit='Publish', email='@email.com', firstname='a', lastname='a',
+                                               password='p', age='1',
+                                               weight='1', max_hr='1', rest_hr='1', vo2max='1'),
+                     follow_redirects=True)
+
+    assert b'Invalid email address.' in rv.data
+    r = db_instance.session.query(User)
+    assert r.count() == 0
+
+    rv = client.post('/create_user', data=dict(submit='Publish', email='email@', firstname='a', lastname='a',
+                                               password='p', age='1',
+                                               weight='1', max_hr='1', rest_hr='1', vo2max='1'),
+                     follow_redirects=True)
+
+    assert b'Invalid email address.' in rv.data
+    r = db_instance.session.query(User)
+    assert r.count() == 0
+
+    rv = client.post('/create_user', data=dict(submit='Publish', email='email@emailcom', firstname='a', lastname='a',
+                                               password='p', age='1',
+                                               weight='1', max_hr='1', rest_hr='1', vo2max='1'),
+                     follow_redirects=True)
+
+    assert b'Invalid email address.' in rv.data
+    r = db_instance.session.query(User)
+    assert r.count() == 0
+
+
 # test the login and logout features now the login make a call to celery so we need celery_session_worker
 # tested with only celery_worker but got stuck after the execution of this function
 def test_login_logout(client, background_app, celery_session_worker):
     rv = client.post('/create_user',
-                     data=dict(submit='Publish', email='email', firstname='a', lastname='a', password='p', age='1',
+                     data=dict(submit='Publish', email='email@email.com', firstname='a', lastname='a', password='p',
+                               age='1',
                                weight='1', max_hr='1', rest_hr='1', vo2max='1', ), follow_redirects=True)
     assert rv.data.decode('ascii').count('a a') == 1
 
-    rv = client.post('/login', data=dict(email='email', password='b'), follow_redirects=True)
+    rv = client.post('/login', data=dict(email='email@email.com', password='b'), follow_redirects=True)
 
     assert b'password' in rv.data
 
-    rv = client.post('/login', data=dict(email='email', password='p'), follow_redirects=True)
+    rv = client.post('/login', data=dict(email='email@email.com', password='p'), follow_redirects=True)
 
-    assert b'Hi email!' in rv.data
+    assert b'Hi email@email.com!' in rv.data
     assert b'Authorize Strava Access' in rv.data
 
     rv = client.get('/logout', follow_redirects=True)
@@ -220,13 +260,14 @@ def test_login_logout(client, background_app, celery_session_worker):
 
 def test_login_delete(client, db_instance, background_app, celery_session_worker):
     rv = client.post('/create_user',
-                     data=dict(submit='Publish', email='email', firstname='a', lastname='a', password='p', age='1',
+                     data=dict(submit='Publish', email='email@email.com', firstname='a', lastname='a', password='p',
+                               age='1',
                                weight='1', max_hr='1', rest_hr='1', vo2max='1', ), follow_redirects=True)
     assert rv.data.decode('ascii').count('a a') == 1
 
-    rv = client.post('/login', data=dict(email='email', password='p'), follow_redirects=True)
+    rv = client.post('/login', data=dict(email='email@email.com', password='p'), follow_redirects=True)
 
-    assert b'Hi email!' in rv.data
+    assert b'Hi email@email.com!' in rv.data
     assert b'Authorize Strava Access' in rv.data
 
     rv = client.get('/remove_user')
@@ -244,13 +285,13 @@ def test_login_delete(client, db_instance, background_app, celery_session_worker
 
 def test_fetch_with_no_valid_token(client, db_instance, background_app, celery_session_worker):
     rv = client.post('/create_user',
-                     data=dict(submit='Publish', email='email', firstname='a', lastname='a', password='p',
+                     data=dict(submit='Publish', email='email@email.com', firstname='a', lastname='a', password='p',
                                age='1',
                                weight='1', max_hr='1', rest_hr='1', vo2max='1', ), follow_redirects=True)
     assert rv.data.decode('ascii').count('a a') == 1
 
-    rv = client.post('/login', data=dict(email='email', password='p'), follow_redirects=True)
-    assert b'Hi email!' in rv.data
+    rv = client.post('/login', data=dict(email='email@email.com', password='p'), follow_redirects=True)
+    assert b'Hi email@email.com!' in rv.data
     assert b'Authorize Strava Access' in rv.data
     with mock.patch('monolith.views.auth.Client') as mocked:
         mocked.return_value.exchange_code_for_token.return_value = "blablabla"
@@ -269,13 +310,13 @@ def test_fetch_with_no_valid_token(client, db_instance, background_app, celery_s
 
 def test_login_delete_strava(client, db_instance, background_app, celery_session_worker):
     rv = client.post('/create_user',
-                     data=dict(submit='Publish', email='email', firstname='a', lastname='a', password='p',
+                     data=dict(submit='Publish', email='email@email.com', firstname='a', lastname='a', password='p',
                                age='1',
                                weight='1', max_hr='1', rest_hr='1', vo2max='1', ), follow_redirects=True)
     assert rv.data.decode('ascii').count('a a') == 1
 
-    rv = client.post('/login', data=dict(email='email', password='p'), follow_redirects=True)
-    assert b'Hi email!' in rv.data
+    rv = client.post('/login', data=dict(email='email@email.com', password='p'), follow_redirects=True)
+    assert b'Hi email@email.com!' in rv.data
     assert b'Authorize Strava Access' in rv.data
     with mock.patch('monolith.views.auth.Client') as mocked:
         mocked.return_value.exchange_code_for_token.return_value = "blablabla"
@@ -312,18 +353,19 @@ def test_create_runs(client, background_app, db_instance, celery_session_worker)
         mocked.return_value.exchange_code_for_token.return_value = "blablabla"
         # create an user with email
         rv = client.post('/create_user',
-                         data=dict(submit='Publish', email='email', firstname='a', lastname='a', password='p',
+                         data=dict(submit='Publish', email='email@email.com', firstname='a', lastname='a', password='p',
                                    age='1',
                                    weight='1', max_hr='1', rest_hr='1', vo2max='1', ), follow_redirects=True)
         assert rv.data.decode('ascii').count('a a') == 1
         # create an user with emaill
         rv = client.post('/create_user',
-                         data=dict(submit='Publish', email='emaill', firstname='a', lastname='a', password='p',
+                         data=dict(submit='Publish', email='emaill@email.com', firstname='a', lastname='a',
+                                   password='p',
                                    age='1',
                                    weight='1', max_hr='1', rest_hr='1', vo2max='1', ), follow_redirects=True)
 
-        rv = client.post('/login', data=dict(email='email', password='p'), follow_redirects=True)
-        assert b'Hi email!' in rv.data
+        rv = client.post('/login', data=dict(email='email@email.com', password='p'), follow_redirects=True)
+        assert b'Hi email@email.com!' in rv.data
         assert b'Authorize Strava Access' in rv.data
 
         """
@@ -600,12 +642,12 @@ def test_create_runs(client, background_app, db_instance, celery_session_worker)
             "suffer_score": 162
         }])
         # log in with the other user
-        rv = client.post('/login', data=dict(email='emaill', password='p'), follow_redirects=True)
+        rv = client.post('/login', data=dict(email='emaill@email.com', password='p'), follow_redirects=True)
         with mock.patch('monolith.background.c.ApiV3', side_effect=fun):
             client.get('/strava_auth')
             r = db_instance.session.query(Run)
             assert r.count() == 4  # I should have 4 runs
-            u = db_instance.session.query(User).filter(User.email == 'emaill').first()
+            u = db_instance.session.query(User).filter(User.email == 'emaill@email.com').first()
             r = db_instance.session.query(Run).filter(Run.runner == u)
             assert r.count() == 2  # but only just 2 run for the user with email == emaill
             # nice so we created 2 user given then a fake token given them 2 fake runs each fetched 'directly'
