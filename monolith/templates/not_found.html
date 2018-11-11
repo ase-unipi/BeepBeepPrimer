@@ -1,16 +1,35 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-	<meta description="" content="">
-	<meta name="author" content="">
-	<title>Yellow Beep Beep</title>
-	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
-    <link href="{{ url_for('static', filename='css/floating-labels.css') }}" rel="stylesheet">
+  <title>Yellow Beep Beep</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/floating-labels.css') }}">
+  <link rel="shortcut icon" href="#" />
 </head>
 <body>
-    <h1>OPS!! We can't find what you are looking for :(</h1>
-    <a href="/">Click me and I will take you back to home</a>
+    {% if current_user.is_authenticated %}
+    <div class="container-fluid">
+		 <ul class="nav nav-pills nav-stacked" role="tablist">
+          <h2>Beep Beep</h2>
+          <li><a href="/">Home</a></li>
+          <li><a href="/create_objective">Create Objective</a></li>
+          <li><a href="/objectives">List Objectives</a></li>
+          <li><a href="/create_challenge">Create Challenge</a></li>
+          <li><a href="/challenge">Challenges</a></li>
+          <li><a href="/statistics">Statistics</a></li>
+          <li><a href="/settingreport">Setting Report</a></li>
+          {% if current_user.is_admin %}
+          <li><a href="/users"><span class="glyphicon glyphicon-user"></span>Users list</a></li>
+          {% endif %}
+          <li><a href="/delete_user"><span class="glyphicon glyphicon-user"></span>Delete User</a></li>
+          <li><a href="/logout"><span class="glyphicon glyphicon-log-out"></span>Logout</a></li>
+        </ul>
+	</div>
+	<div class="container">
+		<h3 class="titlepage">The resource you're looking for doesn't exists</h3><br>
+	</div>
+    {% endif %}
 </body>
 </html>

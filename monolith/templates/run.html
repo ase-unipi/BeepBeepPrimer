@@ -9,26 +9,37 @@
   <link rel="shortcut icon" href="#" />
 </head>
 <body>
+    {% if current_user.is_authenticated %}
     <div class="container-fluid">
         <ul class="nav nav-pills nav-stacked" role="tablist">
           <h2>Beep Beep</h2>
-          <li><a href="main.html">Home</a></li>
-          <li class="active"><a href="run.html">Run</a></li>
-          <li><a href="objective.html">Objective</a></li>
-          <li><a href="/delete_user"><span class="glyphicon glyphicon-user"></span>Delete user</a></li>
+          <li><a href="/">Home</a></li>
+          <li class="active"><a href="/run/<id>">Run</a></li>
+          <li><a href="/create_objective">Create Objective</a></li>
+          <li><a href="/objectives">List Objectives</a></li>
+          <li><a href="/create_challenge">Create Challenge</a></li>
+          <li><a href="/challenge">Challenges</a></li>
+          <li><a href="/statistics">Statistics</a></li>
+          <li><a href="/settingreport">Setting Report</a></li>
+          <li><a href="/delete_user"><span class="glyphicon glyphicon-user"></span>Delete User</a></li>
           <li><a href="/logout"><span class="glyphicon glyphicon-log-out"></span>Logout</a></li>
+          {% if current_user.is_admin %}
+          <li><a href="/users"><span class="glyphicon glyphicon-user"></span>Users list</a></li>
+          {% endif %}
         </ul>
     </div>
     <div class="container">
-        <h1>Run {{run.name}}</h1>
-        <ul>
-          <li>Start date: <span id="start_date">{{run.start_date}}</span></li>
-          <li>Distance: <span id="distance">{{run.distance}}</span> m</li>
-          <li>Elapsed time: <span id="elapsed_time">{{run.elapsed_time // 60 }}</span>min</li>
-          <li>Avg. speed: <span id="average_speed">{{run.average_speed}}</span> m/s</li>
-          <li>Avg. heartrate: <span id="average_heartrate">{{run.average_heartrate}}</span> bps</li>
-          <li>Elevation gain: <span id="total_elevation_gain">{{run.total_elevation_gain}}</span> m</li>
-        </ul>
+        <h1 class="titlepage">Run: {{run.name}}</h1><br>
+        <table>
+            <tr><td class="key">Start date:</td><td class="value"><p id="start_date">{{run.start_date}}</p></td></tr>
+            <tr><td class="key">Distance:</td><td class="value"><p id="distance" >{{run.distance}}</p><p class="measure">meters</p></td></tr>
+            <tr><td class="key">Elapsed time:</td><td class="value"><p id="elapsed_time">{{run.elapsed_time // 60 }}</p><p class="measure">min</p></td></tr>
+            <tr><td class="key">Avg. speed: </td><td class="value"><p id="average_speed">{{run.average_speed}}</p><p class="measure">m/s</p></td></tr>
+            <tr><td class="key">Avg. heartrate: </td><td class="value"><p id="average_heartrate" >{{run.average_heartrate}}</p><p class="measure">bps</p></td></tr>
+            <tr><td class="key">Elevation gain: </td><td class="value"><p id="total_elevation_gain">{{run.total_elevation_gain}}</p><p class="measure">m</p></td></tr>
+        </table>
+        <br><br>
     </div>
+    {% endif %}
   </body>
 </html>

@@ -85,12 +85,11 @@ def test_view_objectives(client):
         assert reply.status_code == 200
 
         for o in objectives.all():
-            assert get_element_by_id("objective_%s_name" % o.id, str(reply.data)) == str(o.name)
-            assert get_element_by_id("objective_%s_start_date" % o.id, str(reply.data)) == str(o.start_date)
-            assert get_element_by_id("objective_%s_end_date" % o.id, str(reply.data)) == str(o.end_date)
-            assert get_element_by_id("objective_%s_target_distance" % o.id, str(reply.data)) == str(o.target_distance)
-            assert get_element_by_id("objective_%s_completion" % o.id, str(reply.data)) == str(o.completion)
-            assert get_element_by_id("objective_%s_runner_id" % o.id, str(reply.data)) == str(o.runner_id)
+            assert get_element_by_id("objective_%s_name"%(o.id), str(reply.data)) == str(o.name)
+            assert get_element_by_id("objective_%s_start_date"%(o.id), str(reply.data)) == str(o.start_date)
+            assert get_element_by_id("objective_%s_end_date"%(o.id), str(reply.data)) == str(o.end_date)
+            assert get_element_by_id("objective_%s_target_distance"%(o.id), str(reply.data)) == str(o.target_distance)
+            assert get_element_by_id("objective_%s_completion"%(o.id), str(reply.data)) == str(o.completion)
 
 
 def test_check_objective_completion(client):

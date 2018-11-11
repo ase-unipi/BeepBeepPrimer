@@ -5,8 +5,9 @@ from wtforms.validators import DataRequired, NumberRange, Email
 
 
 class LoginForm(FlaskForm):
-    email = f.StringField('Email', validators=[DataRequired("Insert a valid email."), Email])
+    email = f.StringField('Email', validators=[DataRequired("Insert a valid email."), Email()])
     password = f.PasswordField('Password', validators=[DataRequired("Insert your password")])
+
     display = ['email', 'password']
 
 
@@ -32,8 +33,8 @@ class DeleteForm(FlaskForm):
 
 class ObjectiveForm(FlaskForm):
     name = f.StringField('Name', validators=[DataRequired("Insert the objective name")])
-    start_date = f.DateField('Start date', validators=[DataRequired("Insert when to start the objective")])
-    end_date = f.DateField('End Date', validators=[DataRequired("Insert when to end the objective")])
+    start_date = f.DateField('Start date', format='%Y-%m-%d', validators=[DataRequired("Insert when to start the objective")])
+    end_date = f.DateField('End Date', format='%Y-%m-%d', validators=[DataRequired("Insert when to end the objective")])
     target_distance = f.FloatField('Target Distance', validators=[DataRequired("Insert the target distance")])
 
     display = ['name', 'start_date', 'end_date', 'target_distance']
