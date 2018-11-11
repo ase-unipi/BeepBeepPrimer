@@ -1,4 +1,4 @@
-from monolith.database import User, Run, db
+from monolith.database import User, Run, db, Challenge
 from monolith.forms import ChallengeForm
 from monolith.tests.utils import ensure_logged_in
 
@@ -10,13 +10,14 @@ def test_challenge_run(client, db_instance):
 
     # generate some runs
     runs = []
-    for i in ['1', '2', '3']:
+    for i in ['1', '2', '3', '4', '5']:
+        #creating 5 incrementally better runs, except for the one with id 4 which is bad
         run = Run()
 
         run.runner = user
         run.strava_id = i
         run.name = "Run " + i
-        if i != '3':
+        if i != '4':
             run.average_speed = float(i)
             run.elapsed_time = float(i)*1000
         else:
@@ -25,7 +26,9 @@ def test_challenge_run(client, db_instance):
 
         runs.append(run)
 
-        db_instance.session.add(run)
+    #inserting only the first 2 to the database
+    db_instance.session.add(runs[0])
+    db_instance.session.add(runs[1])
     db_instance.session.commit()
 
     # route back to index page
@@ -37,6 +40,9 @@ def test_challenge_run(client, db_instance):
         follow_redirects=True
     )
 
-    challenged = db.session.query(Run).filter(Run.id==1, user.id == Run.runner_id).first()
+    challenged = db.session.query(Challenge).filter(user.id == Run.runner_id).first()
     assert challenged
-    assert challenged.is_challenged == True
+    assert challenged.run_id = 1
+    db_instance.session.add(runs[2])
+    db_instance.session.commit()
+    
