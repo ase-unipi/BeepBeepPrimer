@@ -1,3 +1,4 @@
+/*General setting*/
 :root {
   --input-padding-x: .75rem;
   --input-padding-y: .75rem;
@@ -18,15 +19,8 @@ body {
   background-color: #9abfe2;
 }
 
-dt{
-  text-align: center;
-}
 
-.error, .help-block, .success{
-  text-align: center;
-  color: red;
-}
-
+/*Setting form of the application*/
 .form-app {
   width: 100%;
   max-width: 420px;
@@ -35,28 +29,44 @@ dt{
   background-color: #ffffff;
 }
 
-btn-fetch{
-  background-color: #191d5c;
-}
-
 .container{
   float: left;
   margin-left: 90px;
   background-color: #ffffff;
-  height: 400px;
+  overflow:scroll
+
 }
 
-h3,a,p {
+.container1{
+      float: left;
+      background-color: #ffffff;
+      width: 600px;
+      margin-right: 90px;
+      margin-left: auto;
+}
+
+/*Setting for message of error and success*/
+.error, .help-block, .success{
   text-align: center;
+  color: red;
 }
 
-h2{
-  text-align: center;
-  color: #ffffff;
-  margin-bottom: 30px;
-  padding: 20px;
+/*Setting list run index, list options statistics*/
+.listrun, .listchoice{
+    border: 1px solid #555;
+    padding: 8px;
+    background-color: #337ab7;
+    width: 100%;
+    font-size:14px;
+
 }
 
+.list{
+    color: #ffffff;
+}
+
+
+/*Setting style of navbar*/
 ul {
     border: 1px solid #555;
     padding: 0;
@@ -74,9 +84,71 @@ li:last-child {
     border-bottom: none;
 }
 
-.firstname{
+/*setting Table for property of selected run*/
+table  {
+	margin-left:auto;
+	margin-right:auto;
+}
+
+td, th {
+	border:1px solid #000000;
+	padding:8px;
+	background: #9abfe2;
+}
+
+.key{
+    color: #000000;
+    text-align: center;
+    font-weight: bold;
+}
+
+.value{
+    color: #000000;
+    text-align: center;
+}
+
+.measure{
+    margin: 0;
+}
+
+/*Setting style for radio selection in setting report*/
+ul#setting_mail{
+    list-style-type: none;
+    text-color: #ffffff;
+    background: #337ab7;
+    text-align: center;
+    width:100%
+}
+
+label[for=setting_mail-0],label[for=setting_mail-1] ,label[for=setting_mail-2]{
+    color: #ffffff;
+}
+
+
+
+/*General setting of the main page*/
+
+.titlepage{
   text-align: center;
 }
+
+dt{
+  text-align: center;
+}
+
+h3,a,p {
+  text-align: center;
+}
+
+h2{
+  text-align: center;
+  color: #ffffff;
+  margin-bottom: 30px;
+  padding: 20px;
+}
+
+
+/*Setting for form-label*/
 .form-label-group {
   position: relative;
   margin-bottom: 1rem;

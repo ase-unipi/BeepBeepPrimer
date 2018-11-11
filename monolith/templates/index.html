@@ -11,33 +11,37 @@
 <body>
   {% if current_user.is_authenticated %}
     <div class="container-fluid">
-        <ul class="nav nav-pills nav-stacked" role="tablist">
+         <ul class="nav nav-pills nav-stacked" role="tablist">
           <h2>Beep Beep</h2>
-          <li class="active"><a href="main.html">Home</a></li>
-          <li><a href="/objectives">Objective</a></li>
-          <li><a href="/statistics">Statistics</a></li>
           <li class="active"><a href="/">Home</a></li>
+          <li><a href="/create_objective">Create Objective</a></li>
+          <li><a href="/objectives">List Objectives</a></li>
+          <li><a href="/create_challenge">Create Challenge</a></li>
+          <li><a href="/challenge">Challenges</a></li>
+          <li><a href="/statistics">Statistics</a></li>
           <li><a href="/settingreport">Setting Report</a></li>
-          <li><a href="/delete_user"><span class="glyphicon glyphicon-user"></span>Delete User</a></li>
-          <li><a href="/logout"><span class="glyphicon glyphicon-log-out"></span>Logout</a></li>
           {% if current_user.is_admin %}
           <li><a href="/users"><span class="glyphicon glyphicon-user"></span>Users list</a></li>
           {% endif %}
+          <li><a href="/delete_user"><span class="glyphicon glyphicon-user"></span>Delete User</a></li>
+          <li><a href="/logout"><span class="glyphicon glyphicon-log-out"></span>Logout</a></li>
         </ul>
     </div>
     <div class="container">
-      <h1 class="firstname">Hi {{ current_user.firstname }}</h1>
+      <h1 class="titlepage">Hi {{ current_user.firstname }}</h1>
       {% if not current_user.strava_token %}
         <p><a class="btn btn-primary" href="{{strava_auth_url}}">Authorize Strava Access</a></p>
       {% else %}
-        <h3>Your last 10 runs</h3>
+        <h3>Your last 10 runs</h3><br>
+       <table>
+         <tr><td class="key">Average speed: </td><td class="value"><span id="total_average_speed">{{total_average_speed}}</span></td></tr>
+       </table>
+        <br>
         {% for run in runs %}
-          <a href="/run/{{run.id}}">{{run.name}}</a><br>
+      <p class="listrun"><a class="list" href="/run/{{run.id}}">{{run.name}}</a></p>
         {% endfor %}
-        <p>Average speed: <span id="total_average_speed">{{total_average_speed}}</span><p><br>
     </div>
-    {% endif %}
-
+      {% endif %}
   {% else %}
     <form class="form-app">
       <div class="text-center mb-4">
@@ -48,6 +52,7 @@
       <a class="btn btn-lg btn-primary btn-block" href="/login">Log in</a>
       <a class="btn btn-lg btn-primary btn-block" href="/create_user">Sign up</a>
     </form>
+    <br>
   {% endif %}
 </body>
 </html>

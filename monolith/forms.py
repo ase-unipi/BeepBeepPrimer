@@ -32,9 +32,9 @@ class DeleteForm(FlaskForm):
 
 class ObjectiveForm(FlaskForm):
     name = f.StringField('Name', validators=[DataRequired()])
-    start_date = f.DateField('Start date', validators=[DataRequired()])
-    end_date = f.DateField('End Date', validators=[DataRequired()])
-    target_distance = f.FloatField('Target Distance', validators=[DataRequired()])
+    start_date = f.DateField('Start date format(Y-m-d)', format='%Y-%m-%d', validators=[DataRequired()])
+    end_date = f.DateField('End Date format(Y-m-d)', format='%Y-%m-%d', validators=[DataRequired()])
+    target_distance = f.FloatField('Target Distance (meters)', validators=[DataRequired()])
 
     display = ['name', 'start_date', 'end_date', 'target_distance']
 
@@ -42,4 +42,3 @@ class ObjectiveForm(FlaskForm):
 class MailForm(FlaskForm):
     setting_mail = RadioField('setting', choices=[('6', '6 hours'), ('12', '12 hours'), ('24','24 hours')])
     display = ['setting']
-    #setting = RadioField('setting', choices=['6 hours','12 hours','24 hours'])

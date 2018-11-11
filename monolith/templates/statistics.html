@@ -1,36 +1,56 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <title>Yellow Beep Beep</title>
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
-  <link href="{{ url_for('static', filename='css/floating-labels.css') }}" rel="stylesheet">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/floating-labels.css') }}">
+  <link rel="shortcut icon" href="#" />
   <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 </head>
-
 <body>
-  <div class="text-center" id="BigContainer">
-    <br>
-    <h2>Chose runs to compare</h2>
-    {% for run in runs %}
-    <input class="runs" type="checkbox" name="run" value={{run.id}}> <span id={{run.id}}>{{run.name}}</span><br>
-    {% endfor %}
-    <div>
-
-      <h2>Chose parameters to compare</h2>
-      <input class="parameter" type="checkbox" name="run" value="1"> Average Speed<br>
-      <input class="parameter" type="checkbox" name="run" value="2"> Distance<br>
-      <input class="parameter" type="checkbox" name="run" value="3"> Time <br>
-
+  {% if current_user.is_authenticated %}
+    <div class="container-fluid">
+         <ul class="nav nav-pills nav-stacked" role="tablist">
+          <h2>Beep Beep</h2>
+          <li><a href="/">Home</a></li>
+          <li><a href="/create_objective">Create Objective</a></li>
+          <li><a href="/objectives">List Objectives</a></li>
+          <li><a href="/create_challenge">Create Challenge</a></li>
+          <li><a href="/challenge">Challenges</a></li>
+          <li class="active"><a href="/statistics">Statistics</a></li>
+          <li><a href="/settingreport">Setting Report</a></li>
+          {% if current_user.is_admin %}
+          <li><a href="/users"><span class="glyphicon glyphicon-user"></span>Users list</a></li>
+          {% endif %}
+          <li><a href="/delete_user"><span class="glyphicon glyphicon-user"></span>Delete User</a></li>
+          <li><a href="/logout"><span class="glyphicon glyphicon-log-out"></span>Logout</a></li>
+        </ul>
     </div>
-    <br>
-    <button class="btn btn-lg btn-primary btn-block" type="button" onclick="myFunction()"> Statistics </button> 
-    <br>
-    <div class="text-center" id="containerGraph"></div>
-    <br>
-    <button class="btn btn-lg btn-primary btn-block" type="button" id="gobackbutton"> Go back </button> 
-    <br>
-  </div>
+    <div class="container">
+      <h1 class="titlepage">Chose runs to compare</h1>
+      <h3>List of runs</h3>
+      {% for run in runs %}
+      <p class="listchoice"><input class="runs" type="checkbox" name="run" value={{run.id}}><span id={{run.id}} class="list">{{run.name}}</span><br></p>
+      {% endfor %}
+
+      <h3>Chose parameters to compare</h3>
+      <p class="listchoice"><input class="parameter" type="checkbox" name="run" value="1"><span class="list">Average Speed</span></p>
+      <p class="listchoice"><input class="parameter" type="checkbox" name="run" value="2"><span class="list">Distance</span></p>
+      <p class="listchoice"><input class="parameter" type="checkbox" name="run" value="3"><span class="list">Time</span></p><br>
+      <br>
+      <button id="stats" class="btn btn-lg btn-primary btn-block" type="button" onclick="myFunction()"> Statistics </button><br>
+    </div>
+    <div class="container1" id="BigContainer">
+      <h3 class="titlepage">Visualization of the graphs</h3>
+      <br>
+      <div class="text-center" id="containerGraph"></div>
+      <br>
+      <button class="btn btn-lg btn-primary btn-block" type="button" id="gobackbutton"> Go back </button>
+      <br>
+    </div>
+  {% endif %}
 </body>
 </html>
 
@@ -163,6 +183,6 @@
         location.reload();
       }
       document.getElementById("gobackbutton").style.visibility = "visible";
+      document.getElementById("stats").style.visibility = "hidden";
     }
   </script>
-  

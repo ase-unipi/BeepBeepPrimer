@@ -9,29 +9,36 @@
   <link rel="shortcut icon" href="#" />
 </head>
 <body>
-    <div class="container-fluid">
-    <ul class="nav nav-pills nav-stacked" role="tablist">
-          <h2>Beep Beep</h2>
-          <li><a href="/">Home</a></li>
-          <!--<li><a href="objective.html">Objective</a></li>-->
-          <li class="active"><a href="/settingreport">Setting report</a></li>
-          <li><a href="/delete_user"><span class="glyphicon glyphicon-user"></span>Delete User</a></li>
-          <li><a href="/logout"><span class="glyphicon glyphicon-log-out"></span>Logout</a></li>
-        </ul>
-    </div>
-	<div class="container">
-      <h1 class="firstname">Beep Beep Setting Mail</h1>
-
-      <form class="form-app" action="" method="POST">
-        {{ form.hidden_tag() }}
-         {{ form.setting_mail }}
-        <input type=submit value=Send>
-        <p class="success">
-        {% for success in get_flashed_messages(False,['success']) %}
-                    <br>{{ success }}
-        {% endfor%}</p>
-      </form>
-
-    </div>
+    {% if current_user.is_authenticated %}
+        <div class="container-fluid">
+            <ul class="nav nav-pills nav-stacked" role="tablist">
+              <h2>Beep Beep</h2>
+              <li><a href="/">Home</a></li>
+              <li><a href="/create_objective">Create Objective</a></li>
+              <li><a href="/objectives">List Objectives</a></li>
+              <li><a href="/create_challenge">Create Challenge</a></li>
+              <li><a href="/challenge">Challenges</a></li>
+              <li><a href="/statistics">Statistics</a></li>
+              <li class="active"><a href="/settingreport">Setting Report</a></li>
+              {% if current_user.is_admin %}
+               <li><a href="/users"><span class="glyphicon glyphicon-user"></span>Users list</a></li>
+              {% endif %}
+              <li><a href="/delete_user"><span class="glyphicon glyphicon-user"></span>Delete User</a></li>
+              <li><a href="/logout"><span class="glyphicon glyphicon-log-out"></span>Logout</a></li>
+            </ul>
+        </div>
+        <div class="container">
+          <h1 class="titlepage">Beep Beep Setting Mail</h1>
+          <form class="form-app" action="" method="POST">
+            {{ form.hidden_tag() }}
+             {{ form.setting_mail }}
+            <input class="btn btn-lg btn-primary btn-block" type=submit value=Send>
+            <p class="success">
+            {% for success in get_flashed_messages(False,['success']) %}
+                        <br>{{ success }}
+            {% endfor%}</p>
+          </form>
+        </div>
+    {% endif %}
 </body>
 </html>

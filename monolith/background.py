@@ -97,7 +97,7 @@ def send_all_mail():
         for user in users:
             mail = db.session.query(Mail).filter(Mail.id == user.id)
             if time.time() - mail.timestamp >= mail.choice_time:        #check of the choice of the user
-                body = prepare_body(user,choice_time)
+                body = prepare_body(user,mail.choice_time)
                 if body:
                     msg = Message('Your BeepBeep Report', sender=app.config['MAIL_USERNAME'], recipients=[user.email])
                     msg.body = body
