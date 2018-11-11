@@ -1,0 +1,24 @@
+<html>
+{% include 'header.html' %}
+  <form action="" method="POST">
+
+    {% for field in form.display %}
+      {{ form[field]() }}
+    {% endfor %}
+
+    <!-- At 23:00 of the day            -->
+    <!-- Last day of the week at 23:00  -->
+    <!-- Last day of the month at 23:00 -->
+
+    <!-- <select>
+      <option value="1">None</option>
+      <option value="2">Daily</option>   
+      <option value="3">Weekly</option>  
+      <option value="4">Monthly</option> 
+    </select> -->
+    <input type="submit" value="Update">
+  </form>
+{% include 'footer.html' %}
+</html>
+
+<html>
