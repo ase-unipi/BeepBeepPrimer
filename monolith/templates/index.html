@@ -1,6 +1,7 @@
 <html>
 {% include 'header.html' %}
 
+  <div class="content">
     {% if current_user.is_authenticated %}
 
       {% if total_average_speed %}
@@ -39,12 +40,11 @@
       </table>
 
     {% else %}
-      <h1 class="textPumpkingDark"> Hi Anonymous</h1>
-      <h3 class="textJeansDark"> Please Login or Register </h3>
+      <h1 class="textPumpkingDark text-center"> Hi Anonymous</h1>
+      <h3 class="textJeansDark text-center"> Please Login or Register </h3>
     {% endif %}
-    </div>
   </div>
-  
+
 {% include 'footer.html' %}
 </html>
 

@@ -8,7 +8,7 @@
 
     <fieldset>
       {% for field in form.display %}
-        <label for="{{ field }}">{{ form[field].label }}</label>
+        <label class="labelFor" for="{{ field }}">{{ form[field].label }}</label>
         {{ form[field] }}
         {% if form[field].errors %}
           {% for e in form[field].errors %}
