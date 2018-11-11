@@ -127,4 +127,4 @@ class Challenge(db.Model):
         self.average_speed = avgspeed
 
     def setrunner(self,iduserrun):
-        self.runner_id = iduserrun
+        self.runner = iduserrun

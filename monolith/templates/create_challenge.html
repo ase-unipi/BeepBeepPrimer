@@ -15,7 +15,7 @@
           <h2>Beep Beep</h2>
           <li><a href="/">Home</a></li>
           <li><a href="/create_objective">Create Objective</a></li>
-          <li><a href="/objectives">List Objective</a></li>
+          <li><a href="/objectives">List Objectives</a></li>
           <li class="active"><a href="/create_challenge">Create Challenge</a></li>
           <li><a href="/challenge">Challenges</a></li>
           <li><a href="/statistics">Statistics</a></li>
@@ -38,11 +38,12 @@
             {% endfor %}
         {% endif %}
         <h3>Challenge the run</h3>
-         <form action="" method="POST">
+          <form action="" method="POST">
+            {{ form.hidden_tag() }}
             <dl>
                 {% for field in form.display %}
-                <dt>{{ form[field].label }}</dt>
-                <dd>{{ form[field](class="form-control") }}</dd>
+                  <dt>{{ form[field].label }}</dt>
+                  <dd>{{ form[field](class="form-control") }}</dd>
                   {% if form[field].errors %}
                     {% for e in form[field].errors %}
                         <p class="help-block">{{ e }}</p>

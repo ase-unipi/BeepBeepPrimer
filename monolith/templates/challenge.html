@@ -15,7 +15,7 @@
           <h2>Beep Beep</h2>
           <li><a href="/">Home</a></li>
           <li><a href="/create_objective">Create Objective</a></li>
-          <li><a href="/objectives">List Objective</a></li>
+          <li><a href="/objectives">List Objectives</a></li>
           <li><a href="/create_challenge">Create Challenge</a></li>
           <li class="active"><a href="/challenge">Challenges</a></li>
           <li><a href="/statistics">Statistics</a></li>
@@ -31,12 +31,13 @@
         <h1 class="titlepage">List Challenges</h1><br>
         {% for challenge in challenges: %}
         <table>
-            <tr><td class="key">Challenge name run: </td><td class="value"><p >{{challenge.name}}</p></td></tr>
-            <tr><td class="key">Distance: </td><td class="value"><p >{{challenge.distance}}</p></td></tr>
-            <tr><td class="key">Elapsed_time: </td><td class="value"><p >{{challenge.elapsed_time}}</p></td></tr>
-            <tr><td class="key">Avg_speed: </td><td class="value"><p >{{challenge.average_speed}}</p>m/s</td></tr>
+            <tr><td class="key">You choose to challenge this run: </td><td class="value"><p>{{challenge.name}}</p></td></tr>
+            <tr><td class="key">With this run:</td><td class="value">{{challenge.confront}}</td></tr>
+            <tr><td class="key">Distance: </td><td class="value"><p>{{challenge.distance}}</p></td></tr>
+            <tr><td class="key">Elapsed_time: </td><td class="value"><p>{{challenge.elapsed_time}}</p></td></tr>
+            <tr><td class="key">Avg_speed: </td><td class="value"><p>{{challenge.average_speed}}</p>m/s</td></tr>
             {% if current_user.is_admin %}
-            <tr><td class="key">Runner id: </td><td class="value"><p>{{challenge.runner.id}}</p></td></tr>
+            <tr><td class="key">Runner id: </td><td class="value"><p>{{challenge.runner_id}}</p></td></tr>
             {% endif %}
         </table><br>
         {% endfor %}
