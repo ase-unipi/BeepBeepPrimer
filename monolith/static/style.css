@@ -205,9 +205,10 @@ fieldset {
 table {
   margin: 20px auto;
   min-width: 300px;
+  border-collapse: collapse;
 }
 
-table, th, td {
+th, td {
     border: 1px solid black;
     border-collapse: collapse;
 }
@@ -224,6 +225,16 @@ td {
 
 th {
   padding: 10px;
+}
+
+td.header {
+  background-color: var(--jeans-dark);
+  color: white;
+}
+
+td.empty {
+  background-color: inherit;
+  border: 0px #FFFFFF;
 }
 
 .bodyContainer {
@@ -248,6 +259,51 @@ th {
 .text-right {
   text-align: right;
 }
+
+.plot {
+  margin: 10px;
+  max-width: 400px;
+  max-height: 400px;
+}
+
+::-webkit-scrollbar {
+  -webkit-appearance: none;
+  height: 7px;
+}
+::-webkit-scrollbar-thumb {
+  border-radius: 4px;
+  background-color: rgba(0, 0, 0, .5);
+  -webkit-box-shadow: 0 0 1px rgba(255, 255, 255, .5);
+}
+
+#row {
+    white-space: nowrap;
+    overflow: -moz-scrollbars-horizontal; 
+    overflow: scroll;
+}
+.items {
+    display: inline-block;
+}
+
+/*#scroll {
+    height: 80%;
+    width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    max-height: 80%;
+}
+
+#scroll #width {
+    width:2000px;
+}
+
+#scroll div.block {
+    float: left;
+    margin: 10px;
+    width: 400px;
+    height: 400px;
+}*/
+
 
 @media (max-width: 600px) {
     ul.navbar, ul.navbottom {

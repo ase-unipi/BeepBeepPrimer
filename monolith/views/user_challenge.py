@@ -60,10 +60,11 @@ def terminate_challenge():
 		current_challenge = db.session.query(Challenge).filter(Challenge.id == id_challenge).first()
 		current_run = db.session.query(Run).filter(Run.id == id_challenger).first()
 		if current_run is not None and current_challenge is not None:
-			current_challenge.challenger = current_run
-			current_challenge.result = determine_result(current_challenge, current_run)
-			db.session.commit()
-			return redirect(url_for('user_challenge.complete_challenge', id_challenge=id_challenge))
+			if current_run.start_date > current_challenge.start_date:
+				current_challenge.challenger = current_run
+				current_challenge.result = determine_result(current_challenge, current_run)
+				db.session.commit()
+				return redirect(url_for('user_challenge.complete_challenge', id_challenge=id_challenge))
 	return redirect('/create_challenge')
 
 def determine_result(current_challenge, current_run):
