@@ -1,4 +1,4 @@
-from flask import Blueprint, redirect, render_template, request
+from flask import Blueprint, redirect, render_template, request, url_for
 from monolith.forms import UserForm, RemoveUserForm
 from monolith.database import db, User
 from monolith.auth import current_user, login_required
@@ -26,7 +26,7 @@ def create_user():
             new_user.set_password(form.password.data) #pw should be hashed with some salt
             db.session.add(new_user)
             db.session.commit()
-            return redirect('/users')
+            return redirect(url_for('home.index'))
 
     return render_template('create_user.html', form=form)
 
