@@ -9,12 +9,6 @@ runs = Blueprint('runs', __name__)
 @runs.route('/runs/<id>', methods=['GET'])
 @login_required
 def run(id):
-    runId   = None
-    name    = None
-    date    = None
-    headers = None
-    values  = None
-
     run = db.session.query(Run).filter(Run.runner_id == current_user.id, Run.id == id).first()
     if run is not None:
         runId   = run.id

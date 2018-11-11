@@ -1,57 +1,29 @@
 <html>
 {% include 'header.html' %}
 
-<form action="" method="POST">
-  {{ form.hidden_tag() }}
-  <h2>Profile Info</h2>
+<div class="form">
+  <form action="" method="POST" style="margin: 0">
+    {{ form.hidden_tag() }}
+    <h2 class="formTitle">Profile Info</h2>
 
-  <fieldset>
-    {% for field in form.display %}
-      <label for="{{ field }}">{{ form[field].label }}</label>
-      {{ form[field] }}
-      {% if form[field].errors %}
-        {% for e in form[field].errors %}
-          <p class="help-block">{{ e }}</p>
-        {% endfor %}
-      {% endif %}
-    {% endfor %}
+    <fieldset>
+      {% for field in form.display %}
+        <label class="labelFor" for="{{ field }}">{{ form[field].label }}</label>
+        {{ form[field]() }}
+        {% if form[field].errors %}
+          {% for e in form[field].errors %}
+            <p class="help-block">{{ e }}</p>
+          {% endfor %}
+        {% endif %}
+      {% endfor %}
 
-  </fieldset>
-  <button type="submit">Update Profile</button>
-
-</form>
-
-{% include 'footer.html' %}
-</html>
-
-
-<!-- <html>
-{% include 'header.html' %}
-<form action="" method="POST">
-  <div class="divTable profileTable">
-    <div class="divTB">
-        {{ form.hidden_tag() }}
-        {% for field in form.display %}
-          <div class="divTR">
-            <div class="divTD text-right">{{ form[field].label }}</div>
-            <div class="divTD">
-              {{ form[field](class_='profileInputText') }}
-              {% if form[field].errors %}
-                {% for e in form[field].errors %}
-                  <p class="help-block">{{ e }}</p>
-                {% endfor %}
-              {% endif %}
-            </div>
-          </div>
-        {% endfor %}
-          <div class="divTR">
-          <div class="divTD"></div>
-          <div class="divTD"><input type="submit" value="Update Profile"></div>
-        </div>
-      
-    </div>
-  </div>
+    </fieldset>
+    <button class="button buttonJeans" type="submit">Update Profile</button>
   </form>
+  <form action="{{url_for('users.remove_user')}}" method="GET">
+    <button class="button buttonPumpkinDark" type="submit">Delete Profile</button>
+  </form>
+</div>
+
 {% include 'footer.html' %}
 </html>
- -->
