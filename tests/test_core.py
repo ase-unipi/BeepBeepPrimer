@@ -260,6 +260,7 @@ def test_login_logout(client, background_app, celery_session_worker, db_instance
 
     rv = client.post('/login', data=dict(email='email@email.com', password='p'), follow_redirects=True)
 
+
     assert b'Hi email@email.com' in rv.data
     assert b'Authorize Strava Access' in rv.data
 
@@ -277,6 +278,7 @@ def test_login_delete(client, db_instance, background_app, celery_session_worker
     assert db_instance.session.query(User).count() == 1
 
     rv = client.post('/login', data=dict(email='email@email.com', password='p'), follow_redirects=True)
+
 
     assert b'Hi email@email.com' in rv.data
     assert b'Authorize Strava Access' in rv.data
@@ -314,6 +316,8 @@ def test_fetch_with_no_valid_token(client, db_instance, background_app, celery_s
     assert db_instance.session.query(User).count() == 1
 
     rv = client.post('/login', data=dict(email='email@email.com', password='p'), follow_redirects=True)
+
+    
     assert b'Hi email@email.com' in rv.data
     assert b'Authorize Strava Access' in rv.data
     with mock.patch('monolith.views.auth.Client') as mocked:
@@ -340,6 +344,7 @@ def test_login_delete_strava(client, db_instance, background_app, celery_session
     assert db_instance.session.query(User).count() == 1
 
     rv = client.post('/login', data=dict(email='email@email.com', password='p'), follow_redirects=True)
+
     assert b'Hi email@email.com' in rv.data
     assert b'Authorize Strava Access' in rv.data
     with mock.patch('monolith.views.auth.Client') as mocked:
@@ -390,6 +395,7 @@ def test_create_runs(client, background_app, db_instance, celery_session_worker)
                                    weight='1', max_hr='1', rest_hr='1', vo2max='1', ), follow_redirects=True)
 
         rv = client.post('/login', data=dict(email='email@email.com', password='p'), follow_redirects=True)
+
         assert b'Hi email@email.com' in rv.data
         assert b'Authorize Strava Access' in rv.data
 
