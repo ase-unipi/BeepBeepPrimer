@@ -1,21 +1,21 @@
 from flask_wtf import FlaskForm
 from wtforms import Form, RadioField, SubmitField, validators
 import wtforms as f
-from wtforms.validators import DataRequired
+from wtforms.validators import DataRequired, NumberRange, Email
 
 
 class LoginForm(FlaskForm):
-    email = f.StringField('Email', validators=[DataRequired()])
-    password = f.PasswordField('Password', validators=[DataRequired()])
+    email = f.StringField('Email', validators=[DataRequired("Insert a valid email."), Email])
+    password = f.PasswordField('Password', validators=[DataRequired("Insert your password")])
     display = ['email', 'password']
 
 
 class UserForm(FlaskForm):
-    email = f.StringField('Email', validators=[DataRequired()])
-    firstname = f.StringField('Firstname')
-    lastname = f.StringField('Lastname')
-    password = f.PasswordField('Password')
-    age = f.IntegerField('Age')
+    email = f.StringField('Email', validators=[DataRequired("Insert a valid email."), Email()])
+    firstname = f.StringField('Firstname', validators=[DataRequired("Insert your first name.")])
+    lastname = f.StringField('Lastname', validators=[DataRequired("Insert your last name")])
+    password = f.PasswordField('Password', validators=[DataRequired("Insert a valid password")])
+    age = f.IntegerField('Age', validators=[NumberRange(min=0)])
     weight = f.FloatField('Weight')
     max_hr = f.IntegerField('Max_hr')
     rest_hr = f.IntegerField('Rest_hr')
@@ -26,15 +26,15 @@ class UserForm(FlaskForm):
 
 
 class DeleteForm(FlaskForm):
-    password = f.PasswordField('Password', validators=[DataRequired()])
+    password = f.PasswordField('Password', validators=[DataRequired("Insert a valid password")])
     display = ['password']
 
 
 class ObjectiveForm(FlaskForm):
-    name = f.StringField('Name', validators=[DataRequired()])
-    start_date = f.DateField('Start date', validators=[DataRequired()])
-    end_date = f.DateField('End Date', validators=[DataRequired()])
-    target_distance = f.FloatField('Target Distance', validators=[DataRequired()])
+    name = f.StringField('Name', validators=[DataRequired("Insert the objective name")])
+    start_date = f.DateField('Start date', validators=[DataRequired("Insert when to start the objective")])
+    end_date = f.DateField('End Date', validators=[DataRequired("Insert when to end the objective")])
+    target_distance = f.FloatField('Target Distance', validators=[DataRequired("Insert the target distance")])
 
     display = ['name', 'start_date', 'end_date', 'target_distance']
 
