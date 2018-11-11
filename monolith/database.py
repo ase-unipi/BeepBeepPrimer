@@ -1,11 +1,8 @@
 # encoding: utf8
 from werkzeug.security import generate_password_hash, check_password_hash
-import enum
 from sqlalchemy.orm import relationship
 from flask_sqlalchemy import SQLAlchemy
-from datetime import time, datetime, timedelta
-import math
-
+from datetime import datetime
 
 db = SQLAlchemy()
 
@@ -101,3 +98,33 @@ class Report(db.Model):
 
     def set_decision(self,choice):
         self.choice_time = (float(choice)*3600.0)
+
+
+class Challenge(db.Model):
+    __tablename__ = 'challenge'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    name = db.Column(db.Unicode(128))
+    confront = db.Column(db.Integer)
+    distance = db.Column(db.Float)
+    elapsed_time = db.Column(db.Float)
+    average_speed = db.Column(db.Float)
+    runner_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    runner = relationship('User', foreign_keys='Challenge.runner_id')
+
+    def setname(self,name):
+        self.name = name
+
+    def setconfront(self,idconf):
+        self.confront = idconf
+
+    def setdistance(self,dist):
+        self.distance = dist
+
+    def setelapsedtime(self,elapstime):
+        self.elapsed_time = elapstime
+
+    def setaveragespeed(self,avgspeed):
+        self.average_speed = avgspeed
+
+    def setrunner(self,iduserrun):
+        self.runner_id = iduserrun
