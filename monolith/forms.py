@@ -38,6 +38,17 @@ class ObjectiveForm(FlaskForm):
 
     display = ['name', 'start_date', 'end_date', 'target_distance']
 
+    def validate(self):
+        if not FlaskForm.validate(self):
+            return False
+        result = True
+
+        # Check start_date < end_date
+        if self.start_date.data > self.end_date.data:
+            result = False
+
+        return result
+
 
 class MailForm(FlaskForm):
     setting_mail = RadioField('setting', choices=[('6', '6 hours'), ('12', '12 hours'), ('24','24 hours')])
