@@ -22,12 +22,12 @@ def make_and_login_user(client, db_instance):
 
     assert response.status_code == 200
     print(response.data.decode('ascii'))
-    assert b'<h1>User List</h1>' in response.data
+    assert b'> Please Login or Register </' in response.data
 
     response = client.post('/login', follow_redirects=True, data=dict(email='test@email.com', password='1'))
     assert response.status_code == 200
-    assert b'Hi test@email.com!' in response.data
-    assert b'Authorize Strava Access' in response.data
+    print(response.data.decode('ascii'))
+    assert b'>Hi test@email.com </' in response.data
 
 def createRun(
         db_instance,
@@ -90,7 +90,7 @@ def test_create_challenge_get(client, db_instance, celery_session_worker, make_a
     response = client.get('/create_challenge', follow_redirects=True)
     print(response.data.decode('ascii'))
     assert response.status_code == 200
-    assert b'<h1>Challenge yourself!</h1>' in response.data
+    assert b'>Challenge yourself!</' in response.data
 
 
 def test_create_challenge_post_wrong_parameter(client, db_instance, celery_session_worker, make_and_login_user):
@@ -121,12 +121,11 @@ def test_create_challenge_post_good_parameter(client, db_instance, celery_sessio
                            data=dict(id_run='1'))
     print(response.data.decode('ascii'))
     assert response.status_code == 200
-    assert b'<h1>Challenge yourself!</h1>' in response.data
-    assert b'<a href="/create_challenge"> List Challenges </a>' in response.data
-    assert b'>test run 1<' in response.data
-    assert b'>test run 2<' not in response.data
-    assert b'>test run 3<' not in response.data
-    assert b'>test run 4<' in response.data
+    assert b'>Challenge yourself!</' in response.data
+    assert b'<td class="text-center header" style="width: 48%;">test run 1</td>' in response.data
+    assert b'>test run 2</' not in response.data
+    assert b'>test run 3</' not in response.data
+    assert b'>test run 4</' in response.data
 
     assert db_instance.session.query(Challenge).count() == 1
     assert db_instance.session.query(Challenge).filter(Challenge.run_challenged_id == 1).count() == 1
@@ -136,12 +135,11 @@ def test_create_challenge_post_good_parameter(client, db_instance, celery_sessio
                            data=dict(id_run='2'))
     print(response.data.decode('ascii'))
     assert response.status_code == 200
-    assert b'<h1>Challenge yourself!</h1>' in response.data
-    assert b'<a href="/create_challenge"> List Challenges </a>' in response.data
-    assert b'>test run 1<' not in response.data
-    assert b'>test run 2<' in response.data
-    assert b'>test run 3<' not in response.data
-    assert b'>test run 4<' in response.data
+    assert b'>Challenge yourself!</' in response.data
+    assert b'<td class="text-center header" style="width: 48%;">test run 2</td>' in response.data
+    assert b'>test run 1</' not in response.data
+    assert b'>test run 3</' not in response.data
+    assert b'>test run 4</' in response.data
 
     assert db_instance.session.query(Challenge).count() == 2
     assert db_instance.session.query(Challenge).filter(Challenge.run_challenged_id == 1).count() == 1
@@ -152,12 +150,11 @@ def test_create_challenge_post_good_parameter(client, db_instance, celery_sessio
                            data=dict(id_run='3'))
     print(response.data.decode('ascii'))
     assert response.status_code == 200
-    assert b'<h1>Challenge yourself!</h1>' in response.data
-    assert b'<a href="/create_challenge"> List Challenges </a>' in response.data
-    assert b'>test run 1<' not in response.data
-    assert b'>test run 2<' not in response.data
-    assert b'>test run 3<' in response.data
-    assert b'>test run 4<' in response.data
+    assert b'>Challenge yourself!</' in response.data
+    assert b'<td class="text-center header" style="width: 48%;">test run 3</td>' in response.data
+    assert b'>test run 1</' not in response.data
+    assert b'>test run 2</' not in response.data
+    assert b'>test run 4</' in response.data
 
     assert db_instance.session.query(Challenge).count() == 3
     assert db_instance.session.query(Challenge).filter(Challenge.run_challenged_id == 1).count() == 1
@@ -168,12 +165,11 @@ def test_create_challenge_post_good_parameter(client, db_instance, celery_sessio
                            data=dict(id_run='4'))
     print(response.data.decode('ascii'))
     assert response.status_code == 200
-    assert b'<h1>Challenge yourself!</h1>' in response.data
-    assert b'<a href="/create_challenge"> List Challenges </a>' in response.data
-    assert b'>test run 1<' not in response.data
-    assert b'>test run 2<' not in response.data
-    assert b'>test run 3<' not in response.data
-    assert b'>test run 4<' in response.data
+    assert b'>Challenge yourself!</' in response.data
+    assert b'<td class="text-center header" style="width: 48%;">test run 4</td>' in response.data
+    assert b'>test run 1</' not in response.data
+    assert b'>test run 2</' not in response.data
+    assert b'>test run 3</' not in response.data
 
     assert db_instance.session.query(Challenge).count() == 4
     assert db_instance.session.query(Challenge).filter(Challenge.run_challenged_id == 1).count() == 1
@@ -183,7 +179,7 @@ def test_create_challenge_id_challenge_get_wrong_resource(client, db_instance, c
     response = client.get('/create_challenge/1', follow_redirects=True)
     print(response.data.decode('ascii'))
     assert response.status_code == 200
-    assert b'Hi test@email.com!' in response.data
+    assert b'>Hi test@email.com </' in response.data
 
 
 def test_create_challenge_id_challenge_get_good_resource(client, db_instance, celery_session_worker, make_and_login_user):
@@ -211,50 +207,46 @@ def test_create_challenge_id_challenge_get_good_resource(client, db_instance, ce
     response = client.get('/create_challenge/1', follow_redirects=True)
     print(response.data.decode('ascii'))
     assert response.status_code == 200
-    assert b'<h1>Challenge yourself!</h1>' in response.data
-    assert b'<a href="/create_challenge"> List Challenges </a>' in response.data
-    assert b'>test run 1<' in response.data
-    assert b'>test run 2<' not in response.data
-    assert b'>test run 3<' not in response.data
-    assert b'>test run 4<' in response.data
+    assert b'>Challenge yourself!</' in response.data
+    assert b'<td class="text-center header" style="width: 48%;">test run 1</td>' in response.data
+    assert b'>test run 2</' not in response.data
+    assert b'>test run 3</' not in response.data
+    assert b'>test run 4</' in response.data
 
     response = client.get('/create_challenge/2', follow_redirects=True)
     print(response.data.decode('ascii'))
     assert response.status_code == 200
-    assert b'<h1>Challenge yourself!</h1>' in response.data
-    assert b'<a href="/create_challenge"> List Challenges </a>' in response.data
-    assert b'>test run 1<' not in response.data
-    assert b'>test run 2<' in response.data
-    assert b'>test run 3<' not in response.data
-    assert b'>test run 4<' in response.data
+    assert b'>Challenge yourself!</' in response.data
+    assert b'<td class="text-center header" style="width: 48%;">test run 2</td>' in response.data
+    assert b'>test run 1</' not in response.data
+    assert b'>test run 3</' not in response.data
+    assert b'>test run 4</' in response.data
 
     response = client.get('/create_challenge/3', follow_redirects=True)
     print(response.data.decode('ascii'))
     assert response.status_code == 200
-    assert b'<h1>Challenge yourself!</h1>' in response.data
-    assert b'<a href="/create_challenge"> List Challenges </a>' in response.data
-    assert b'>test run 1<' not in response.data
-    assert b'>test run 2<' not in response.data
-    assert b'>test run 3<' in response.data
-    assert b'>test run 4<' in response.data
+    assert b'>Challenge yourself!</' in response.data
+    assert b'<td class="text-center header" style="width: 48%;">test run 3</td>' in response.data
+    assert b'>test run 1</' not in response.data
+    assert b'>test run 2</' not in response.data
+    assert b'>test run 4</' in response.data
 
     response = client.get('/create_challenge/4', follow_redirects=True)
     print(response.data.decode('ascii'))
     assert response.status_code == 200
-    assert b'<h1>Challenge yourself!</h1>' in response.data
-    assert b'<a href="/create_challenge"> List Challenges </a>' in response.data
-    assert b'>test run 1<' not in response.data
-    assert b'>test run 2<' not in response.data
-    assert b'>test run 3<' not in response.data
-    assert b'>test run 4<' in response.data
+    assert b'>Challenge yourself!</' in response.data
+    assert b'<td class="text-center header" style="width: 48%;">test run 4</td>' in response.data
+    assert b'>test run 1</' not in response.data
+    assert b'>test run 2</' not in response.data
+    assert b'>test run 3</' not in response.data
 
 
 def test_terminate_challenge_get(client, db_instance, celery_session_worker, make_and_login_user):
     response = client.get('/terminate_challenge', follow_redirects=True)
     print(response.data.decode('ascii'))
     assert response.status_code == 200
-    assert b'<h1>Challenge yourself!</h1>' in response.data
-    assert b'<a href="/"> Create a new challenge </a>' in response.data
+    assert b'>Challenge yourself!</' in response.data
+    assert b'>Create a new challenge</' in response.data
 
 
 def test_terminate_challenge_post_wrong_parameters(client, db_instance, celery_session_worker, make_and_login_user):
@@ -264,8 +256,8 @@ def test_terminate_challenge_post_wrong_parameters(client, db_instance, celery_s
                            data=dict(id_challenger='2', id_challenge=1))
     print(response.data.decode('ascii'))
     assert response.status_code == 200
-    assert b'<h1>Challenge yourself!</h1>' in response.data
-    assert b'<a href="/"> Create a new challenge </a>' in response.data
+    assert b'>Challenge yourself!</' in response.data
+    assert b'>Create a new challenge</' in response.data
 
     assert db_instance.session.query(Challenge).count() == 0
     createRun(db_instance, id_=1, runner_id=1, average_speed=2)
@@ -274,8 +266,8 @@ def test_terminate_challenge_post_wrong_parameters(client, db_instance, celery_s
                            data=dict(id_run='1'))
     print(response.data.decode('ascii'))
     assert response.status_code == 200
-    assert b'<h1>Challenge yourself!</h1>' in response.data
-    assert b'<a href="/create_challenge"> List Challenges </a>' in response.data
+    assert b'>Challenge yourself!</' in response.data
+    assert b'<td class="text-center header" style="width: 48%;">test run 1</td>' in response.data
 
     ch1 = db_instance.session.query(Challenge).first()
 
@@ -284,8 +276,8 @@ def test_terminate_challenge_post_wrong_parameters(client, db_instance, celery_s
                            data=dict(id_challenger='2', id_challenge=1))
     print(response.data.decode('ascii'))
     assert response.status_code == 200
-    assert b'<h1>Challenge yourself!</h1>' in response.data
-    assert b'<a href="/"> Create a new challenge </a>' in response.data
+    assert b'>Challenge yourself!</' in response.data
+    assert b'>Create a new challenge</' in response.data
 
     assert db_instance.session.query(Challenge).count() == 1
     assert ch1.run_challenger_id is None
@@ -296,8 +288,8 @@ def test_terminate_challenge_post_wrong_parameters(client, db_instance, celery_s
                            data=dict(id_challenger='1', id_challenge=2))
     print(response.data.decode('ascii'))
     assert response.status_code == 200
-    assert b'<h1>Challenge yourself!</h1>' in response.data
-    assert b'<a href="/"> Create a new challenge </a>' in response.data
+    assert b'>Challenge yourself!</' in response.data
+    assert b'>Create a new challenge</' in response.data
 
     assert db_instance.session.query(Challenge).count() == 1
 
@@ -307,8 +299,8 @@ def test_terminate_challenge_post_wrong_parameters(client, db_instance, celery_s
                            data=dict(id_challenger='1', id_challenge=1))
     print(response.data.decode('ascii'))
     assert response.status_code == 200
-    assert b'<h1>Challenge yourself!</h1>' in response.data
-    assert b'<a href="/"> Create a new challenge </a>' in response.data
+    assert b'>Challenge yourself!</' in response.data
+    assert b'>Create a new challenge</' in response.data
 
     assert db_instance.session.query(Challenge).count() == 1
 
@@ -321,8 +313,8 @@ def test_terminate_challenge_post_wrong_parameters(client, db_instance, celery_s
                            data=dict(id_challenger='2', id_challenge=1))
     print(response.data.decode('ascii'))
     assert response.status_code == 200
-    assert b'<h1>Challenge yourself!</h1>' in response.data
-    assert b'<a href="/"> Create a new challenge </a>' in response.data
+    assert b'>Challenge yourself!</' in response.data
+    assert b'>Create a new challenge</' in response.data
 
     assert db_instance.session.query(Challenge).count() == 1
     assert db_instance.session\
@@ -356,14 +348,13 @@ def test_terminate_challenge_post_good_parameter_result(client, db_instance, cel
     query_result = db_instance.session.query(Challenge).filter(Challenge.run_challenger_id == 2).first()
     print(response.data.decode('ascii'))
     assert response.status_code == 200
-    assert b'<h1>Challenge yourself!</h1>' in response.data
-    assert b'<a href="/create_challenge"> List Challenges </a>' in response.data
-    assert bytes('>test run 1<', 'ascii') in response.data
-    assert bytes('>test run 2<', 'ascii') in response.data
-    assert bytes('>test run 3<', 'ascii') not in response.data
-    assert bytes('>test run 4<', 'ascii') not in response.data
-    assert bytes('>test run 5<', 'ascii') not in response.data
-    assert bytes('>test run 6<', 'ascii') not in response.data
+    assert b'>Challenge yourself!</' in response.data
+    assert b'<td class="text-center header" style="width: 48%;">test run 1</td>' in response.data
+    assert b'test run 2' in response.data
+    assert b'test run 3' not in response.data
+    assert b'test run 4' not in response.data
+    assert b'test run 5' not in response.data
+    assert b'test run 6' not in response.data
 
     assert query_result.run_challenger_id == 2
     assert query_result.result is True
@@ -375,14 +366,13 @@ def test_terminate_challenge_post_good_parameter_result(client, db_instance, cel
     query_result = db_instance.session.query(Challenge).filter(Challenge.run_challenger_id == 3).first()
     print(response.data.decode('ascii'))
     assert response.status_code == 200
-    assert b'<h1>Challenge yourself!</h1>' in response.data
-    assert b'<a href="/create_challenge"> List Challenges </a>' in response.data
-    assert bytes('>test run 1<', 'ascii') in response.data
-    assert bytes('>test run 2<', 'ascii') not in response.data
-    assert bytes('>test run 3<', 'ascii') in response.data
-    assert bytes('>test run 4<', 'ascii') not in response.data
-    assert bytes('>test run 5<', 'ascii') not in response.data
-    assert bytes('>test run 6<', 'ascii') not in response.data
+    assert b'>Challenge yourself!</' in response.data
+    assert b'<td class="text-center header" style="width: 48%;">test run 1</td>' in response.data
+    assert b'test run 2' not in response.data
+    assert b'test run 3' in response.data
+    assert b'test run 4' not in response.data
+    assert b'test run 5' not in response.data
+    assert b'test run 6' not in response.data
 
     assert query_result.run_challenger_id == 3
     assert query_result.result is False
@@ -394,14 +384,13 @@ def test_terminate_challenge_post_good_parameter_result(client, db_instance, cel
     query_result = db_instance.session.query(Challenge).filter(Challenge.run_challenger_id == 4).first()
     print(response.data.decode('ascii'))
     assert response.status_code == 200
-    assert b'<h1>Challenge yourself!</h1>' in response.data
-    assert b'<a href="/create_challenge"> List Challenges </a>' in response.data
-    assert bytes('>test run 1<', 'ascii') in response.data
-    assert bytes('>test run 2<', 'ascii') not in response.data
-    assert bytes('>test run 3<', 'ascii') not in response.data
-    assert bytes('>test run 4<', 'ascii') in response.data
-    assert bytes('>test run 5<', 'ascii') not in response.data
-    assert bytes('>test run 6<', 'ascii') not in response.data
+    assert b'>Challenge yourself!</' in response.data
+    assert b'<td class="text-center header" style="width: 48%;">test run 1</td>' in response.data
+    assert b'test run 2' not in response.data
+    assert b'test run 3' not in response.data
+    assert b'test run 4' in response.data
+    assert b'test run 5' not in response.data
+    assert b'test run 6' not in response.data
 
     assert query_result.run_challenger_id == 4
     assert query_result.result
@@ -413,14 +402,13 @@ def test_terminate_challenge_post_good_parameter_result(client, db_instance, cel
     query_result = db_instance.session.query(Challenge).filter(Challenge.run_challenger_id == 5).first()
     print(response.data.decode('ascii'))
     assert response.status_code == 200
-    assert b'<h1>Challenge yourself!</h1>' in response.data
-    assert b'<a href="/create_challenge"> List Challenges </a>' in response.data
-    assert bytes('>test run 1<', 'ascii') in response.data
-    assert bytes('>test run 2<', 'ascii') not in response.data
-    assert bytes('>test run 3<', 'ascii') not in response.data
-    assert bytes('>test run 4<', 'ascii') not in response.data
-    assert bytes('>test run 5<', 'ascii') in response.data
-    assert bytes('>test run 6<', 'ascii') not in response.data
+    assert b'>Challenge yourself!</' in response.data
+    assert b'<td class="text-center header" style="width: 48%;">test run 1</td>' in response.data
+    assert b'test run 2' not in response.data
+    assert b'test run 3' not in response.data
+    assert b'test run 4' not in response.data
+    assert b'test run 5' in response.data
+    assert b'test run 6' not in response.data
 
     assert query_result.run_challenger_id == 5
     assert query_result.result is False
@@ -432,14 +420,13 @@ def test_terminate_challenge_post_good_parameter_result(client, db_instance, cel
     query_result = db_instance.session.query(Challenge).filter(Challenge.run_challenger_id == 6).first()
     print(response.data.decode('ascii'))
     assert response.status_code == 200
-    assert b'<h1>Challenge yourself!</h1>' in response.data
-    assert b'<a href="/create_challenge"> List Challenges </a>' in response.data
-    assert bytes('>test run 1<', 'ascii') in response.data
-    assert bytes('>test run 2<', 'ascii') not in response.data
-    assert bytes('>test run 3<', 'ascii') not in response.data
-    assert bytes('>test run 4<', 'ascii') not in response.data
-    assert bytes('>test run 5<', 'ascii') not in response.data
-    assert bytes('>test run 6<', 'ascii') in response.data
+    assert b'>Challenge yourself!</' in response.data
+    assert b'<td class="text-center header" style="width: 48%;">test run 1</td>' in response.data
+    assert b'test run 2' not in response.data
+    assert b'test run 3' not in response.data
+    assert b'test run 4' not in response.data
+    assert b'test run 5' not in response.data
+    assert b'test run 6' in response.data
 
     assert query_result.run_challenger_id == 6
     assert query_result.result is False
