@@ -55,12 +55,12 @@ class ProfileForm(UserForm):
    
 class TrainingObjectiveSetterForm(FlaskForm):
     start_date = f.DateField('Start date',
-                             validators=[DataRequired(message='Not a valid date format'), 
+                             validators=[DataRequired(message='Not a valid date'), 
                                          fc.NotLessThenToday()],
                              widget=f.widgets.Input(input_type="date"))
     end_date = f.DateField('End date',
-                           validators=[DataRequired(message='Not a valid date format'),
-                                       fc.NotLessThan('start_date', message='End date must not be less than Start date'),
+                           validators=[DataRequired(message='Not a valid date'),
+                                       fc.NotLessThan('start_date', message='Cannot be before Start date'),
                                        fc.NotLessThenToday()],
                            widget=f.widgets.Input(input_type="date"))
     kilometers_to_run = f.FloatField('Kilometers to run',
@@ -75,12 +75,12 @@ class TrainingObjectiveSetterForm(FlaskForm):
 
 
 class TrainingObjectiveVisualizerForm(FlaskForm):
-    start_date = f.DateField('Start date')
-    end_date = f.DateField('End date')
-    kilometers_to_run = f.FloatField('Kilometers to run')
-    traveled_kilometers = f.FloatField('Traveled kilometers')
-    status = f.StringField('Status')
-    description = f.StringField('Description')
+    start_date  = f.DateField('Start')
+    end_date    = f.DateField('End')
+    kilometers_to_run   = f.FloatField('Km to Run')
+    traveled_kilometers = f.FloatField('Traveled Km')
+    status              = f.StringField('Status')
+    description         = f.StringField('Description')
 
     display = ['start_date',
                'end_date',
