@@ -60,7 +60,7 @@ def terminate_challenge():
 		current_challenge = db.session.query(Challenge).filter(Challenge.id == id_challenge).first()
 		current_run = db.session.query(Run).filter(Run.id == id_challenger).first()
 		if current_run is not None and current_challenge is not None:
-			if current_run.start_date > current_challenge.start_date
+			if current_run.start_date > current_challenge.start_date:
 				current_challenge.challenger = current_run
 				current_challenge.result = determine_result(current_challenge, current_run)
 				db.session.commit()
