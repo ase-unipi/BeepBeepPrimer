@@ -1,91 +1,48 @@
 <html>
-  <head>
-      <title> Statistics of the last 10 runs </title>
+{% include 'header.html' %}
 
+  <div class="content">
+    {% if current_user.is_authenticated %}
+      <h1 class="textJeansDark text-center">Statistics of the last 10 runs</h1>
+      <!-- If the user hasn't performed any run yet-->
+      {% if not runs %}
+          <h1 class="textPumpkingDark text-center">Resources requested are not available!</h1>
+          <p class="textPumpkingDark text-center">Try again when you have actually registered a run or have linked your Strava account!</p>
+      {% else %}
 
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
-    <meta http-equiv="Pragma" content="no-cache" />
-    <meta http-equiv="Expires" content="0" />
-
-  </head>
-
-  <body>
-
-
-   {% if current_user.is_authenticated %}
-        <h1> {{ current_user.email }}'s Statistics of the last 10 runs</h1>
-       <p> Your Runner ID: {{ runner_id }}</p>
-
-       <br>
-       <hr>
-
-        <!-- If the user hasn't performed any run yet-->
-        {% if not runs%}
-            <h1>Resources requested are not available! </h1>
-
-            <p> Try again when you have actually registered a run or have linked your Strava account ! </p>
-        {% else %}
-             <!-- User successfully logged in and does have runs !-->
-            <h3> Distance over Time </h3>
-
-             {% if not distance_plot_filename %}
-                <p> Distance plot could not be generated!</p>
-                {% else %}
-
-                 <img src="{{url_for(plots_html_directory, filename=distance_plot_filename)}}" />
-             {% endif %}
-
-            <br>
-            <hr>
-
-            <h3> Average Speed over Time </h3>
-
-             {% if not avg_speed_plot_filename %}
-                  <p> Average speed plot could not be generated!</p>
-                {% else %}
-                    <img src="{{url_for(plots_html_directory, filename=avg_speed_plot_filename)}}"/>
-             {% endif %}
-
-            <br>
-            <hr>
-
-            <h3> Average Heartrates over Time</h3>
-
-             {% if not avg_heartrate_plot_filename %}
-                  <p> Average heartrates' plot could not be generated!</p>
-            {% else %}
-                <img src="{{url_for(plots_html_directory, filename=avg_heartrate_plot_filename)}}"/>
-             {% endif %}
-
-            <br>
-            <hr>
-
-            <h3> Runs' Duration </h3>
-
-             {% if not elapsed_times_plot_filename %}
-                  <p> Runs' duration plot could not be generated!</p>
-                {% else %}
-                <img src="{{url_for(plots_html_directory, filename=elapsed_times_plot_filename)}}"/>
-             {% endif %}
-
-            <br>
-            <hr>
-
-              <h3> Total Elevation Gain </h3>
-
-            {% if not elevation_gain_filename %}
-                  <p> Elevation gain plot could not be generated!</p>
-            {% else %}
-                <img src="{{url_for(plots_html_directory, filename=elevation_gain_filename)}}"/>
+      <div style="width: 90vw">
+        <div id="row">
+            {% if distance_plot_filename %}
+              <div class="items">
+                <img class="plot" src="{{url_for(plots_html_directory, filename=distance_plot_filename)}}" />
+              </div>
             {% endif %}
-
-
-        {% endif %}
-
+            {% if avg_speed_plot_filename %}
+              <div class="items">
+                  <img class="plot" src="{{url_for(plots_html_directory, filename=avg_speed_plot_filename)}}"/>
+              </div>
+            {% endif %}
+            {% if avg_heartrate_plot_filename %}
+              <div class="items">
+                <img class="plot" src="{{url_for(plots_html_directory, filename=avg_heartrate_plot_filename)}}"/>
+              </div>
+            {% endif %}
+            {% if elapsed_times_plot_filename %}
+              <div class="items">
+                <img class="plot" src="{{url_for(plots_html_directory, filename=elapsed_times_plot_filename)}}"/>
+              </div>
+            {% endif %}
+            {% if elevation_gain_filename %}
+              <div class="items">
+                <img class="plot" src="{{url_for(plots_html_directory, filename=elevation_gain_filename)}}"/>   
+              </div>
+            {% endif %}
+        </div>
+      </div>
+      {% endif %}
     {% else %}
-       <h1> You need to be logged in to view your Statistics!</h1>
-
+      <h1> You need to be logged in to view your Statistics!</h1>
     {% endif %}
-
-  </body>
+  </div>
+  {% include 'footer.html' %}
 </html>
