@@ -4,7 +4,7 @@ from monolith.auth import admin_required, login_required
 from monolith.forms import TrainingObjectiveSetterForm, TrainingObjectiveVisualizerForm
 from flask_login import current_user
 from sqlalchemy.sql import between, func, text
-from datetime import date
+from datetime import date 
 
 
 training_objectives = Blueprint('training_objectives', __name__)
@@ -75,4 +75,6 @@ def _training_objectives():
     """.format(current_user.id,current_user.id))
     list_of_tos = db.engine.execute(sql_text)
 
-    return render_template("training_objectives.html",list_of_tos=list_of_tos,setter_form=setter_form,visualizer_form=visualizer_form)
+    list_of_tos_count = db.session.query(Training_Objective).filter(Training_Objective.runner_id == current_user.id).count()
+
+    return render_template("training_objectives.html",list_of_tos=list_of_tos,setter_form=setter_form,visualizer_form=visualizer_form,list_of_tos_count=list_of_tos_count)

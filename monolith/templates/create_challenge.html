@@ -7,6 +7,7 @@
     {% if challenge_id is none %}    
       <h2 class="textPumpkingDark text-center"><a href="{{url_for('home.index')}}">Create a new challenge</a></h2>
         
+        {% if results|length > 0 %}
         <table>
           <thead>
             <tr>
@@ -52,7 +53,7 @@
             {% endfor %}
           </tbody>
         </table>
-
+        {% endif %}
     {% else %}
 
         <table>
@@ -106,36 +107,41 @@
         </table>
 
         {% if run_challenger is none %}
-          <table>
-            <thead>
-              <td class="text-center"> Select </td>
-              <td class="text-center"> Title </td>
-              <td class="text-center"> Date </td>
-              <td class="text-center"> Distance </td>
-              <td class="text-center"> AVG Speed </td>
-              <td class="text-center"> Time </td>
-            </thead>
-            <tbody>
-              {% for run in runs %}
-                <tr>
-                  <form action="{{ url_for('user_challenge.terminate_challenge') }}" method="post">
-                    <td class="text-center"> 
-                      <input type="hidden" name="id_challenger" value={{run.id}} />
-                      <input type="hidden" name="id_challenge" value={{challenge_id}} />
-                      <a href="#" onclick="document.forms[{{loop.index}}-1].submit()"> 
-                      <img class="icon" src="{{url_for('static', filename='challenge.png')}}"/></a>
-                    </td>
-                  </form> 
 
-                  <td>{{ run.name }}</td>
-                  <td>{{ run.start_date.strftime('%d/%m/%y at %H:%M') }}</td>
-                  <td class="text-center">{{ "%s m" % run.distance }}</td>
-                  <td class="text-center">{{ "%s m/s" % run.average_speed }}</td>
-                  <td class="text-center">{{ "%s s" % run.elapsed_time }}</td>
-                </tr>
-              {% endfor %}
-            </tbody>
-          </table>
+        {% if runs.count() > 0 %}
+            <table>
+              <thead>
+                <td class="text-center"> Select </td>
+                <td class="text-center"> Title </td>
+                <td class="text-center"> Date </td>
+                <td class="text-center"> Distance </td>
+                <td class="text-center"> AVG Speed </td>
+                <td class="text-center"> Time </td>
+              </thead>
+              <tbody>
+                {% for run in runs %}
+                  <tr>
+                    <form action="{{ url_for('user_challenge.terminate_challenge') }}" method="post">
+                      <td class="text-center"> 
+                        <input type="hidden" name="id_challenger" value={{run.id}} />
+                        <input type="hidden" name="id_challenge" value={{challenge_id}} />
+                        <a href="#" onclick="document.forms[{{loop.index}}-1].submit()"> 
+                        <img class="icon" src="{{url_for('static', filename='challenge.png')}}"/></a>
+                      </td>
+                    </form> 
+
+                    <td>{{ run.name }}</td>
+                    <td>{{ run.start_date.strftime('%d/%m/%y at %H:%M') }}</td>
+                    <td class="text-center">{{ "%s m" % run.distance }}</td>
+                    <td class="text-center">{{ "%s m/s" % run.average_speed }}</td>
+                    <td class="text-center">{{ "%s s" % run.elapsed_time }}</td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          {% else %}
+            <h3 class="textPumpkingDark text-center">Register new runs to complete this challenge!</h3>
+          {% endif %}
         {% endif %}
       {%endif%}
 
