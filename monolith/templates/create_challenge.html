@@ -52,6 +52,10 @@
                 {% endfor %}
             </dl>
             <input class="btn btn-lg btn-primary btn-block"  type=submit value="Create"><br>
+            <p class="error">
+            {% for errmess in get_flashed_messages(False,['error']) %}
+                    <br>{{ errmess }}
+            {% endfor%}</p>
         </form>
     </div>
     {% endif %}

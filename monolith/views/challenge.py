@@ -9,7 +9,6 @@ challenge = Blueprint('challenge', __name__)
 @challenge.route('/challenge',methods=['GET'])
 @login_required
 def show_challenge():
-
     challenges = db.session.query(Challenge).filter(Challenge.id_user == current_user.id)
     if challenges is None:
         flash('You do not have any challenge', category='error')
@@ -65,18 +64,21 @@ def challenge_details(id):
 @challenge.route('/create_challenge', methods=['GET','POST'])
 @login_required
 def create_form_challenge():
+    status=200
     form = ChallengeForm()
-    runs = db.session.query(Run).filter(Run.runner_id == current_user.id)       #passage of runs for the visualization of the page
+    runs = db.session.query(Run).filter(Run.runner_id == current_user.id) #passage of runs for the visualization of the page
+    num_runs = runs.count()
     if request.method == 'POST':
         # extract the value of the two forms
         option_first = request.form['run_one']
         option_second = request.form['run_two']
-        run_option_first = db.session.query(Run).filter(Run.id == option_first).first()
-        run_option_second = db.session.query(Run).filter(Run.id == option_second).first()
-        print(run_option_first.id)
-        if run_option_first is None or run_option_second is None:
-            flash('The run/s do not exist', category='error')
+        if int(option_first)<1 or int(option_second)<1 or int(option_first)>num_runs or int(option_second)>num_runs or int(option_first) == int(option_second):
+            flash('The run/s do not exist or are the same', category='error')
+            status = 400
+            return render_template('create_challenge.html', runs=runs, form=form), status
         else:
+            run_option_first = db.session.query(Run).filter(Run.id == option_first).first()
+            run_option_second = db.session.query(Run).filter(Run.id == option_second).first()
             new_challenge = Challenge()
             name_option_first = run_option_first.name
             name_option_second = run_option_second.name
@@ -86,11 +88,7 @@ def create_form_challenge():
             new_challenge.set_challenge1_name(name_option_first)
             new_challenge.set_challenge2_run(option_second)
             new_challenge.set_challenge2_name(name_option_second)
-            db.session.add(new_challenge)
+            db.session.merge(new_challenge)
             db.session.commit()
-            # Check if the value are saved, yes they are
-            challenges = db.session.query(Challenge).filter(Challenge.id_user == current_user.id).first()
-            print(challenges.run_one)
-            return redirect('/challenge')
-
-    return render_template('create_challenge.html', runs=runs, form=form)
+            return redirect('/challenge') , status
+    return render_template('create_challenge.html', runs=runs, form=form) , status

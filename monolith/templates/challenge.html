@@ -32,11 +32,11 @@
         <h1 class="titlepage">List Challenge Run</h1><br>
         {% for challenge in challenges: %}
         <table>
-            <tr><td class="key">Challenge first id run: </td><td class="value"><p>{{ challenges.run_one }}</p></td></tr>
-            <tr><td class="key">Challenge first id name: </td><td class="value"><p>{{ challenges.name_run_one }}</p></td></tr>
-            <tr><td class="key">Challenge second id run: </td><td class="value"><p>{{ challenges.run_two }}</p></td></tr>
-            <tr><td class="key">Challenge second id name: </td><td class="value"><p>{{ challenges.name_run_two }}</p></td></tr>
-
+            <tr><td class="key">Challenge first id run: </td><td class="value"><p>{{ challenge.run_one }}</p></td></tr>
+            <tr><td class="key">Challenge first id name: </td><td class="value"><p>{{ challenge.name_run_one }}</p></td></tr>
+            <tr><td class="key">Challenge second id run: </td><td class="value"><p>{{ challenge.run_two }}</p></td></tr>
+            <tr><td class="key">Challenge second id name: </td><td class="value"><p>{{ challenge.name_run_two }}</p></td></tr>
+            <tr><td class="key">Vai alla challenge: </td><td class="value"><a href="/challenge/{{ challenge.id }}">Vai</a></td></tr>
         </table><br>
         {% endfor %}
     </div>
