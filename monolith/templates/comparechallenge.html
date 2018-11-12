@@ -16,7 +16,8 @@
           <li><a href="/">Home</a></li>
           <li><a href="/create_objective">Create Objective</a></li>
           <li><a href="/objectives">List Objectives</a></li>
-          <li class="active"><a href="/create_challenge">Create Challenge</a></li>
+          <li><a href="/create_challenge">Create Challenge</a></li>
+          <li class="active"><a href="/challenge/<id>">Compare Challenge</a></li>
           <li><a href="/challenge">Challenges</a></li>
           <li><a href="/statistics">Statistics</a></li>
           <li><a href="/settingreport">Setting Report</a></li>
@@ -28,31 +29,16 @@
         </ul>
     </div>
     <div class="container">
-        <h1 class="titlepage">Creation Challenge</h1>
-        {% if not current_user.strava_token %}
-             <p><a class="btn btn-primary" href="{{strava_auth_url}}">Authorize Strava Access</a></p>
-        {% else %}
-            <h3>Your last 10 runs</h3>
-            {% for run in runs %}
-                <p class="listrun"><a class="list" href="/run/{{run.id}}">{{run.id}} {{run.name}}</a></p>
-            {% endfor %}
-        {% endif %}
-        <h3>Challenge the run</h3>
-          <form action="" method="POST">
-            {{ form.hidden_tag() }}
-            <dl>
-                {% for field in form.display %}
-                  <dt>{{ form[field].label }}</dt>
-                  <dd>{{ form[field](class="form-control") }}</dd>
-                  {% if form[field].errors %}
-                    {% for e in form[field].errors %}
-                        <p class="help-block">{{ e }}</p>
-                    {% endfor %}
-                  {% endif %}
-                {% endfor %}
-            </dl>
-            <input class="btn btn-lg btn-primary btn-block"  type=submit value="Create"><br>
-        </form>
+        <h1 class="titlepage">Challenge runs</h1>
+        <table>
+            <tr><td></td><td class="value"><p>{{ run_one.id }} {{ name_run_one }}</p></td><td class="value">{{ run_two.id }} {{ name_run_two }}</td></tr>
+            <tr><td class="key">Distance: </td><td class="value"><p>{{ run_one.distance }}</p></td><td class="value">{{run_two.distance }}</td></tr>
+            <tr><td class="key">Elapsed_time: </td><td class="value"><p>{{ run_one.elapsed_time }}</p><td class="value">{{ run_two.elapsed_time }}</td></tr>
+            <tr><td class="key">Avg_speed: </td><td class="value"><p>{{ run_one.average_speed }}</p>m/s</td><td class="value">{{ run_two.average_speed }}</td></tr>
+        </table><br>
+             <p>{{ win_avg_speed }}</p><br>
+             <p>{{ win_distance }}</p><br>
+             <p>{{ win_time }}</p><br>
     </div>
     {% endif %}
 </body>

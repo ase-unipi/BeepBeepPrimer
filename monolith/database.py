@@ -99,32 +99,27 @@ class Report(db.Model):
     def set_decision(self,choice):
         self.choice_time = (float(choice)*3600.0)
 
-
 class Challenge(db.Model):
     __tablename__ = 'challenge'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    name = db.Column(db.Unicode(128))
-    confront = db.Column(db.Integer)
-    distance = db.Column(db.Float)
-    elapsed_time = db.Column(db.Float)
-    average_speed = db.Column(db.Float)
-    runner_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    runner = relationship('User', foreign_keys='Challenge.runner_id')
+    run_one = db.Column(db.Integer)
+    name_run_one = db.Column(db.Unicode(128))
+    run_two = db.Column(db.Integer)
+    name_run_two = db.Column(db.Unicode(128))
+    id_user = db.Column(db.Integer, db.ForeignKey('user.id'))
+    user = relationship('User', foreign_keys='Challenge.id_user')
 
-    def setname(self,name):
-        self.name = name
+    def set_challenge_user(self,id_usr):
+        self.id_user = id_usr
 
-    def setconfront(self,idconf):
-        self.confront = idconf
+    def set_challenge1_run(self,run_one):
+        self.run_one = run_one
 
-    def setdistance(self,dist):
-        self.distance = dist
+    def set_challenge2_run(self,run_two):
+        self.run_two = run_two
 
-    def setelapsedtime(self,elapstime):
-        self.elapsed_time = elapstime
+    def set_challenge1_name(self,name_one):
+        self.name_run_one = name_one
 
-    def setaveragespeed(self,avgspeed):
-        self.average_speed = avgspeed
-
-    def setrunner(self,iduserrun):
-        self.runner = iduserrun
+    def set_challenge2_name(self,name_two):
+        self.name_run_two = name_two

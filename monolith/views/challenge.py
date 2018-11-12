@@ -1,77 +1,96 @@
 from flask import Blueprint, render_template, request, make_response, flash
 from flask_login import current_user, login_required
 from werkzeug.utils import redirect
-
-from monolith.database import db, Run, Challenge, User
+from monolith.database import db, Run, Challenge
 from monolith.forms import ChallengeForm
-
 
 challenge = Blueprint('challenge', __name__)
 
-
-
-@challenge.route('/challenge', methods=['GET'])
+@challenge.route('/challenge',methods=['GET'])
 @login_required
 def show_challenge():
-    challenges = db.session.query(Challenge).filter(Challenge.runner_id == current_user.id)
-    return render_template('challenge.html', challenges=challenges)
 
-@challenge.route('challenge/<id>',methods=['GET'])
+    challenges = db.session.query(Challenge).filter(Challenge.id_user == current_user.id)
+    if challenges is None:
+        flash('You do not have any challenge', category='error')
+    return render_template("challenge.html", challenges=challenges)
+
+
+@challenge.route('/challenge/<id>',methods=['GET'])
 @login_required
-def confront_run(id):
+def challenge_details(id):
+
     win_distance = ""
     win_time = ""
     win_avg_speed = ""
-    run = db.session.query(Challenge).filter(Challenge.id == id)
-    if run.first() is None:
-        flash('There are no challenge for this run', category='error')
-        return make_response(render_template('create_challenge.html'), 409)
+    challenge = db.session.query(Challenge).filter(Challenge.id == id).first()
+    if challenge is None:
+        flash('The challenge does not exist', category='error')
+        return make_response(render_template('challenge.html'), 404)
     else:
-        run = run.first()
-        confront = db.session.query(Run).filter(Challenge.confront == run.confront)
-        confront = confront.first()
-        if confront.distance > run.distance:
-            win_distance = "You win for the distance field"
-        if confront.elapsed_time < run.elapsed_time:
-            win_time = "You win for the time"
-        if confront.average_speed > run.average_speed:
-            win_avg_speed = "You win for the average speed"
-    return render_template('comparechallenge.html', win_avg_speed=win_avg_speed, win_distance=win_distance, win_time=win_time )
+        run_one = db.session.query(Run).filter(Run.id == challenge.run_one).first()
+        run_two = db.session.query(Run).filter(Run.id == challenge.run_two).first()
+        name_run_one = run_one.name
+        name_run_two = run_two.name
 
+        if run_one is None or run_two is None:
+            flash('The run/s does not exist', category='error')
+            return make_response(render_template('challenge.html'), 404)
+        else:
+
+            if run_one.distance == run_two.distance:
+                win_distance = "The runs are equal for the distance field"
+            elif run_one.distance > run_two.distance:
+                win_distance = "The first run win for the distance field"
+            else:
+                win_distance = "The second run win for the distance field"
+
+            if run_one.elapsed_time == run_two.elapsed_time:
+                win_time = "The runs are equal for the time"
+            elif run_one.elapsed_time < run_two.elapsed_time:
+                win_time = "The first run win for the time"
+            else:
+                win_time = "The second run win for the time"
+
+            if run_one.average_speed > run_two.average_speed:
+                win_avg_speed = "The runs are equal for the average speed"
+            elif run_one.average_speed > run_two.average_speed:
+                win_avg_speed = "The first run win for the average speed"
+            else:
+                win_avg_speed = "The second run win for the average speed"
+
+    return render_template('comparechallenge.html', run_one=run_one, run_two=run_two, name_run_one=name_run_one , name_run_two=name_run_two, win_avg_speed=win_avg_speed, win_distance=win_distance, win_time=win_time )
 
 
 @challenge.route('/create_challenge', methods=['GET','POST'])
 @login_required
-def challenge_create():
-
+def create_form_challenge():
     form = ChallengeForm()
-    runs = db.session.query(Run).all()
+    runs = db.session.query(Run).filter(Run.runner_id == current_user.id)       #passage of runs for the visualization of the page
     if request.method == 'POST':
-            option = request.form['name']
-            c = db.session.query(Run).filter(Run.name == option)
-            num = db.session.query(Run).count() + 1
-            if c.first() is None:
-                flash('The run does not exists', category='error')
-                return make_response(render_template('create_challenge.html', form=form), 409)
-            else:
-                c = c.first()
-                new_challenge = Challenge()
-                new_challenge.setname(option)
-                new_challenge.setconfront(num)
-                new_challenge.setdistance(c.distance)
-                new_challenge.setelapsedtime(c.elapsed_time)
-                new_challenge.setaveragespeed(c.average_speed)
-                new_challenge.setrunner(c.runner)
-                db.session.add(new_challenge)
-                db.session.commit()
-                return redirect('/challenge')
+        # extract the value of the two forms
+        option_first = request.form['run_one']
+        option_second = request.form['run_two']
+        run_option_first = db.session.query(Run).filter(Run.id == option_first).first()
+        run_option_second = db.session.query(Run).filter(Run.id == option_second).first()
+        print(run_option_first.id)
+        if run_option_first is None or run_option_second is None:
+            flash('The run/s do not exist', category='error')
+        else:
+            new_challenge = Challenge()
+            name_option_first = run_option_first.name
+            name_option_second = run_option_second.name
+            form.populate_obj(new_challenge)
+            new_challenge.set_challenge_user(current_user.id)
+            new_challenge.set_challenge1_run(option_first)
+            new_challenge.set_challenge1_name(name_option_first)
+            new_challenge.set_challenge2_run(option_second)
+            new_challenge.set_challenge2_name(name_option_second)
+            db.session.add(new_challenge)
+            db.session.commit()
+            # Check if the value are saved, yes they are
+            challenges = db.session.query(Challenge).filter(Challenge.id_user == current_user.id).first()
+            print(challenges.run_one)
+            return redirect('/challenge')
 
-    return render_template('create_challenge.html', form=form , runs=runs)
-
-
-
-
-
-
-
-
+    return render_template('create_challenge.html', runs=runs, form=form)

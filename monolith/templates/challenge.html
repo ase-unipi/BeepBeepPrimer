@@ -17,7 +17,8 @@
           <li><a href="/create_objective">Create Objective</a></li>
           <li><a href="/objectives">List Objectives</a></li>
           <li><a href="/create_challenge">Create Challenge</a></li>
-          <li class="active"><a href="/challenge">Challenges</a></li>
+          <li class="active"><a href="/challenge/<id>">Compare Challenge</a></li>
+          <li><a href="/challenge">Challenges</a></li>
           <li><a href="/statistics">Statistics</a></li>
           <li><a href="/settingreport">Setting Report</a></li>
           {% if current_user.is_admin %}
@@ -28,17 +29,14 @@
         </ul>
     </div>
     <div class="container">
-        <h1 class="titlepage">List Challenges</h1><br>
+        <h1 class="titlepage">List Challenge Run</h1><br>
         {% for challenge in challenges: %}
         <table>
-            <tr><td class="key">You choose to challenge this run: </td><td class="value"><p>{{challenge.name}}</p></td></tr>
-            <tr><td class="key">With this run:</td><td class="value">{{challenge.confront}}</td></tr>
-            <tr><td class="key">Distance: </td><td class="value"><p>{{challenge.distance}}</p></td></tr>
-            <tr><td class="key">Elapsed_time: </td><td class="value"><p>{{challenge.elapsed_time}}</p></td></tr>
-            <tr><td class="key">Avg_speed: </td><td class="value"><p>{{challenge.average_speed}}</p>m/s</td></tr>
-            {% if current_user.is_admin %}
-            <tr><td class="key">Runner id: </td><td class="value"><p>{{challenge.runner_id}}</p></td></tr>
-            {% endif %}
+            <tr><td class="key">Challenge first id run: </td><td class="value"><p>{{ challenges.run_one }}</p></td></tr>
+            <tr><td class="key">Challenge first id name: </td><td class="value"><p>{{ challenges.name_run_one }}</p></td></tr>
+            <tr><td class="key">Challenge second id run: </td><td class="value"><p>{{ challenges.run_two }}</p></td></tr>
+            <tr><td class="key">Challenge second id name: </td><td class="value"><p>{{ challenges.name_run_two }}</p></td></tr>
+
         </table><br>
         {% endfor %}
     </div>

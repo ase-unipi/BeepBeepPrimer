@@ -56,5 +56,6 @@ class MailForm(FlaskForm):
     display = ['setting']
 
 class ChallengeForm(FlaskForm):
-    name = f.StringField('Name', validators=[DataRequired()])
-    display = ['name']
+    run_one = f.IntegerField('run_one', validators=[DataRequired()])
+    run_two = f.IntegerField('run_two', validators=[DataRequired()])
+    display = ['run_one','run_two']
