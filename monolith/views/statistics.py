@@ -65,11 +65,11 @@ def stats():
             run_names_concatenated.reverse()
 
             x_label = "Run Name"
-            distance_plot_filename = create_plot(runner_id, run_names_concatenated, distances, x_label, "Distance (m)", "Distance of your last 10 runs", 'distance', 'blue', 1)
-            avg_speed_plot_filename = create_plot(runner_id, run_names_concatenated, average_speeds, x_label, "Average Speed (Km/h)", "Average speed of your last 10 runs", 'average_speed', 'g', 2)
-            avg_heartrate_plot_filename = create_plot(runner_id, run_names_concatenated, average_heartrates, x_label, "Heartrate (hrpm)", "Average Heartrate of your last 10 runs", 'average_heartrate', 'orange', 2)
-            elapsed_times_plot_filename = create_plot(runner_id, run_names_concatenated, elapsed_times, x_label, "Elapsed time (s)", "Duration time of your last 10 runs", 'elapsed_time', 'red', 2)
-            elevation_gain_filename = create_plot(runner_id, run_names_concatenated, total_elevation_gains, x_label, "Total Elevation Gain (m)", "Total elevation gain of your last 10 runs", 'elevation_gain', 'brown', 2)
+            distance_plot_filename = create_plot(runner_id, run_names_concatenated, distances, x_label, "Distance (m)", "Distance (m)", 'distance', '#4B8DD6', 1)
+            avg_speed_plot_filename = create_plot(runner_id, run_names_concatenated, average_speeds, x_label, "Average Speed (Km/h)", "Average Speed (Km/h)", 'average_speed', '#2ECC71', 2)
+            avg_heartrate_plot_filename = create_plot(runner_id, run_names_concatenated, average_heartrates, x_label, "Heartrate (hrpm)", "Average Heartrate (hrpm)", 'average_heartrate', '#F59A53', 2)
+            elapsed_times_plot_filename = create_plot(runner_id, run_names_concatenated, elapsed_times, x_label, "Duration time (s)", "Duration Time (s)", 'elapsed_time', '#E74C3C', 2)
+            elevation_gain_filename = create_plot(runner_id, run_names_concatenated, total_elevation_gains, x_label, "Total Elevation Gain (m)", "Total Elevation Gain (m)", 'elevation_gain', '#9B59B6', 2)
 
         else:
             #user doesn't have any runs or has not connected the Strava account
