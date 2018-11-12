@@ -133,6 +133,7 @@ def new_predefined_run_equal(user):
     run.start_date = datetime.now()
     db.session.add(run)
     db.session.commit()
+    return run
 
 def new_predefined_run_test(user):
     run = Run()
@@ -147,6 +148,7 @@ def new_predefined_run_test(user):
     run.start_date = datetime.now()
     db.session.add(run)
     db.session.commit()
+    return run
 
 def new_objective(user, name = "Test Objective", target_distance = "42", start_date = datetime.now(), end_date = datetime.now()):
     objective = Objective()
